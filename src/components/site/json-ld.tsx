@@ -1,0 +1,10 @@
+/** Emits a JSON-LD structured data script. Only pass verified facts. */
+export function JsonLd({ data }: { data: Record<string, unknown> }) {
+  return (
+    <script
+      type="application/ld+json"
+      // "<" is escaped so content can never close the script element.
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(data).replace(/</g, "\\u003c") }}
+    />
+  );
+}
