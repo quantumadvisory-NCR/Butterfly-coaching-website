@@ -89,13 +89,13 @@ describe("settings", () => {
     expect(theme.primary).toBe(DEFAULT_THEME.primary);
     expect(theme.navy).toBe("#123456");
   });
-  it("uses the documented palette, with the cream #F7EFE2 page background, by default", () => {
-    expect(DEFAULT_THEME).toMatchObject({ primary: "#0068bf", navy: "#0f256a", accent: "#f5ba00", background: "#f7efe2", ink: "#444746" });
+  it("uses the documented palette, with the logo's grey-white #FCFCFC page background, by default", () => {
+    expect(DEFAULT_THEME).toMatchObject({ primary: "#0068bf", navy: "#0f256a", accent: "#f5ba00", background: "#fcfcfc", ink: "#444746" });
   });
-  it("gives a theme saved under the old pale-blue scheme the cream background", () => {
-    // Saved before the cream redesign: it has "sky" and no "background".
+  it("gives a theme saved under the old pale-blue scheme the current page background", () => {
+    // Saved before the redesign: it has "sky" and no "background".
     const theme = parseSettingsGroup("theme", { primary: "#0068bf", navy: "#0f256a", accent: "#f5ba00", sky: "#eff7ff", ink: "#444746" });
-    expect(theme.background).toBe("#f7efe2");
+    expect(theme.background).toBe("#fcfcfc");
     expect(theme).not.toHaveProperty("sky");
   });
   it("fills in settings groups that did not exist when the settings were saved", () => {

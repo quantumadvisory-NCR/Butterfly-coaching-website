@@ -13,7 +13,7 @@ const PHOTO_FOCUS = { objectPosition: "72% 45%" };
  */
 export function AuthCard({ title, intro, children, footer }: { title: string; intro?: ReactNode; children: ReactNode; footer?: ReactNode }) {
   return (
-    <main className="grid min-h-dvh bg-cream lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+    <main className="grid min-h-dvh bg-page lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
       <div className="hidden p-4 pr-0 lg:sticky lg:top-0 lg:block lg:h-dvh">
         <div className="relative size-full overflow-hidden rounded-[1.75rem] bg-line">
           <Image src={PHOTO} alt="" fill sizes="45vw" className="object-cover" style={PHOTO_FOCUS} />

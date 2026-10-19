@@ -4,7 +4,8 @@
    Butterfly Coaching Academy design tokens: the single source of truth for
    the public website and the admin. Documented in docs/BRAND_SYSTEM.md.
 
-   The principal background is cream #F7EFE2 (rgb 247 239 226). The five
+   The principal background is the grey-white of the BCA logo artwork,
+   #FCFCFC (rgb 252 252 252); neutrals derive from the logo's grey #4B4B4D. The five
    --bca-* tokens and the two typefaces can be changed in Admin > Settings >
    Colours and typography; everything else derives from them.
    ========================================================================== */
@@ -13,7 +14,7 @@
   --bca-primary: #0068bf;
   --bca-navy: #0f256a;
   --bca-accent: #f5ba00;
-  --bca-background: #f7efe2;
+  --bca-background: #fcfcfc;
   --bca-ink: #444746;
 
   --font-heading: var(--font-jakarta);
@@ -69,23 +70,23 @@
   /* Pale yellow for soft highlights and the hover edge on pathway cards. */
   --color-accent-soft: color-mix(in srgb, var(--bca-accent) 22%, #fff);
 
-  /* Backgrounds. Cream is the page itself; every section sits on it. */
+  /* Backgrounds. The page colour sits behind every section. */
   --color-background: var(--bca-background);
-  --color-cream: var(--bca-background);
-  /* A step deeper than cream: hover fills, chips, quiet panels. */
-  --color-tint: color-mix(in srgb, var(--bca-background) 86%, #c8a671);
+  --color-page: var(--bca-background);
+  /* A step deeper than the page, toward the logo's grey: hover fills, chips, quiet panels. */
+  --color-tint: color-mix(in srgb, var(--bca-background) 94%, #4b4b4d);
   /* Two steps deeper: the panel behind portrait photographs. */
-  --color-tint-deep: color-mix(in srgb, var(--bca-background) 74%, #c8a671);
-  /* Warm white for cards, forms, menus and dialogs. */
-  --color-surface: #fffdf9;
+  --color-tint-deep: color-mix(in srgb, var(--bca-background) 88%, #4b4b4d);
+  /* Pure white for cards, forms, menus and dialogs, lifted off the page by borders and shadow. */
+  --color-surface: #ffffff;
 
   /* Neutrals */
   --color-text: var(--bca-ink);
   --color-ink: var(--bca-ink);
   --color-muted: #5b5f5d;
-  --color-border: #e3d6c2;
-  --color-line: #e3d6c2;
-  --color-mist: color-mix(in srgb, var(--bca-background) 55%, #fff);
+  --color-border: #e4e4e7;
+  --color-line: #e4e4e7;
+  --color-mist: color-mix(in srgb, var(--bca-background) 97%, #4b4b4d);
 
   /* Feedback */
   --color-danger: #b3261e;
@@ -534,6 +535,54 @@
   }
 }
 
+/* A white card on the page background that takes the same warm yellow edge on
+   hover ("Why BCA" points, student stories). It moves with the translate
+   property, so it never fights the transform of the scroll reveal. */
+.lift-card {
+  position: relative;
+  isolation: isolate;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  box-shadow: 0 1px 2px rgb(15 37 106 / 0.04);
+  transition:
+    translate 0.3s var(--ease-out-soft),
+    box-shadow 0.3s var(--ease-out-soft),
+    border-color 0.3s var(--ease-out-soft);
+}
+.lift-card::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(135deg, #fff6d6 0%, var(--color-accent-soft) 30%, var(--color-accent) 72%, #ffd65c 100%);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s var(--ease-out-soft);
+  pointer-events: none;
+}
+.lift-card:focus-within::before {
+  opacity: 1;
+}
+@media (hover: hover) {
+  .lift-card:hover {
+    translate: 0 -4px;
+    border-color: transparent;
+    box-shadow:
+      0 22px 44px -24px rgb(245 186 0 / 0.6),
+      var(--shadow-card);
+  }
+  .lift-card:hover::before {
+    opacity: 1;
+  }
+}
+
 /* Art-directed <picture>: each crop keeps its own focal point. */
 .art-directed {
   object-position: var(--focal-wide, 50% 50%);
@@ -571,6 +620,26 @@
   }
   .hero-enter > *:nth-child(4) {
     animation-delay: 0.21s;
+  }
+
+  /* The call-to-action emblem: an orbit that turns very slowly and a butterfly that drifts. */
+  .orbit-spin {
+    animation: orbit-spin 48s linear infinite;
+  }
+  .mark-float {
+    animation: mark-float 7s ease-in-out infinite;
+  }
+}
+
+@keyframes orbit-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+@keyframes mark-float {
+  50% {
+    translate: 0 -0.5rem;
   }
 }
 

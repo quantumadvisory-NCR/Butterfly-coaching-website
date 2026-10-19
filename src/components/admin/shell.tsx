@@ -167,7 +167,7 @@ export function AdminShell({
 
   const brand = (
     <Link href="/admin/" className="flex items-center gap-3 rounded-lg px-1">
-      <Image src="/images/brand/bca-mark.svg" alt="" width={82} height={89} unoptimized className="h-9 w-auto" />
+      <Image src="/images/brand/bca-mark-on-dark.svg" alt="" width={98} height={90} unoptimized className="h-9 w-auto" />
       <span className="font-display text-[0.9375rem] font-bold leading-tight text-white">
         Butterfly Coaching
         <span className="block text-xs font-semibold text-white/60">Website admin</span>
@@ -176,7 +176,7 @@ export function AdminShell({
   );
 
   return (
-    <div className="min-h-dvh bg-cream lg:grid lg:grid-cols-[17rem_minmax(0,1fr)]">
+    <div className="min-h-dvh bg-page lg:grid lg:grid-cols-[17rem_minmax(0,1fr)]">
       {/* Desktop sidebar */}
       <aside className="on-dark sticky top-0 hidden h-dvh flex-col gap-6 overflow-y-auto bg-navy p-4 lg:flex">
         <div className="pt-1">{brand}</div>

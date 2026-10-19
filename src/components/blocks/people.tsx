@@ -127,42 +127,95 @@ export async function ProfilesBlock({ data, ctx }: BlockProps<"profiles">) {
 
 /* ---- testimonials --------------------------------------------------------- */
 
-function Attribution({ t, ctx, size = "md" }: { t: TestimonialView; ctx: BlockContext; size?: "md" | "lg" }) {
+function Attribution({ t, ctx, tone = "light" }: { t: TestimonialView; ctx: BlockContext; tone?: "light" | "dark" }) {
   const photo = pickMedia(ctx, t.photoId);
   const role = [t.roleTitle, t.organisation].filter(Boolean).join(", ");
+  const dark = tone === "dark";
   return (
-    <figcaption className="mt-6 flex items-center gap-3.5">
+    <figcaption className={cn("mt-6 flex items-center gap-3.5 border-t pt-5", dark ? "border-white/15" : "border-line")}>
       {photo ? (
-        <span className={cn("relative shrink-0 overflow-hidden rounded-full bg-tint-deep", size === "lg" ? "size-16" : "size-12")}>
-          <MediaImage media={photo} fill alt="" sizes="64px" className="!object-top" />
+        <span className="relative size-12 shrink-0 overflow-hidden rounded-full bg-tint-deep ring-2 ring-transparent ring-offset-2 ring-offset-transparent transition-[box-shadow] duration-300 group-hover:ring-accent">
+          <MediaImage media={photo} fill alt="" sizes="48px" className="!object-top" />
         </span>
       ) : (
-        <span aria-hidden className={cn("grid shrink-0 place-items-center rounded-full bg-navy font-display font-bold text-white", size === "lg" ? "size-16 text-xl" : "size-12")}>
+        <span aria-hidden className={cn("grid size-12 shrink-0 place-items-center rounded-full font-display font-bold", dark ? "bg-accent text-navy" : "bg-navy text-white")}>
           {t.name.charAt(0)}
         </span>
       )}
-      <span>
-        <span className="block font-semibold text-navy">{t.name}</span>
-        {role && <span className="block text-sm text-muted">{role}</span>}
+      <span className="min-w-0">
+        <span className={cn("block font-semibold", dark ? "text-white" : "text-navy")}>{t.name}</span>
+        {role && <span className={cn("block text-sm", dark ? "text-white/70" : "text-muted")}>{role}</span>}
       </span>
     </figcaption>
   );
 }
 
-/** Full, unedited stories in a flowing multi-column layout. */
+/**
+ * Full, unedited stories in a flowing multi-column layout. Every fifth card is
+ * navy, so a long page keeps a rhythm; cards lift and take a yellow edge on hover.
+ */
 export function TestimonialGrid({ items, ctx }: { items: TestimonialView[]; ctx: BlockContext }) {
   return (
-    <div className="gap-6 [column-fill:_balance] md:columns-2 lg:columns-3">
-      {items.map((t) => (
-        <figure key={t.id} className="mb-6 break-inside-avoid rounded-card border border-line bg-surface p-6 md:p-7">
-          <QuotesIcon aria-hidden weight="fill" className="size-7 text-accent" />
-          <blockquote className="mt-3 leading-relaxed text-ink">
-            <p>“{t.quote}”</p>
-          </blockquote>
-          <Attribution t={t} ctx={ctx} />
-        </figure>
-      ))}
+    <div className="gap-5 md:columns-2 md:gap-6 lg:columns-3">
+      {items.map((t, i) => {
+        const dark = i % 5 === 1;
+        return (
+          <figure key={t.id} className={cn("reveal lift-card group mb-5 break-inside-avoid p-6 md:mb-6 md:p-7", dark && "!border-navy !bg-navy")}>
+            <span
+              aria-hidden
+              className={cn(
+                "grid size-11 place-items-center rounded-full transition-transform duration-300 group-hover:-rotate-12 group-hover:scale-110",
+                dark ? "bg-accent text-navy" : "bg-accent-soft text-navy",
+              )}
+            >
+              <QuotesIcon weight="fill" className="size-5" />
+            </span>
+            <blockquote className={cn("mt-4 leading-relaxed", dark ? "text-white/90" : "text-ink")}>
+              <p>“{t.quote}”</p>
+            </blockquote>
+            <Attribution t={t} ctx={ctx} tone={dark ? "dark" : "light"} />
+          </figure>
+        );
+      })}
     </div>
+  );
+}
+
+/** One story told large on navy at the top of the stories page. Photographs stay small: most are headshots. */
+function StorySpotlight({ t, ctx }: { t: TestimonialView; ctx: BlockContext }) {
+  const photo = pickMedia(ctx, t.photoId);
+  const role = [t.roleTitle, t.organisation].filter(Boolean).join(", ");
+  return (
+    <figure className="reveal on-dark relative isolate grid gap-8 overflow-hidden rounded-[var(--radius-panel)] bg-navy px-6 py-9 text-white shadow-lift sm:px-10 md:py-12 lg:grid-cols-[minmax(0,0.34fr)_minmax(0,0.66fr)] lg:gap-14 lg:px-14 lg:py-14">
+      <figcaption className="flex items-center gap-4 lg:flex-col lg:items-start lg:gap-5">
+        {photo ? (
+          <span className="relative size-20 shrink-0 overflow-hidden rounded-full bg-tint-deep ring-4 ring-accent lg:size-28">
+            <MediaImage media={photo} fill alt="" sizes="112px" className="!object-top" />
+          </span>
+        ) : (
+          <span aria-hidden className="grid size-20 shrink-0 place-items-center rounded-full bg-accent font-display text-3xl font-bold text-navy lg:size-28">
+            {t.name.charAt(0)}
+          </span>
+        )}
+        <span className="min-w-0">
+          <span className="mb-2 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.12em] text-accent">
+            <span aria-hidden className="size-1.5 rounded-full bg-accent" />
+            Featured story
+          </span>
+          <span className="block font-display text-xl font-bold leading-tight lg:text-2xl">{t.name}</span>
+          {role && <span className="mt-1 block text-[0.9375rem] text-white/70">{role}</span>}
+        </span>
+      </figcaption>
+      <div className="relative">
+        <QuotesIcon aria-hidden weight="fill" className="size-12 text-accent md:size-14" />
+        <blockquote className={cn("mt-4 font-medium leading-relaxed text-white/90", t.quote.length > 420 ? "text-lg" : "text-lg md:text-xl lg:text-[1.375rem] lg:leading-relaxed")}>
+          <p>“{t.quote}”</p>
+        </blockquote>
+      </div>
+      {/* Soft light behind the panel. Kept last, so the caption stays the figure's first child. */}
+      <div aria-hidden className="pointer-events-none absolute -left-28 -top-28 -z-10 size-80 rounded-full bg-accent/20 blur-3xl" />
+      <div aria-hidden className="pointer-events-none absolute -bottom-32 right-10 -z-10 size-72 rounded-full bg-primary/40 blur-3xl" />
+    </figure>
   );
 }
 
@@ -209,13 +262,21 @@ export async function TestimonialsBlock({ data, ctx }: BlockProps<"testimonials"
     );
   }
 
-  // All: full, unedited stories in a flowing multi-column layout.
+  // All: one featured story told large, then the rest, full and unedited, in a flowing multi-column layout.
+  const spotlight = items.length >= 4 ? (items.find((t) => t.isFeatured && t.photoId) ?? items.find((t) => t.photoId) ?? null) : null;
+  const rest = spotlight ? items.filter((t) => t !== spotlight) : items;
+  // Straight under a page title the heading needs no second band of space above it.
+  const underPageHero = ctx.prev?.type === "hero" && ctx.prev.variant === "page";
   return (
-    <Section background={data.background} anchor={data.anchor}>
+    <Section background={data.background} anchor={data.anchor} className={cn(underPageHero && "!pt-2 md:!pt-4")}>
       <div className="container-site">
-        <SectionHeading heading={data.heading} intro={data.intro} />
+        {spotlight && <StorySpotlight t={spotlight} ctx={ctx} />}
+        <div className={cn(spotlight && "mt-16 md:mt-20")}>
+          <span aria-hidden className="mb-5 block h-1 w-12 rounded-full bg-accent" />
+          <SectionHeading heading={data.heading} intro={data.intro} />
+        </div>
         <div className="mt-9 md:mt-12">
-          <TestimonialGrid items={items} ctx={ctx} />
+          <TestimonialGrid items={rest} ctx={ctx} />
         </div>
         {cta && (
           <div className="mt-6">

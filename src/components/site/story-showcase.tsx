@@ -89,10 +89,10 @@ export function StoryShowcase({ stories, label }: { stories: Story[]; label: str
       <div className="on-dark relative isolate flex flex-col overflow-hidden rounded-[var(--radius-panel)] bg-navy p-7 sm:p-9 lg:col-span-7 lg:min-h-[30rem] lg:p-11">
         {/* The BCA butterfly, large and quiet in the corner. */}
         <Image
-          src="/images/brand/bca-mark.svg"
+          src="/images/brand/bca-mark-on-dark.svg"
           alt=""
-          width={82}
-          height={89}
+          width={98}
+          height={90}
           unoptimized
           aria-hidden
           className="pointer-events-none absolute -bottom-10 -right-8 -z-10 h-56 w-auto opacity-[0.08] sm:h-72"

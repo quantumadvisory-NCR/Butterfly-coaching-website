@@ -58,7 +58,7 @@ async function TrustRow({ text, photos, ctx }: { text: string; photos: boolean; 
       {people.length > 0 && (
         <span aria-hidden className="flex -space-x-2.5">
           {people.map((person) => (
-            <span key={person.id} className="relative size-10 overflow-hidden rounded-full bg-tint-deep ring-[3px] ring-cream">
+            <span key={person.id} className="relative size-10 overflow-hidden rounded-full bg-tint-deep ring-[3px] ring-page">
               <MediaImage media={pickMedia(ctx, person.photoId)} fill alt="" sizes="40px" className="!object-top" />
             </span>
           ))}
@@ -77,7 +77,7 @@ export async function HeroBlock({ data, ctx }: BlockProps<"hero">) {
 
   if (data.variant === "page") {
     return (
-      <section className="bg-cream">
+      <section className="bg-page">
         <div className="container-site pb-12 pt-5 md:pb-16 lg:pb-20">
           <Breadcrumbs items={ctx.breadcrumbs} />
           <div className={image ? "mt-6 grid items-center gap-8 md:mt-8 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)] lg:gap-14" : "mt-6 md:mt-8"}>
@@ -113,11 +113,11 @@ export async function HeroBlock({ data, ctx }: BlockProps<"hero">) {
   const credential = data.credentialValue ? { value: data.credentialValue, label: data.credentialLabel } : null;
 
   return (
-    <section className="relative isolate overflow-clip bg-cream">
+    <section className="relative isolate overflow-clip bg-page">
       <div
         className={cn(
           "container-site grid items-center gap-10 pt-8 sm:pt-10 md:gap-12 lg:grid-cols-[minmax(0,1.12fr)_minmax(0,0.88fr)] lg:gap-8 lg:pt-14 xl:gap-14",
-          overlapped ? "pb-20 sm:pb-24 lg:pb-44" : "pb-12 md:pb-16 lg:pb-16",
+          overlapped ? "pb-20 sm:pb-24 lg:pb-48" : "pb-12 md:pb-16 lg:pb-16",
         )}
       >
         <div className="hero-enter min-w-0 max-w-[40rem]">
@@ -168,15 +168,10 @@ export async function HeroBlock({ data, ctx }: BlockProps<"hero">) {
         </div>
 
         {image && (
-          // When a panel overlaps the hero, the photograph runs on underneath it so the overlap reads as deliberate.
-          <div className={cn("relative mx-auto w-full max-w-[30rem] sm:max-w-[34rem] lg:max-w-none", overlapped && "lg:-mb-32 lg:self-end")}>
-            <div
-              className={cn(
-                "relative aspect-[10/9] lg:aspect-auto",
-                // Taller when the panel below covers its base, so the visible part still balances the heading.
-                overlapped ? "lg:h-[clamp(31rem,calc(100dvh-var(--header-height)-3rem),38rem)]" : "lg:h-[clamp(27rem,calc(100dvh-var(--header-height)-8rem),35rem)]",
-              )}
-            >
+          // The arch keeps one shape at every desktop width, so the photograph stays level with the heading
+          // and the two columns centre on each other rather than the photo sinking towards the panel.
+          <div className="relative mx-auto w-full max-w-[30rem] sm:max-w-[34rem] lg:mx-0 lg:max-w-[33rem] lg:justify-self-end">
+            <div className="relative aspect-[10/9] lg:aspect-[12/13]">
               <WingMotif className="absolute -inset-x-[5%] top-0 h-full w-[110%]" />
               <div className="absolute inset-x-[8%] bottom-0 top-[7%] overflow-hidden rounded-b-[var(--radius-card)] rounded-t-[999px] bg-tint-deep shadow-card ring-4 ring-surface/70">
                 {tall ? (

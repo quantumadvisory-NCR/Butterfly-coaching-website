@@ -3,7 +3,7 @@ import { CountUp } from "@/components/ui/count-up";
 import { Breadcrumbs } from "@/components/site/breadcrumbs";
 import { ButtonLink } from "@/components/ui/button-link";
 import { MediaImage } from "@/components/ui/media-image";
-import { RichText, Section, SectionHeading } from "@/components/ui/section";
+import { RichText, Section } from "@/components/ui/section";
 import { cn } from "@/lib/utils";
 import { type BlockProps, pickMedia, usableLink } from "./types";
 
@@ -66,44 +66,63 @@ export function ImageTextBlock({ data, ctx }: BlockProps<"image_text">) {
   );
 }
 
-/** "Why BCA": heading and image on one side, a short list of points on the other. */
+/**
+ * "Why BCA": heading, introduction and a framed photograph on one side; the
+ * points as numbered cards on the other, joined by a thin line. Cards lift and
+ * take a yellow edge on hover, and ease in as they scroll into view.
+ */
 export function FeatureListBlock({ data, ctx }: BlockProps<"feature_list">) {
   const image = pickMedia(ctx, data.image);
   const cta = usableLink(data.cta, ctx.settings);
   const items = data.items.filter((item) => item.title);
   return (
-    <Section background={data.background} anchor={data.anchor}>
-      <div className="container-site grid gap-10 lg:grid-cols-12 lg:gap-12">
+    <Section background={data.background} anchor={data.anchor} className="relative isolate overflow-clip">
+      {/* A soft yellow glow behind the cards: the brand colour, barely there. */}
+      <div aria-hidden className="pointer-events-none absolute -right-40 top-16 -z-10 size-[30rem] rounded-full bg-accent/15 blur-3xl" />
+      {/* On wide screens the button sits under the photograph; on narrow screens it follows the points. */}
+      <div className="container-site grid gap-10 lg:grid-cols-12 lg:gap-x-14 lg:gap-y-9">
         <div className="lg:col-span-5">
-          <div className="lg:sticky lg:top-[calc(var(--header-height)+2rem)]">
-            <SectionHeading heading={data.heading} intro={data.intro} />
-            {image && (
-              <div className="reveal relative mt-8 aspect-[16/10] overflow-hidden rounded-card lg:aspect-[4/3]">
-                <MediaImage media={image} fill sizes="(min-width: 64rem) 38vw, 100vw" />
+          <span aria-hidden className="mb-5 block h-1 w-12 rounded-full bg-accent" />
+          <h2 className="text-h2">{data.heading}</h2>
+          {data.intro && <p className="mt-4 max-w-md text-lead text-ink">{data.intro}</p>}
+          {image && (
+            <div className="reveal relative mt-9 max-w-md lg:max-w-none">
+              {/* A yellow echo of the photograph's curved corner. */}
+              <span aria-hidden className="absolute -left-3 -top-3 h-2/3 w-2/3 rounded-card rounded-tl-[var(--radius-wing)] bg-accent" />
+              <span aria-hidden className="absolute -bottom-4 -right-4 size-20 rounded-full border-2 border-dashed border-accent/70" />
+              <div className="relative aspect-[4/3] overflow-hidden rounded-card rounded-tl-[var(--radius-wing)] shadow-card ring-4 ring-surface">
+                <MediaImage media={image} fill sizes="(min-width: 64rem) 36vw, (min-width: 28rem) 28rem, 100vw" className="transition-transform duration-700 ease-out hover:scale-[1.03]" />
               </div>
-            )}
-          </div>
-        </div>
-        <div className="lg:col-span-6 lg:col-start-7">
-          <ol className="grid">
-            {items.map((item, i) => (
-              <li
-                key={`${item.title}-${i}`}
-                className={cn("reveal py-7 md:py-8", i > 0 && "border-t border-line", i === 0 && "pt-0 md:pt-0 lg:pt-2")}
-              >
-                <h3 className="text-h3">{item.title}</h3>
-                {item.body && <p className="mt-2.5 max-w-prose">{item.body}</p>}
-              </li>
-            ))}
-          </ol>
-          {cta && (
-            <div className="mt-2">
-              <ButtonLink href={cta.href} variant="secondary">
-                {cta.label}
-              </ButtonLink>
             </div>
           )}
         </div>
+        <div className="relative lg:col-span-7 lg:row-span-2 lg:self-center">
+          {/* The thread joining the numbers. */}
+          <span aria-hidden className="absolute bottom-10 left-[2.4375rem] top-10 w-px bg-gradient-to-b from-accent via-line to-transparent max-sm:hidden" />
+          <ol className="relative grid gap-4 md:gap-5">
+            {items.map((item, i) => (
+              <li key={`${item.title}-${i}`} className="reveal lift-card group flex flex-col gap-4 p-5 sm:flex-row sm:gap-5 sm:p-6 md:p-7">
+                <span
+                  aria-hidden
+                  className="relative z-10 grid size-12 shrink-0 place-items-center rounded-2xl bg-accent font-display text-lg font-extrabold text-navy shadow-[0_6px_16px_-6px_rgb(245_186_0/0.7)] transition-transform duration-300 group-hover:-rotate-6"
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <div className="min-w-0 sm:pt-1">
+                  <h3 className="text-h3">{item.title}</h3>
+                  {item.body && <p className="mt-2 max-w-prose text-[0.9688rem] leading-relaxed text-ink">{item.body}</p>}
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+        {cta && (
+          <div className="lg:col-span-5 lg:row-start-2">
+            <ButtonLink href={cta.href} variant="secondary">
+              {cta.label}
+            </ButtonLink>
+          </div>
+        )}
       </div>
     </Section>
   );
@@ -115,7 +134,7 @@ export function StatsBlock({ data }: BlockProps<"stats">) {
   if (items.length === 0) return null;
   const headingId = `stats-${data.anchor || "figures"}`;
   return (
-    <section id={data.anchor || undefined} aria-labelledby={data.heading ? headingId : undefined} className={cn(data.background === "surface" ? "bg-surface" : "bg-cream", "pb-[var(--section-space)]")}>
+    <section id={data.anchor || undefined} aria-labelledby={data.heading ? headingId : undefined} className={cn(data.background === "surface" ? "bg-surface" : "bg-page", "pb-[var(--section-space)]")}>
       <div className="container-site">
         {data.heading && (
           <h2 id={headingId} className={data.showHeading ? "mb-8 text-h2" : "sr-only"}>
@@ -147,38 +166,67 @@ export function StatsBlock({ data }: BlockProps<"stats">) {
   );
 }
 
-/** Accreditation badges, client logos and a few verified facts. */
+/** "ICF Level 1 accredited coaching education" becomes "Level 1"; other names are shown as they are. */
+function shortLabel(name: string) {
+  return name.match(/\bLevel\s*\d\b/i)?.[0] ?? name;
+}
+
+/**
+ * Accreditation badges or client logos, each in its own tile inside one white
+ * card, with any verified facts beneath. Tiles lift slightly on hover.
+ */
 export function TrustStripBlock({ data, ctx }: BlockProps<"trust_strip">) {
   const logos = data.logos.map((logo) => ({ ...logo, media: pickMedia(ctx, logo.image) })).filter((l) => l.media);
   const facts = data.facts.filter((f) => f.value && f.label);
   if (logos.length === 0 && facts.length === 0) return null;
+  // Square artwork (accreditation badges) gets a label; wide artwork (company logos) speaks for itself.
+  const badges = logos.every((logo) => (logo.media!.width ?? 1) / (logo.media!.height ?? 1) < 1.3);
   return (
-    <section id={data.anchor || undefined} className={data.background === "surface" ? "bg-surface" : "bg-cream"}>
-      <div className="container-site flex flex-col gap-7 border-y border-line py-8 md:py-10 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
-        {logos.length > 0 && (
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
-            {data.heading && <h2 className="max-w-[15rem] font-sans text-[0.9375rem] font-semibold leading-snug text-navy">{data.heading}</h2>}
-            <ul className="flex flex-wrap items-center gap-x-7 gap-y-4">
+    <section id={data.anchor || undefined} className={cn(data.background === "surface" ? "bg-surface" : "bg-page", "py-10 md:py-14")}>
+      <div className="container-site">
+        <div className="reveal grid items-center gap-8 rounded-[var(--radius-panel)] border border-line bg-surface px-6 py-8 shadow-card sm:px-8 md:px-10 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-12">
+          <div>
+            <p className="eyebrow mb-2 flex items-center gap-2">
+              <span aria-hidden className="h-0.5 w-6 rounded-full bg-accent" />
+              {badges ? "Accreditation" : "Experience"}
+            </p>
+            {data.heading && <h2 className="text-h3 !text-[clamp(1.375rem,1.2rem+0.8vw,1.875rem)]">{data.heading}</h2>}
+            {data.intro && <p className="mt-2.5 max-w-md text-[0.9688rem] text-ink">{data.intro}</p>}
+          </div>
+          {logos.length > 0 && (
+            <ul className={cn("grid gap-3 sm:gap-4", logos.length >= 4 ? "grid-cols-2 sm:grid-cols-4" : "grid-cols-3")}>
               {logos.map((logo) => (
-                // A fixed height with the width following each image's own shape: square badges sit close
-                // together, and a wide logo is capped so it cannot crowd the row.
-                <li key={logo.name} className="shrink-0">
-                  <MediaImage media={logo.media} alt={logo.name} sizes="128px" className="!h-14 !w-auto max-w-32 object-contain md:!h-16" />
+                <li
+                  key={logo.name}
+                  className="group flex flex-col items-center justify-center gap-2.5 rounded-2xl border border-line bg-page px-3 py-5 text-center transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:border-accent/60 hover:shadow-lift"
+                >
+                  <MediaImage
+                    media={logo.media}
+                    alt={logo.name}
+                    sizes="160px"
+                    className={cn("!w-auto object-contain transition-transform duration-300 group-hover:scale-105", badges ? "!h-20 sm:!h-24" : "!h-12 max-w-[8.5rem] sm:!h-14")}
+                  />
+                  {badges && (
+                    <span aria-hidden className="text-[0.8125rem] font-bold leading-tight text-navy">
+                      {shortLabel(logo.name)}
+                      <span className="block text-xs font-semibold text-muted">Accredited</span>
+                    </span>
+                  )}
                 </li>
               ))}
             </ul>
-          </div>
-        )}
-        {facts.length > 0 && (
-          <dl className="grid grid-cols-1 gap-x-8 gap-y-4 min-[30rem]:grid-cols-3 lg:max-w-xl lg:shrink-0">
-            {facts.map((fact) => (
-              <div key={fact.label} className="flex flex-col-reverse border-l-2 border-accent pl-4">
-                <dt className="text-sm leading-snug text-muted">{fact.label}</dt>
-                <dd className="font-display text-2xl font-bold tracking-tight text-navy">{fact.value}</dd>
-              </div>
-            ))}
-          </dl>
-        )}
+          )}
+          {facts.length > 0 && (
+            <dl className="grid grid-cols-1 gap-x-8 gap-y-4 border-t border-line pt-6 min-[30rem]:grid-cols-3 lg:col-span-2">
+              {facts.map((fact) => (
+                <div key={fact.label} className="flex flex-col-reverse border-l-2 border-accent pl-4">
+                  <dt className="text-sm leading-snug text-muted">{fact.label}</dt>
+                  <dd className="font-display text-2xl font-bold tracking-tight text-navy">{fact.value}</dd>
+                </div>
+              ))}
+            </dl>
+          )}
+        </div>
       </div>
     </section>
   );

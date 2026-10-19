@@ -55,7 +55,7 @@ export async function BlogListing({ heading, intro, basePath, filter, query = ""
 
   return (
     <>
-      <section className="bg-cream">
+      <section className="bg-page">
         <div className="container-site pb-10 pt-5 md:pb-14">
           <Breadcrumbs items={crumbs} />
           <div className="mt-6 flex flex-col gap-7 md:mt-8 lg:flex-row lg:items-end lg:justify-between">
@@ -103,7 +103,7 @@ export async function BlogListing({ heading, intro, basePath, filter, query = ""
         </div>
       </section>
 
-      <section className="section-space bg-cream">
+      <section className="section-space bg-page">
         <div className="container-site">
           {query && (
             <p role="status" className="mb-8 text-lead">

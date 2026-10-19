@@ -16,7 +16,7 @@ const SUGGESTIONS = [
 
 export default function NotFound() {
   return (
-    <section className="bg-cream">
+    <section className="bg-page">
       <div className="container-site grid items-center gap-10 py-16 md:py-24 lg:grid-cols-2 lg:gap-16">
         <div className="max-w-xl">
           <p className="eyebrow mb-3">Error 404</p>

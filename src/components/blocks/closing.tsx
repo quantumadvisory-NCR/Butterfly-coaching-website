@@ -93,18 +93,12 @@ export function CtaBlock({ data, ctx }: BlockProps<"cta">) {
   const secondary = usableLink(data.secondaryCta, ctx.settings);
   return (
     <section id={data.anchor || undefined} className="on-dark relative isolate overflow-clip bg-navy text-white">
-      {/* The BCA butterfly mark, used large and quiet as a brand watermark. */}
-      <Image
-        src="/images/brand/bca-mark.svg"
-        alt=""
-        width={82}
-        height={89}
-        unoptimized
-        aria-hidden
-        className="pointer-events-none absolute -right-10 top-1/2 -z-10 hidden h-[130%] w-auto -translate-y-1/2 opacity-[0.09] md:block"
-      />
-      <div className="container-site section-space">
+      {/* Soft light from two corners, so the navy has depth rather than a flat fill. */}
+      <div aria-hidden className="pointer-events-none absolute -bottom-48 -left-40 -z-10 size-[32rem] rounded-full bg-primary/45 blur-3xl" />
+      <div aria-hidden className="pointer-events-none absolute -right-24 -top-40 -z-10 size-[26rem] rounded-full bg-primary/25 blur-3xl" />
+      <div className="container-site section-space grid items-center gap-10 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)] lg:gap-16">
         <div className="reveal max-w-2xl">
+          <Image src="/images/brand/bca-mark-on-dark.svg" alt="" width={98} height={90} unoptimized aria-hidden className="mb-6 h-12 w-auto lg:hidden" />
           <h2 className="text-h1 !text-white">{data.heading}</h2>
           {data.body && <p className="mt-4 max-w-xl text-lead text-white/85">{data.body}</p>}
           {(primary || secondary) && (
@@ -121,6 +115,17 @@ export function CtaBlock({ data, ctx }: BlockProps<"cta">) {
               )}
             </div>
           )}
+        </div>
+        {/* The full BCA butterfly, whole and centred in a quiet emblem: rings, a slow orbit and a warm glow. */}
+        <div aria-hidden className="relative mx-auto hidden aspect-square w-full max-w-[24rem] lg:block">
+          <div className="absolute inset-[16%] rounded-full bg-primary/50 blur-3xl" />
+          <div className="absolute inset-0 rounded-full border border-white/10" />
+          <div className="orbit-spin absolute inset-[9%] rounded-full border-2 border-dashed border-accent/45">
+            <span className="absolute left-1/2 top-0 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent shadow-[0_0_0_6px_rgb(245_186_0/0.18)]" />
+          </div>
+          <div className="absolute inset-[22%] grid place-items-center rounded-full bg-gradient-to-br from-primary/60 via-navy to-navy shadow-[0_0_64px_-12px_rgb(245_186_0/0.55)] ring-1 ring-white/15">
+            <Image src="/images/brand/bca-mark-on-dark.svg" alt="" width={98} height={90} unoptimized className="mark-float h-auto w-[62%]" />
+          </div>
         </div>
       </div>
     </section>

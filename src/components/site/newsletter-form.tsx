@@ -31,8 +31,8 @@ export function NewsletterForm({ consentText, idPrefix }: { consentText?: string
 
   if (state.status === "success") {
     return (
-      <p role="status" className="flex items-center gap-3 rounded-field bg-white/10 px-4 py-3.5 font-semibold [.bg-cream_&]:bg-surface [.bg-surface_&]:bg-tint">
-        <CheckCircleIcon aria-hidden weight="fill" className="size-6 shrink-0 text-accent [.bg-cream_&]:text-success [.bg-surface_&]:text-success" />
+      <p role="status" className="flex items-center gap-3 rounded-field bg-white/10 px-4 py-3.5 font-semibold [.bg-page_&]:bg-surface [.bg-surface_&]:bg-tint">
+        <CheckCircleIcon aria-hidden weight="fill" className="size-6 shrink-0 text-accent [.bg-page_&]:text-success [.bg-surface_&]:text-success" />
         {state.message}
       </p>
     );

@@ -133,7 +133,7 @@ const theme = [
     type: "color",
     name: "background",
     label: "Page background",
-    help: "The cream behind every page of the website and the admin. The brand value is #F7EFE2.",
+    help: "Behind every page of the website and the admin. The brand value is #FCFCFC, the grey-white of the logo artwork.",
   },
   { type: "color", name: "ink", label: "Body text" },
   { type: "select", name: "headingFont", label: "Heading typeface", options: HEADING_FONTS },
@@ -175,12 +175,12 @@ export type SiteSettings = {
   theme: DataOf<typeof theme>;
 };
 
-/** Design tokens: see docs/BRAND_SYSTEM.md. The cream page background #F7EFE2 is the brand's principal colour. */
+/** Design tokens: see docs/BRAND_SYSTEM.md. The page background #FCFCFC is the grey-white of the BCA logo artwork. */
 export const DEFAULT_THEME: SiteSettings["theme"] = {
   primary: "#0068bf",
   navy: "#0f256a",
   accent: "#f5ba00",
-  background: "#f7efe2",
+  background: "#fcfcfc",
   ink: "#444746",
   headingFont: "jakarta",
   bodyFont: "jakarta",

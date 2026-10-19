@@ -33,11 +33,12 @@ The official BCA logo and the butterfly mark taken from it.
 |---|---|---|---|---|---|---|
 | `brand/bca-logo-on-light.svg` | Original (BCA) | 319 x 89, 13 KB | Butterfly Coaching Academy | Site header, admin | Official BCA logo. Wordmark recoloured from white to navy for light backgrounds; artwork otherwise unchanged. Owner to approve the variant. | [source](https://butterflycoachingacademy.com/wp-content/uploads/2026/01/footer-logo.svg) |
 | `brand/bca-logo-on-dark.svg` | Original (BCA) | 319 x 89, 13 KB | Butterfly Coaching Academy | Site footer | Official BCA logo, unmodified. | [source](https://butterflycoachingacademy.com/wp-content/uploads/2026/01/footer-logo.svg) |
-| `brand/bca-mark.svg` | Original (BCA) | 82 x 89, 3 KB | Butterfly Coaching Academy butterfly mark | Call-to-action watermark, favicon | Butterfly emblem extracted from the official BCA logo, unmodified shapes. | [source](https://butterflycoachingacademy.com/wp-content/uploads/2026/01/footer-logo.svg) |
+| `brand/bca-mark.svg` | Original (BCA) | 98 x 90, 5 KB | Butterfly Coaching Academy butterfly mark | Light backgrounds | The complete butterfly (both wings and the navy antennae) from the official logo, unmodified shapes. An earlier copy used an 82-wide frame that cut off the right wing and left out the antennae. | [source](https://butterflycoachingacademy.com/wp-content/uploads/2026/01/footer-logo.svg) |
+| `brand/bca-mark-on-dark.svg` | Original (BCA) | 98 x 90, 5 KB | Butterfly Coaching Academy butterfly mark | Call-to-action emblem, student story showcase, admin sidebar | As above, with the white antennae of the on-dark logo. | [source](https://butterflycoachingacademy.com/wp-content/uploads/2026/01/footer-logo.svg) |
 
 ## ICF accreditation marks
 
-As displayed on the existing BCA website. Only Level 1 and Level 2 are shown on the new site.
+As displayed on the existing BCA website. All three levels are shown on the new site: the owner confirmed Level 3 accreditation on 10 October 2026 (see CONTENT_APPROVAL_CHECKLIST.md).
 
 | File (under `public/images/`) | Type | Size | Alt text | Used on | Licence or usage status | Source |
 |---|---|---|---|---|---|---|

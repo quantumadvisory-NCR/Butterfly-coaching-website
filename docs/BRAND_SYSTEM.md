@@ -4,7 +4,7 @@ The visual system for the Butterfly Coaching Academy (BCA) website: where the pa
 
 The design tokens live in one place, [`src/app/globals.css`](../src/app/globals.css). The five core colours and the typefaces can be changed without code in **Admin > Settings > Colours and typography**.
 
-> **October 2026 redesign: cream replaces pale blue.** The principal background of the public site *and* the admin is now cream **`#F7EFE2`** (rgb 247, 239, 226), set by `--bca-background` / `--color-background`. The pale-blue page and section backgrounds (`#eff7ff`, `#d2e9fc`, `#c3dcf3`) are retired; blue survives only as a restrained text accent (links, the second line of the homepage headline). Sections no longer alternate colours: every standard section sits on cream, cards and forms use warm white, and navy is kept for the "Choose your path" panel, featured story, closing call to action and footer. Section 2 below lists the current tokens; sections 1 and 2's iPEC evidence is kept for the history of the palette.
+> **October 2026: the logo's grey-white replaces cream.** The principal background of the public site *and* the admin is **`#FCFCFC`** (rgb 252, 252, 252), the grey-white behind the official BCA logo artwork, set by `--bca-background` / `--color-background` / `--color-page`. It replaced the cream `#F7EFE2` of the first redesign, which had itself replaced the pale-blue page and section backgrounds (`#eff7ff`, `#d2e9fc`, `#c3dcf3`). The neutrals (tints, borders) now derive from the logo's grey `#4B4B4D` rather than a warm brown, and cards are pure white. Blue survives only as a restrained text accent (links, the second line of the homepage headline). Sections do not alternate colours: every standard section sits on the page background, cards and forms are white, and navy is kept for the "Choose your path" panel, featured stories, the closing call to action and the footer. Section 2 below lists the current tokens; sections 1 and 2's iPEC evidence is kept for the history of the palette.
 
 ## 1. Where the palette comes from
 
@@ -64,15 +64,15 @@ BCA uses iPEC's blue, navy and yellow family as its base. This suits BCA unusual
 | `--bca-primary` | `#0068bf` | Verified (iPEC primary blue) | Links, eyebrows, secondary highlights |
 | `--bca-navy` | `#0f256a` | Verified (iPEC navy) | Headings, dark sections, footer, button text |
 | `--bca-accent` | `#f5ba00` | Verified (iPEC CTA yellow) | Primary buttons, accent shapes, focus ring on dark |
-| `--bca-background` / `--color-background` / `--color-cream` | **`#F7EFE2`** | Owner-specified (October 2026) | The page background everywhere, public site and admin |
+| `--bca-background` / `--color-background` / `--color-page` | **`#FCFCFC`** | Owner-specified (October 2026): the grey-white of the BCA logo artwork | The page background everywhere, public site and admin |
 | `--bca-ink` / `--color-text` | `#444746` | Verified (iPEC body text) | Body copy |
-| `--color-surface` | `#fffdf9` | Derived (warm white) | Cards, forms, menus, dialogs, the help panel |
-| `--color-tint` | cream mixed 14% with `#c8a671` (about `#f0e5d2`) | Derived | Hover fills, chips, quiet panels |
-| `--color-tint-deep` | cream mixed 26% with `#c8a671` (about `#ebdcc5`) | Derived | Panels behind portrait photographs |
-| `--color-border` / `--color-line` | `#e3d6c2` | Derived (warm) | Borders and dividers, public and admin |
-| `--color-mist` | cream mixed 45% with white | Derived | Table headers and quiet fills in the admin |
+| `--color-surface` | `#ffffff` | Derived (white) | Cards, forms, menus, dialogs, the help panel |
+| `--color-tint` | page mixed 6% with the logo grey `#4b4b4d` (about `#f1f1f2`) | Derived | Hover fills, chips, quiet panels |
+| `--color-tint-deep` | page mixed 12% with `#4b4b4d` (about `#e7e7e7`) | Derived | Panels behind portrait photographs |
+| `--color-border` / `--color-line` | `#e4e4e7` | Derived (neutral) | Borders and dividers, public and admin |
+| `--color-mist` | page mixed 3% with `#4b4b4d` (about `#f7f7f7`) | Derived | Table headers and quiet fills in the admin |
 | `--color-accent-soft` | accent mixed 22% with white | Derived | The pale end of the yellow hover edge on pathway cards |
-| `--color-muted` | `#5b5f5d` | Derived | Secondary text: 5.7 to 1 on cream, 5.3 to 1 on the tint |
+| `--color-muted` | `#5b5f5d` | Derived | Secondary text: 6.3 to 1 on the page, 5.7 to 1 on the tint |
 | `--color-primary-strong` | 82% primary + black | Derived | Text on tinted badges in the admin |
 | `--color-accent-strong` | 86% accent + brown | Derived | Reserved |
 | `--color-danger` / `--color-success` | `#b3261e` / `#1c6b3f` | Original | Form errors and confirmations |
@@ -86,16 +86,16 @@ BCA uses iPEC's blue, navy and yellow family as its base. This suits BCA unusual
 |---|---|---|
 | Navy text on accent yellow (primary button, announcement bar) | 7.97 to 1 | Pass |
 | White on navy (pathway panel, featured story, footer) | 14.07 to 1 | Pass |
-| Navy headings on cream | 12.32 to 1 | Pass |
-| Body ink on cream | 8.23 to 1 | Pass |
-| Body ink on warm white (cards) | 9.25 to 1 | Pass |
-| Primary blue on cream (links, second headline line) | 4.93 to 1 | Pass |
-| Primary blue on warm white | 5.54 to 1 | Pass |
-| Muted text on cream / tint | 5.68 / 5.20 to 1 | Pass |
+| Navy headings on the page background | 13.71 to 1 | Pass |
+| Body ink on the page background | 9.16 to 1 | Pass |
+| Body ink on white (cards) | 9.39 to 1 | Pass |
+| Primary blue on the page background (links, second headline line) | 5.48 to 1 | Pass |
+| Primary blue on white | 5.63 to 1 | Pass |
+| Muted text on the page background / tint | 6.32 / 5.74 to 1 | Pass |
 | Accent yellow on navy (quote marks, eyebrows on dark) | 7.97 to 1 | Pass |
 | Form field border on warm white (non-text, needs 3 to 1) | 3.2 to 1 or more | Pass |
 
-Decorative dividers (`--color-line` on cream, 1.25 to 1) are not the only way to identify any control, so they are exempt from the 3 to 1 non-text rule.
+Decorative dividers (`--color-line` on the page background, 1.24 to 1) are not the only way to identify any control, so they are exempt from the 3 to 1 non-text rule.
 
 Ratios are calculated with the WCAG relative-luminance formula. Yellow is **never** used for text on a light background (it would fail at 1.76 to 1). The admin's theme editor recalculates these ratios live and warns before a failing combination is saved.
 

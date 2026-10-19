@@ -13,11 +13,12 @@ const shared = [
     type: "select",
     name: "background",
     label: "Background",
-    help: "Cream is the standard page background. Use warm white sparingly, for a section that should stand forward.",
-    // Older pages stored "white" or "sky" (the pale-blue theme). Both render as cream, and saving converts them to "cream".
+    help: "The standard page background suits almost every section. Use white sparingly, for a section that should stand forward.",
+    // The stored value stays "cream" (the theme it was named after) so saved pages keep working. Older pages stored
+    // "white" or "sky"; all three render as the page background, and saving converts them to "cream".
     options: [
-      { value: "cream", label: "Cream (standard)" },
-      { value: "surface", label: "Warm white" },
+      { value: "cream", label: "Page background (standard)" },
+      { value: "surface", label: "White" },
     ],
   },
   {
@@ -395,6 +396,7 @@ const resourceDownloads = [
 
 const trustStrip = [
   { type: "text", name: "heading", label: "Heading", maxLength: 120 },
+  { type: "textarea", name: "intro", label: "Short text under the heading", help: "Optional. One sentence, and only verified claims.", maxLength: 200, rows: 2 },
   {
     type: "list",
     name: "logos",

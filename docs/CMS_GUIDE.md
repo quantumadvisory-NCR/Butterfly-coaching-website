@@ -216,7 +216,7 @@ Send an old address to a new one. Use **Permanent** when a page has moved for go
 
 **Need help panel:** each option is a label, a link and a short description. Links can be a page address or the shortcuts `booking`, `whatsapp` and `phone`.
 
-**Colours:** the page background is cream `#F7EFE2`, shared by the website and this admin. The **Readability check** shows whether text will still be easy to read with your chosen colours. Avoid saving a combination marked "Too low".
+**Colours:** the page background is `#FCFCFC`, the grey-white of the BCA logo artwork, shared by the website and this admin. The **Readability check** shows whether text will still be easy to read with your chosen colours. Avoid saving a combination marked "Too low".
 
 **Analytics:** nothing is tracked until you add an ID. With the consent banner on (recommended), visitors are asked first and nothing loads unless they accept.
 

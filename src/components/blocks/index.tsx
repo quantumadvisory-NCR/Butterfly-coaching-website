@@ -61,7 +61,7 @@ export function BlockRenderer({
   return (
     <>
       {needsCrumbBar && (
-        <div className="bg-cream">
+        <div className="bg-page">
           <div className="container-site py-4">
             <Breadcrumbs items={ctx.breadcrumbs} />
           </div>

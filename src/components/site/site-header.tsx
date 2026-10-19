@@ -208,7 +208,7 @@ export function SiteHeader(props: Props) {
   return (
     <>
       {announcement && <AnnouncementBar announcement={announcement} />}
-      <header className="sticky top-0 z-[var(--z-header)] border-b border-line/80 bg-cream/95 backdrop-blur-md supports-[backdrop-filter]:bg-cream/85">
+      <header className="sticky top-0 z-[var(--z-header)] border-b border-line/80 bg-page/95 backdrop-blur-md supports-[backdrop-filter]:bg-page/85">
         <div className="container-site flex h-[var(--header-height)] items-center justify-between gap-4">
           <Link href="/" aria-label={`${props.siteName} home`} className="flex min-h-11 shrink-0 items-center rounded-lg">
             <Image

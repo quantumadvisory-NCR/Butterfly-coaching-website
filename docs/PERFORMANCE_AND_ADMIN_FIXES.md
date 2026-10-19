@@ -80,9 +80,34 @@ Reading the table:
 
 Background requests (prefetches) per screen: dashboard 66 before, 0 after; a list screen 7 to 17 before, 0 after; after a save 15 to 25 before, 0 after.
 
+## Re-check after the visual refinements (19 October 2026)
+
+The second round of design changes (the logo's grey-white background, the reworked accreditation strip, "Why learners choose BCA", the student stories page and the closing call to action) changes markup and CSS only: no new client-side JavaScript, no new database queries. Both were measured again on production builds against the same local data.
+
+| Admin step (median of 3, ~2 ms database round trip, ms) | Before this round | After this round |
+|---|---|---|
+| Sidebar: open Testimonials | 124 | 121 |
+| Edit: open a testimonial | 111 | 112 |
+| Save a testimonial | 280 | 246 |
+| Sidebar: open Pages | 100 | 113 |
+| Edit: open the About page builder | 114 | 107 |
+| Save the About page as a draft | 410 | 381 |
+| Sidebar: back to the Dashboard | 109 | 112 |
+
+| Public page, Lighthouse 13.5 mobile (simulated throttling) | `main` before this round | After this round |
+|---|---|---|
+| Homepage performance score, three runs | 89, 85, 90 | 87, 89, 87 |
+| Homepage Largest Contentful Paint | 3.5 to 3.6 s | 3.6 to 3.9 s |
+| Homepage Total Blocking Time | 90 to 190 ms | 90 to 110 ms |
+| Student stories performance score | 90 | 92 |
+| Accessibility, best practices, SEO (homepage and stories) | not re-measured | 100, 100, 100 |
+| Cumulative Layout Shift | 0 | 0 |
+
+Both columns are within the normal run-to-run spread. On a phone the Largest Contentful Paint element is the header logo in both builds; nearly all of its time is render delay under the simulated slow CPU, not network.
+
 ## What still needs doing
 
-1. **Deploy** this code (push to `main`). Until then the live admin keeps the old behaviour.
-2. After deploying, open three or four editors and save one change on the live site to confirm, and check Vercel's logs show no timeouts.
+1. Done: deployed on 19 October 2026 (`main` 9a0da50, functions in Mumbai, `bom1`), and the live editors were checked: they open in about 0.3 to 1.2 s.
+2. After each deploy, open three or four editors and save one change on the live site to confirm, and check Vercel's logs show no timeouts.
 3. The live database may still hold a few sessions left hanging by the old code. They clear themselves when the pooler recycles them; nothing needs to be done unless the dashboard shows connection errors.
 4. Supabase Auth is checked twice per admin request (once in `src/proxy.ts` to refresh the session cookie, once by the page). Both checks are needed for the current design, and with the functions in Mumbai each costs a few milliseconds.

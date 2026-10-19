@@ -35,7 +35,7 @@ function PanelCards({ data, ctx }: BlockProps<"path_cards">) {
     <section
       id={data.anchor || undefined}
       aria-labelledby={headingId}
-      className={cn("relative z-10", overlaps ? "-mt-12 pb-[var(--section-space)] sm:-mt-14 lg:-mt-32" : "section-space")}
+      className={cn("relative z-10", overlaps ? "-mt-12 pb-[var(--section-space)] sm:-mt-14 lg:-mt-28" : "section-space")}
     >
       <div className="container-site">
         <div className="on-dark relative overflow-hidden rounded-[var(--radius-panel)] bg-navy px-5 py-7 shadow-panel sm:px-8 sm:py-9 lg:px-10 lg:py-10">

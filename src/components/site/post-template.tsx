@@ -26,7 +26,7 @@ export async function PostTemplate({
   return (
     <>
       <article>
-        <header className="bg-cream">
+        <header className="bg-page">
           <div className="container-prose pb-10 pt-5 md:pb-14">
             <Breadcrumbs items={breadcrumbs} />
             {post.categories.length > 0 && (
@@ -83,7 +83,7 @@ export async function PostTemplate({
       </article>
 
       {related.length > 0 && (
-        <section className="section-space border-t border-line bg-cream">
+        <section className="section-space border-t border-line bg-page">
           <div className="container-site">
             <h2 className="text-h2">Keep reading</h2>
             <ul className="mt-9 grid gap-x-6 gap-y-10 md:grid-cols-3">

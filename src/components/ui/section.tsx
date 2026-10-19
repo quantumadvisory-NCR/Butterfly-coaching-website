@@ -12,15 +12,15 @@ type Props = {
 };
 
 /**
- * Every standard section sits on the cream page background (#F7EFE2), so the
- * page reads as one surface. "white" and "sky" are older stored values from the
- * pale-blue theme; both now resolve to cream. "surface" is the warm-white card
- * colour, for the rare section that should step forward.
+ * Every standard section sits on the page background (#FCFCFC, the grey-white
+ * of the logo artwork), so the page reads as one surface. "cream", "white" and
+ * "sky" are stored values from earlier themes; all resolve to the page colour.
+ * "surface" is the white card colour, for the rare section that should step forward.
  */
 const BACKGROUNDS: Record<string, string> = {
-  cream: "bg-cream",
-  white: "bg-cream",
-  sky: "bg-cream",
+  cream: "bg-page",
+  white: "bg-page",
+  sky: "bg-page",
   surface: "bg-surface",
   navy: "bg-navy text-white on-dark",
 };
