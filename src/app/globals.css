@@ -536,7 +536,8 @@
 }
 
 /* A white card on the page background that takes the same warm yellow edge on
-   hover ("Why BCA" points, student stories). It moves with the translate
+   hover ("Why BCA" points, student stories). The colour stays on the edge: the
+   card itself stays white and its shadow neutral. It moves with the translate
    property, so it never fights the transform of the scroll reveal. */
 .lift-card {
   position: relative;
@@ -570,15 +571,32 @@
 .lift-card:focus-within::before {
   opacity: 1;
 }
+/* The featured story wears the yellow edge all the time. */
+.lift-card-featured {
+  border-color: transparent;
+}
+.lift-card-featured::before {
+  opacity: 1;
+}
 @media (hover: hover) {
   .lift-card:hover {
     translate: 0 -4px;
     border-color: transparent;
-    box-shadow:
-      0 22px 44px -24px rgb(245 186 0 / 0.6),
-      var(--shadow-card);
+    box-shadow: var(--shadow-lift);
   }
   .lift-card:hover::before {
+    opacity: 1;
+  }
+}
+/* Touch screens have no hover: keep a soft yellow edge so the cards still carry it. */
+@media (hover: none) {
+  .lift-card {
+    border-color: transparent;
+  }
+  .lift-card::before {
+    opacity: 0.55;
+  }
+  .lift-card-featured::before {
     opacity: 1;
   }
 }

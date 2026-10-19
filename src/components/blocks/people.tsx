@@ -127,66 +127,62 @@ export async function ProfilesBlock({ data, ctx }: BlockProps<"profiles">) {
 
 /* ---- testimonials --------------------------------------------------------- */
 
-function Attribution({ t, ctx, tone = "light" }: { t: TestimonialView; ctx: BlockContext; tone?: "light" | "dark" }) {
+function Attribution({ t, ctx }: { t: TestimonialView; ctx: BlockContext }) {
   const photo = pickMedia(ctx, t.photoId);
   const role = [t.roleTitle, t.organisation].filter(Boolean).join(", ");
-  const dark = tone === "dark";
   return (
-    <figcaption className={cn("mt-6 flex items-center gap-3.5 border-t pt-5", dark ? "border-white/15" : "border-line")}>
+    <figcaption className="mt-6 flex items-center gap-3.5 border-t border-line pt-5">
       {photo ? (
         <span className="relative size-12 shrink-0 overflow-hidden rounded-full bg-tint-deep ring-2 ring-transparent ring-offset-2 ring-offset-transparent transition-[box-shadow] duration-300 group-hover:ring-accent">
           <MediaImage media={photo} fill alt="" sizes="48px" className="!object-top" />
         </span>
       ) : (
-        <span aria-hidden className={cn("grid size-12 shrink-0 place-items-center rounded-full font-display font-bold", dark ? "bg-accent text-navy" : "bg-navy text-white")}>
+        <span aria-hidden className="grid size-12 shrink-0 place-items-center rounded-full bg-accent font-display font-bold text-navy">
           {t.name.charAt(0)}
         </span>
       )}
       <span className="min-w-0">
-        <span className={cn("block font-semibold", dark ? "text-white" : "text-navy")}>{t.name}</span>
-        {role && <span className={cn("block text-sm", dark ? "text-white/70" : "text-muted")}>{role}</span>}
+        <span className="block font-semibold text-navy">{t.name}</span>
+        {role && <span className="block text-sm text-muted">{role}</span>}
       </span>
     </figcaption>
   );
 }
 
 /**
- * Full, unedited stories in a flowing multi-column layout. Every fifth card is
- * navy, so a long page keeps a rhythm; cards lift and take a yellow edge on hover.
+ * Full, unedited stories in a flowing multi-column layout. Every card is white;
+ * on hover it lifts and its edge warms into the yellow gradient.
  */
 export function TestimonialGrid({ items, ctx }: { items: TestimonialView[]; ctx: BlockContext }) {
   return (
     <div className="gap-5 md:columns-2 md:gap-6 lg:columns-3">
-      {items.map((t, i) => {
-        const dark = i % 5 === 1;
-        return (
-          <figure key={t.id} className={cn("reveal lift-card group mb-5 break-inside-avoid p-6 md:mb-6 md:p-7", dark && "!border-navy !bg-navy")}>
-            <span
-              aria-hidden
-              className={cn(
-                "grid size-11 place-items-center rounded-full transition-transform duration-300 group-hover:-rotate-12 group-hover:scale-110",
-                dark ? "bg-accent text-navy" : "bg-accent-soft text-navy",
-              )}
-            >
-              <QuotesIcon weight="fill" className="size-5" />
-            </span>
-            <blockquote className={cn("mt-4 leading-relaxed", dark ? "text-white/90" : "text-ink")}>
-              <p>“{t.quote}”</p>
-            </blockquote>
-            <Attribution t={t} ctx={ctx} tone={dark ? "dark" : "light"} />
-          </figure>
-        );
-      })}
+      {items.map((t) => (
+        <figure key={t.id} className="reveal lift-card group mb-5 break-inside-avoid p-6 md:mb-6 md:p-7">
+          <span
+            aria-hidden
+            className="grid size-11 place-items-center rounded-full bg-accent-soft text-navy transition-transform duration-300 group-hover:-rotate-12 group-hover:scale-110"
+          >
+            <QuotesIcon weight="fill" className="size-5" />
+          </span>
+          <blockquote className="mt-4 leading-relaxed text-ink">
+            <p>“{t.quote}”</p>
+          </blockquote>
+          <Attribution t={t} ctx={ctx} />
+        </figure>
+      ))}
     </div>
   );
 }
 
-/** One story told large on navy at the top of the stories page. Photographs stay small: most are headshots. */
+/**
+ * One story told large at the top of the stories page: a white card that keeps
+ * the yellow gradient edge at all times. Photographs stay small: most are headshots.
+ */
 function StorySpotlight({ t, ctx }: { t: TestimonialView; ctx: BlockContext }) {
   const photo = pickMedia(ctx, t.photoId);
   const role = [t.roleTitle, t.organisation].filter(Boolean).join(", ");
   return (
-    <figure className="reveal on-dark relative isolate grid gap-8 overflow-hidden rounded-[var(--radius-panel)] bg-navy px-6 py-9 text-white shadow-lift sm:px-10 md:py-12 lg:grid-cols-[minmax(0,0.34fr)_minmax(0,0.66fr)] lg:gap-14 lg:px-14 lg:py-14">
+    <figure className="reveal lift-card lift-card-featured group grid gap-8 !rounded-[var(--radius-panel)] px-6 py-9 sm:px-10 md:py-12 lg:grid-cols-[minmax(0,0.34fr)_minmax(0,0.66fr)] lg:gap-14 lg:px-14 lg:py-14">
       <figcaption className="flex items-center gap-4 lg:flex-col lg:items-start lg:gap-5">
         {photo ? (
           <span className="relative size-20 shrink-0 overflow-hidden rounded-full bg-tint-deep ring-4 ring-accent lg:size-28">
@@ -198,23 +194,22 @@ function StorySpotlight({ t, ctx }: { t: TestimonialView; ctx: BlockContext }) {
           </span>
         )}
         <span className="min-w-0">
-          <span className="mb-2 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.12em] text-accent">
+          <span className="mb-2 inline-flex items-center gap-2 rounded-full bg-accent-soft px-3 py-1 text-xs font-bold uppercase tracking-[0.12em] text-navy">
             <span aria-hidden className="size-1.5 rounded-full bg-accent" />
             Featured story
           </span>
-          <span className="block font-display text-xl font-bold leading-tight lg:text-2xl">{t.name}</span>
-          {role && <span className="mt-1 block text-[0.9375rem] text-white/70">{role}</span>}
+          <span className="block font-display text-xl font-bold leading-tight text-navy lg:text-2xl">{t.name}</span>
+          {role && <span className="mt-1 block text-[0.9375rem] text-muted">{role}</span>}
         </span>
       </figcaption>
-      <div className="relative">
-        <QuotesIcon aria-hidden weight="fill" className="size-12 text-accent md:size-14" />
-        <blockquote className={cn("mt-4 font-medium leading-relaxed text-white/90", t.quote.length > 420 ? "text-lg" : "text-lg md:text-xl lg:text-[1.375rem] lg:leading-relaxed")}>
+      <div>
+        <span aria-hidden className="grid size-14 place-items-center rounded-full bg-accent-soft text-navy transition-transform duration-300 group-hover:-rotate-12 md:size-16">
+          <QuotesIcon weight="fill" className="size-7 md:size-8" />
+        </span>
+        <blockquote className={cn("mt-5 font-medium leading-relaxed text-navy", t.quote.length > 420 ? "text-lg" : "text-lg md:text-xl lg:text-[1.375rem] lg:leading-relaxed")}>
           <p>“{t.quote}”</p>
         </blockquote>
       </div>
-      {/* Soft light behind the panel. Kept last, so the caption stays the figure's first child. */}
-      <div aria-hidden className="pointer-events-none absolute -left-28 -top-28 -z-10 size-80 rounded-full bg-accent/20 blur-3xl" />
-      <div aria-hidden className="pointer-events-none absolute -bottom-32 right-10 -z-10 size-72 rounded-full bg-primary/40 blur-3xl" />
     </figure>
   );
 }
