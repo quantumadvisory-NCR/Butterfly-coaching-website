@@ -92,6 +92,14 @@ export async function seed(options: { reset?: boolean; quiet?: boolean } = {}) {
   const database = db();
 
   if (options.reset) {
+    // A reset wipes every content table. Outside local mode the database is a
+    // live site, so it takes a deliberate override rather than a slip of the hand.
+    if (process.env.BCA_LOCAL_MODE !== "1" && process.env.ALLOW_LIVE_RESET !== "1") {
+      throw new Error(
+        "Refusing to reset: this folder is connected to a live database, and a reset wipes all of its content. " +
+          "To work locally, restore .env.dev.local over .env.local. To wipe the live database on purpose, set ALLOW_LIVE_RESET=1 for this one command.",
+      );
+    }
     await database.execute(sql.raw(`truncate table ${CONTENT_TABLES.map((t) => `public.${t}`).join(", ")} cascade`));
     log("content tables cleared");
   }

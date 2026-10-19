@@ -21,6 +21,21 @@ export function backendMode(): BackendMode {
   return "unconfigured";
 }
 
+/**
+ * The Supabase project address, reduced to its origin. The Supabase dashboard
+ * also shows this address with "/rest/v1/" on the end; pasted like that, every
+ * sign-in and upload request would go to the wrong place.
+ */
+export function supabaseUrl(): string | null {
+  const raw = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  if (!raw) return null;
+  try {
+    return new URL(raw.trim()).origin;
+  } catch {
+    return null;
+  }
+}
+
 export function databaseUrl(): string | null {
   if (process.env.DATABASE_URL) return process.env.DATABASE_URL;
   if (process.env.BCA_LOCAL_MODE === "1") return LOCAL_DATABASE_URL;

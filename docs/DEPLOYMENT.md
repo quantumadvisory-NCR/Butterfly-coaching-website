@@ -21,7 +21,7 @@ Allow about an hour for the first deployment.
 
 | Value | Where to find it |
 |---|---|
-| Project URL | Project Settings > Data API |
+| Project URL | Project Settings > Data API. Use only the first part, `https://xxxxxxxx.supabase.co`. The dashboard may show it with `/rest/v1/` on the end; leave that off |
 | `anon` public key | Project Settings > API Keys |
 | `service_role` secret key | Project Settings > API Keys |
 | Database connection string | **Connect** (top bar) > **Transaction pooler**. It uses port `6543`. Replace `[YOUR-PASSWORD]` with the database password |
@@ -76,7 +76,7 @@ npm run db:seed
 
 This loads the pages, programmes, testimonials, FAQs, navigation, redirects, blog articles and the media library. It is safe to run again: it updates the seeded records in place and never touches users, enquiries or subscribers.
 
-**Do not run `npm run db:reset` on a live site.** It wipes all content first.
+**Do not run `npm run db:reset` on a live site.** It wipes all content first. As a safeguard the command refuses to run unless `BCA_LOCAL_MODE=1` is set, or you add `ALLOW_LIVE_RESET=1` on purpose.
 
 After seeding a site that is already running, save any setting in the admin (or redeploy) so the site's cache picks up the change.
 

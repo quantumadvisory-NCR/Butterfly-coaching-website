@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
+import { supabaseUrl } from "@/lib/env";
 
 /**
  * Keeps the Supabase Auth session fresh on admin requests. Server Components
@@ -10,7 +11,7 @@ import { type NextRequest, NextResponse } from "next/server";
  * In local development mode (no Supabase) this does nothing.
  */
 export async function proxy(request: NextRequest) {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const url = supabaseUrl();
   const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!url || !anon) return NextResponse.next();
 

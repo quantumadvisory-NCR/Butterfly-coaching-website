@@ -77,7 +77,18 @@ export async function setupAction(_prev: AuthState, formData: FormData): Promise
   const problem = passwordProblem(parsed.data.password);
   if (problem) return { errors: { password: problem }, values };
 
-  const id = await createStaffUser({ email: parsed.data.email, password: parsed.data.password, fullName: parsed.data.fullName, role: "owner" });
+  let id: string;
+  try {
+    id = await createStaffUser({ email: parsed.data.email, password: parsed.data.password, fullName: parsed.data.fullName, role: "owner" });
+  } catch (error) {
+    // Almost always a configuration problem (wrong Supabase address or keys). Say so, rather than showing a crash page.
+    console.error("[setup] could not create the owner account:", error);
+    return {
+      message:
+        "The account could not be created because the sign-in service refused the request. This usually means the Supabase address or keys are not set correctly on the server. Check them, redeploy and try again.",
+      values,
+    };
+  }
   await logAudit({ user: { id, email: parsed.data.email }, action: "setup", entityType: "user", entityId: id, summary: "Created the first owner account" });
   await signIn(parsed.data.email, parsed.data.password);
   redirect("/admin/");
