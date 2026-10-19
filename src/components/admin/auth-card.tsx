@@ -13,9 +13,9 @@ const PHOTO_FOCUS = { objectPosition: "72% 45%" };
  */
 export function AuthCard({ title, intro, children, footer }: { title: string; intro?: ReactNode; children: ReactNode; footer?: ReactNode }) {
   return (
-    <main className="grid min-h-dvh bg-sky lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+    <main className="grid min-h-dvh bg-cream lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
       <div className="hidden p-4 pr-0 lg:sticky lg:top-0 lg:block lg:h-dvh">
-        <div className="relative size-full overflow-hidden rounded-[1.75rem] bg-sky-line">
+        <div className="relative size-full overflow-hidden rounded-[1.75rem] bg-line">
           <Image src={PHOTO} alt="" fill sizes="45vw" className="object-cover" style={PHOTO_FOCUS} />
         </div>
       </div>
@@ -31,7 +31,7 @@ export function AuthCard({ title, intro, children, footer }: { title: string; in
             preload
             className="h-11 w-auto"
           />
-          <div className="mt-7 overflow-hidden rounded-2xl border border-sky-line bg-surface text-ink shadow-lift">
+          <div className="mt-7 overflow-hidden rounded-2xl border border-line bg-surface text-ink shadow-lift">
             <div className="relative h-36 sm:h-44 lg:hidden">
               <Image src={PHOTO} alt="" fill sizes="(min-width: 30rem) 28rem, 100vw" className="object-cover" style={PHOTO_FOCUS} />
             </div>

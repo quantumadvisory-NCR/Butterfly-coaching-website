@@ -29,7 +29,6 @@ export function EnquiryControls({ id, status, notes, canDelete }: { id: string; 
     startTransition(async () => {
       const result = await updateEnquiryStatusAction(id, next);
       setMessage({ ok: result.ok, text: result.message ?? "" });
-      router.refresh();
     });
   };
 
@@ -37,10 +36,7 @@ export function EnquiryControls({ id, status, notes, canDelete }: { id: string; 
     startTransition(async () => {
       const result = await addEnquiryNoteAction(id, note);
       setMessage({ ok: result.ok, text: result.message ?? "" });
-      if (result.ok) {
-        setNote("");
-        router.refresh();
-      }
+      if (result.ok) setNote("");
     });
 
   return (
@@ -69,7 +65,6 @@ export function EnquiryControls({ id, status, notes, canDelete }: { id: string; 
               action={() => deleteEnquiryAction(id)}
               onDone={() => {
                 router.push("/admin/enquiries/");
-                router.refresh();
               }}
             />
           </div>

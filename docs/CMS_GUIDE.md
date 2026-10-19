@@ -52,10 +52,10 @@ Each section has five small buttons:
 
 | Section | Use it for |
 |---|---|
-| Hero | The opening of a page: heading, a sentence, one or two buttons, an image |
+| Hero | The opening of a page: heading, a sentence, one or two buttons, an image. The homepage layout also takes a second heading line (shown in blue), up to four short proof points, a trust line with learner photos, a photo crop setting and an optional credential card on the photo |
 | Rich text | Paragraphs, headings and lists, such as a policy |
 | Image and text | A picture beside some text, with optional bullet points |
-| Pathway cards | Up to four picture cards that send visitors to the right place |
+| Pathway cards | Up to four cards that send visitors to the right place. **Navy panel** (icon cards; straight after a homepage hero it overlaps the hero) or **Image cards** |
 | Feature list | A short list of points with an optional image |
 | Programme cards | Cards created automatically from your programmes |
 | Comparison table | The ACC, PCC and MCC comparison (automatic), or a table you build |
@@ -70,6 +70,7 @@ Each section has five small buttons:
 | Newsletter signup | An email signup form |
 | Resource downloads | Your published downloads |
 | Trust strip | Accreditation badges, logos and key facts |
+| Statistics strip | Up to four verified figures that count up once as they scroll into view. A figure left empty is hidden, so you can prepare one before it is confirmed |
 | Latest articles | Your most recent blog articles |
 
 Every section adapts to the screen by itself. You do not design separate phone and desktop versions.
@@ -204,13 +205,18 @@ Send an old address to a new one. Use **Permanent** when a page has moved for go
 | Brand and logo | Site name, logos, favicon, default sharing image and description |
 | Contact details | Phone, WhatsApp, email, address, optional map |
 | Social links | Footer social icons (only those you fill in are shown) |
-| Header | The announcement bar and the header button |
+| Header and announcement | The yellow announcement bar and the header button |
+| Need help panel | The "Need help?" button in the bottom corner: on or off, its heading, text and up to five options |
 | Footer | The short description and copyright name |
 | Newsletter | Footer signup on or off, and its wording |
 | Booking and analytics | Booking link; Google Analytics or Tag Manager; the consent banner |
 | Colours and typography | The five brand colours and the typefaces |
 
-**Colours:** the **Readability check** shows whether text will still be easy to read with your chosen colours. Avoid saving a combination marked "Too low".
+**Announcement bar:** write `{date}` where the cohort date belongs, for example "Next ACC cohort starts {date} · Limited seats", and pick the **Cohort start date**. The bar stays hidden while there is no date and hides itself after the date has passed, so visitors never see a placeholder.
+
+**Need help panel:** each option is a label, a link and a short description. Links can be a page address or the shortcuts `booking`, `whatsapp` and `phone`.
+
+**Colours:** the page background is cream `#F7EFE2`, shared by the website and this admin. The **Readability check** shows whether text will still be easy to read with your chosen colours. Avoid saving a combination marked "Too low".
 
 **Analytics:** nothing is tracked until you add an ID. With the consent banner on (recommended), visitors are asked first and nothing loads unless they accept.
 

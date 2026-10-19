@@ -9,7 +9,7 @@ export function MapEmbed({ src }: { src: string }) {
   // Only Google Maps embed URLs are allowed (also enforced by the CSP frame-src).
   if (!/^https:\/\/www\.google\.com\/maps\/embed/.test(src)) return null;
   return (
-    <div className="mt-7 overflow-hidden rounded-card border border-sky-line bg-sky">
+    <div className="mt-7 overflow-hidden rounded-card border border-line bg-tint">
       {open ? (
         <iframe src={src} title="Map showing our registered office" loading="lazy" referrerPolicy="no-referrer-when-downgrade" className="aspect-[4/3] w-full border-0" />
       ) : (

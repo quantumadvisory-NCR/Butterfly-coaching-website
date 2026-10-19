@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { toCsv } from "@/lib/admin/csv";
+import { resolveAnnouncement } from "@/lib/content/chrome";
 import { hashPassword, verifyPassword } from "@/lib/auth/password";
 import { sanitisePlainText, sanitiseRichText } from "@/lib/sanitise";
 import { DEFAULT_SETTINGS, DEFAULT_THEME, parseSettingsGroup, resolveHref, telHref, whatsappHref } from "@/lib/settings";
@@ -88,8 +89,19 @@ describe("settings", () => {
     expect(theme.primary).toBe(DEFAULT_THEME.primary);
     expect(theme.navy).toBe("#123456");
   });
-  it("uses the documented iPEC-derived palette by default", () => {
-    expect(DEFAULT_THEME).toMatchObject({ primary: "#0068bf", navy: "#0f256a", accent: "#f5ba00", sky: "#eff7ff", ink: "#444746" });
+  it("uses the documented palette, with the cream #F7EFE2 page background, by default", () => {
+    expect(DEFAULT_THEME).toMatchObject({ primary: "#0068bf", navy: "#0f256a", accent: "#f5ba00", background: "#f7efe2", ink: "#444746" });
+  });
+  it("gives a theme saved under the old pale-blue scheme the cream background", () => {
+    // Saved before the cream redesign: it has "sky" and no "background".
+    const theme = parseSettingsGroup("theme", { primary: "#0068bf", navy: "#0f256a", accent: "#f5ba00", sky: "#eff7ff", ink: "#444746" });
+    expect(theme.background).toBe("#f7efe2");
+    expect(theme).not.toHaveProperty("sky");
+  });
+  it("fills in settings groups that did not exist when the settings were saved", () => {
+    const support = parseSettingsGroup("support", undefined);
+    expect(support.enabled).toBe(true);
+    expect(support.links.map((l) => l.href)).toEqual(["/coaching-certifications/", "booking", "whatsapp", "/contact-us/#enquire"]);
   });
   it("resolves link shortcuts", () => {
     const s = DEFAULT_SETTINGS;
@@ -126,5 +138,29 @@ describe("form validation", () => {
   it("validates newsletter emails", () => {
     expect(newsletterSchema.safeParse({ email: "a@b.co" }).success).toBe(true);
     expect(newsletterSchema.safeParse({ email: "a@b" }).success).toBe(false);
+  });
+});
+
+describe("announcement bar", () => {
+  const header = { ...DEFAULT_SETTINGS.header, announcementEnabled: true };
+  const today = new Date("2026-10-19T06:00:00Z");
+
+  it("puts the cohort date into the text, written out in full", () => {
+    expect(resolveAnnouncement({ ...header, announcementDate: "2027-01-12" }, today)).toBe("Next ACC cohort starts 12 January 2027 · Limited seats");
+  });
+  it("stays hidden while the text needs a date that has not been set", () => {
+    expect(resolveAnnouncement({ ...header, announcementDate: "" }, today)).toBeNull();
+  });
+  it("hides itself once the cohort date has passed, but not on the day itself", () => {
+    expect(resolveAnnouncement({ ...header, announcementDate: "2026-10-18" }, today)).toBeNull();
+    expect(resolveAnnouncement({ ...header, announcementDate: "2026-10-19" }, today)).toContain("19 October 2026");
+  });
+  it("never shows an unfinished placeholder", () => {
+    expect(resolveAnnouncement({ ...header, announcementText: "Next ACC cohort starts [DATE] · Limited seats" }, today)).toBeNull();
+    expect(resolveAnnouncement({ ...header, announcementText: "Join [X]+ coaches" }, today)).toBeNull();
+  });
+  it("shows plain text with no date as written, and nothing when switched off", () => {
+    expect(resolveAnnouncement({ ...header, announcementText: "Applications are open" }, today)).toBe("Applications are open");
+    expect(resolveAnnouncement({ ...header, announcementEnabled: false, announcementText: "Applications are open" }, today)).toBeNull();
   });
 });

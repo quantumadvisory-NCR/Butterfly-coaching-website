@@ -4,6 +4,7 @@ import { count, eq, ne, sql } from "drizzle-orm";
 import { z } from "zod";
 import { type ActionResult, UUID_RE, guarded } from "@/lib/admin/action-helpers";
 import { type MediaRow, type MediaUsage, deleteMedia, findMediaUsage, listMedia } from "@/lib/admin/media-store";
+import { refresh } from "next/cache";
 import { logAudit, revalidateContent } from "@/lib/audit";
 import { createStaffUser, deleteStaffUser, passwordProblem, setStaffPassword } from "@/lib/auth";
 import { type Field, hrefSchema, mapRichText, objectSchema } from "@/lib/blocks/fields";
@@ -113,6 +114,7 @@ export async function updateEnquiryStatusAction(id: string, status: string): Pro
   return guarded("editor", async (user) => {
     await db().update(s.enquiries).set({ status: parsed.data, updatedAt: new Date() }).where(eq(s.enquiries.id, id));
     await logAudit({ user, action: "enquiry.status", entityType: "enquiry", entityId: id, summary: `Marked an enquiry as ${parsed.data.replace("_", " ")}` });
+    refresh();
     return { ok: true, message: "Status updated." };
   });
 }
@@ -124,6 +126,7 @@ export async function addEnquiryNoteAction(id: string, body: string): Promise<Ac
   return guarded("editor", async (user) => {
     await db().insert(s.enquiryNotes).values({ enquiryId: id, body: text, createdBy: user.id });
     await db().update(s.enquiries).set({ updatedAt: new Date() }).where(eq(s.enquiries.id, id));
+    refresh();
     return { ok: true, message: "Note added." };
   });
 }
@@ -142,6 +145,7 @@ export async function deleteSubscriberAction(id: string): Promise<ActionResult> 
   return guarded("admin", async (user) => {
     await db().delete(s.newsletterSubscribers).where(eq(s.newsletterSubscribers.id, id));
     await logAudit({ user, action: "subscriber.delete", entityType: "subscriber", entityId: id, summary: "Removed a newsletter subscriber" });
+    refresh();
     return { ok: true, message: "Removed." };
   });
 }
@@ -261,6 +265,7 @@ export async function createUserAction(input: unknown): Promise<ActionResult> {
     } catch (error) {
       return { ok: false, message: error instanceof Error ? error.message : "The account could not be created." };
     }
+    refresh();
     return { ok: true, message: "Account created. Share the password with them securely and ask them to change it." };
   });
 }
@@ -275,6 +280,7 @@ export async function updateUserAction(id: string, input: { role: string; isActi
     if (losesOwner && (await ownerCount(id)) === 0) return { ok: false, message: "There must always be at least one active owner." };
     await db().update(s.profiles).set({ role: role.data, isActive: Boolean(input.isActive), updatedAt: new Date() }).where(eq(s.profiles.id, id));
     await logAudit({ user, action: "user.update", entityType: "user", entityId: id, summary: `Set a user to ${role.data}${input.isActive ? "" : " (deactivated)"}` });
+    refresh();
     return { ok: true, message: "User updated." };
   });
 }
@@ -298,6 +304,7 @@ export async function deleteUserAction(id: string): Promise<ActionResult> {
     if ((others?.n ?? 0) === 0 || (await ownerCount(id)) === 0) return { ok: false, message: "There must always be at least one active owner." };
     await deleteStaffUser(id);
     await logAudit({ user, action: "user.delete", entityType: "user", entityId: id, summary: "Deleted a user account" });
+    refresh();
     return { ok: true, message: "Account deleted." };
   });
 }

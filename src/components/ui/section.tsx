@@ -11,20 +11,28 @@ type Props = {
   labelledBy?: string;
 };
 
+/**
+ * Every standard section sits on the cream page background (#F7EFE2), so the
+ * page reads as one surface. "white" and "sky" are older stored values from the
+ * pale-blue theme; both now resolve to cream. "surface" is the warm-white card
+ * colour, for the rare section that should step forward.
+ */
 const BACKGROUNDS: Record<string, string> = {
-  white: "bg-surface",
-  sky: "bg-sky",
+  cream: "bg-cream",
+  white: "bg-cream",
+  sky: "bg-cream",
+  surface: "bg-surface",
   navy: "bg-navy text-white on-dark",
 };
 
 /** Page section wrapper: background, optional anchor id and consistent spacing. */
-export function Section({ children, background = "white", anchor, className, flush, labelledBy }: Props) {
+export function Section({ children, background = "cream", anchor, className, flush, labelledBy }: Props) {
   const id = anchor ? slugify(anchor) : undefined;
   return (
     <section
       id={id || undefined}
       aria-labelledby={labelledBy}
-      className={cn(BACKGROUNDS[background] ?? BACKGROUNDS.white, !flush && "section-space", className)}
+      className={cn(BACKGROUNDS[background] ?? BACKGROUNDS.cream, !flush && "section-space", className)}
     >
       {children}
     </section>

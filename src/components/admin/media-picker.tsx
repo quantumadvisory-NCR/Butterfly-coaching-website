@@ -44,7 +44,7 @@ export function useMediaLibrary(): Library {
 export function MediaThumb({ item, className, sizes = "200px" }: { item: MediaView; className?: string; sizes?: string }) {
   if (item.kind !== "image") {
     return (
-      <div className={cn("grid place-items-center bg-sky text-primary", className)}>
+      <div className={cn("grid place-items-center bg-tint text-primary", className)}>
         <FilePdfIcon weight="fill" className="size-9" />
       </div>
     );
@@ -163,7 +163,7 @@ export function MediaPicker({
                   <div className="flex items-center justify-between gap-3 border-b border-line px-4 py-3 sm:px-6">
                     <Dialog.Title className="text-lg">Choose {kind === "image" ? "an image" : "a file"}</Dialog.Title>
                     <Dialog.Close asChild>
-                      <button type="button" aria-label="Close" className="grid size-11 place-items-center rounded-full text-navy hover:bg-sky">
+                      <button type="button" aria-label="Close" className="grid size-11 place-items-center rounded-full text-navy hover:bg-tint">
                         <XIcon weight="bold" className="size-5" />
                       </button>
                     </Dialog.Close>
@@ -217,7 +217,7 @@ export function MediaPicker({
                               aria-pressed={item.id === value}
                               className={cn(
                                 "group block w-full overflow-hidden rounded-xl border-2 text-left transition-colors",
-                                item.id === value ? "border-primary" : "border-transparent hover:border-sky-line",
+                                item.id === value ? "border-primary" : "border-transparent hover:border-line",
                               )}
                             >
                               <MediaThumb item={item} className="aspect-[4/3] w-full" sizes="(min-width: 48rem) 220px, 45vw" />

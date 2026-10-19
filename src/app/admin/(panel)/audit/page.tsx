@@ -1,6 +1,6 @@
 import { count, desc } from "drizzle-orm";
 import type { Metadata } from "next";
-import Link from "next/link";
+import { AdminLink as Link } from "@/components/admin/admin-link";
 import { EmptyState, PageHeader, RecordCell, RecordRow, RecordTable } from "@/components/admin/ui";
 import { requireUser } from "@/lib/auth";
 import { db } from "@/lib/db";

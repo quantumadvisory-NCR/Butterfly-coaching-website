@@ -324,13 +324,14 @@ test.describe("media library", () => {
 
   test("an image used on the live site cannot be deleted", async ({ page }) => {
     await page.goto("/admin/media/");
-    await page.getByLabel("Search media").fill("hero-coaching-conversation.jpg");
-    await page.getByRole("button", { name: /A coach listens closely/ }).first().click();
+    // The homepage hero's photograph: Anup Mittal with learners at a practice table.
+    await page.getByLabel("Search media").fill("anup-with-table-group.jpg");
+    await page.getByRole("button", { name: /Anup Mittal in conversation/ }).first().click();
     const dialog = page.getByRole("dialog");
     await dialog.getByRole("button", { name: "Delete" }).click();
     await expect(dialog.getByText("This item is used on the live site.")).toBeVisible();
     await expect(dialog.getByText(/Page: Home \(published version\)/)).toBeVisible();
-    expect((await sql`select 1 from media where url = '/images/photography/hero-coaching-conversation.jpg'`).length).toBe(1);
+    expect((await sql`select 1 from media where url = '/images/gallery/anup-with-table-group.jpg'`).length).toBe(1);
   });
 });
 
@@ -419,7 +420,7 @@ test.describe("admin on a phone and on a desktop", () => {
         // Editing a section on a phone: open it, change text, and the save bar is reachable.
         await page.goto(`/admin/pages/${home}/`);
         await page.getByRole("button", { name: /^Hero/ }).first().click();
-        await expect(page.locator('input[id$="-heading"]').first()).toHaveValue("Learning that stays");
+        await expect(page.locator('input[id$="-heading"]').first()).toHaveValue("Learning that stays.");
         const save = page.getByRole("button", { name: "Save draft" });
         await expect(save).toBeInViewport();
         const dialogCheck = page.getByRole("button", { name: "Add section" }).first();

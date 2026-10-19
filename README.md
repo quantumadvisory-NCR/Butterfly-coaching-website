@@ -64,6 +64,7 @@ Stop the server with Ctrl+C so the local database shuts down cleanly. If it was 
 | `npm run db:migrate` | Apply SQL migrations |
 | `npm run db:seed` | Load or refresh the launch content (safe to re-run) |
 | `npm run db:reset` | Wipe all content, then seed. **Never on a live site** |
+| `npm run content:upgrade-home` | Show how the homepage would change to the October 2026 layout; add `-- --apply` to save it as a draft (never publishes). See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) |
 | `npm run db:generate` | Create a migration from changes to `src/lib/db/schema.ts` |
 | `npm run db:start` | Keep the local database running on its own |
 | `npm run typecheck` | TypeScript |

@@ -15,6 +15,9 @@ export type BlockContext = {
   preview: boolean;
   /** Index of the block on the page. The first block may preload its image. */
   index: number;
+  /** Type and layout of the blocks either side, so a hero and an overlapping panel can fit together. */
+  prev?: { type: string; layout?: string; variant?: string } | null;
+  next?: { type: string; layout?: string; variant?: string } | null;
 };
 
 export type BlockProps<T extends BlockType> = { data: BlockData[T]; ctx: BlockContext };

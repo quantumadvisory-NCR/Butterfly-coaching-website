@@ -26,7 +26,7 @@ export async function PostTemplate({
   return (
     <>
       <article>
-        <header className="bg-sky">
+        <header className="bg-cream">
           <div className="container-prose pb-10 pt-5 md:pb-14">
             <Breadcrumbs items={breadcrumbs} />
             {post.categories.length > 0 && (
@@ -50,7 +50,7 @@ export async function PostTemplate({
         </header>
 
         {image && (
-          <div className="bg-[linear-gradient(to_bottom,var(--color-sky)_50%,var(--color-surface)_50%)]">
+          <div className="bg-[linear-gradient(to_bottom,var(--color-background)_50%,var(--color-surface)_50%)]">
             <div className="container-site">
               <div className="relative mx-auto aspect-[16/9] max-w-4xl overflow-hidden rounded-card">
                 <MediaImage media={image} fill preload sizes="(min-width: 64rem) 56rem, 100vw" />
@@ -62,17 +62,17 @@ export async function PostTemplate({
         <div className="container-prose py-10 md:py-14">
           <RichText html={post.contentHtml} className="prose-lg" />
           {post.tags.length > 0 && (
-            <ul className="mt-10 flex flex-wrap gap-2 border-t border-sky-line pt-6" aria-label="Tags">
+            <ul className="mt-10 flex flex-wrap gap-2 border-t border-line pt-6" aria-label="Tags">
               {post.tags.map((tag) => (
                 <li key={tag.id}>
-                  <Link href={`/blog/tag/${tag.slug}/`} className="inline-flex min-h-10 items-center rounded-full bg-sky px-4 text-sm font-semibold text-navy hover:bg-sky-deep">
+                  <Link href={`/blog/tag/${tag.slug}/`} className="inline-flex min-h-10 items-center rounded-full bg-tint px-4 text-sm font-semibold text-navy hover:bg-tint-deep">
                     {tag.name}
                   </Link>
                 </li>
               ))}
             </ul>
           )}
-          <div className="mt-10 rounded-card bg-sky p-6 md:p-8">
+          <div className="mt-10 rounded-card bg-tint p-6 md:p-8">
             <h2 className="text-h3">Thinking about coach training?</h2>
             <p className="mt-2">Talk through your options with us. No obligation, just a useful conversation.</p>
             <div className="mt-5">
@@ -83,7 +83,7 @@ export async function PostTemplate({
       </article>
 
       {related.length > 0 && (
-        <section className="section-space border-t border-sky-line bg-surface">
+        <section className="section-space border-t border-line bg-cream">
           <div className="container-site">
             <h2 className="text-h2">Keep reading</h2>
             <ul className="mt-9 grid gap-x-6 gap-y-10 md:grid-cols-3">

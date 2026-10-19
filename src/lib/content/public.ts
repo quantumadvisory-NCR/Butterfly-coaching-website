@@ -92,17 +92,28 @@ export type ResourceView = Pick<s.Resource, "id" | "title" | "description" | "fi
 
 /* ---- settings, navigation, media ---------------------------------------- */
 
-export const getSettings = cached("settings", async (): Promise<SiteSettings> =>
+/**
+ * The stored settings rows, cached as they are in the database. They are parsed
+ * after leaving the cache, never before: a cache entry written by an earlier
+ * release must not decide the shape the current code receives (a new settings
+ * group would otherwise be missing until the cache expired).
+ */
+const getStoredSettings = cached("settings-rows", async (): Promise<Record<string, unknown>> =>
   buildSafe(async () => {
     const rows = await db().select().from(s.siteSettings);
-    const byKey = new Map(rows.map((r) => [r.key, r.value]));
-    const out = {} as Record<SettingsKey, unknown>;
-    for (const key of Object.keys(SETTINGS_GROUPS) as SettingsKey[]) {
-      out[key] = parseSettingsGroup(key, byKey.get(key));
-    }
-    return out as SiteSettings;
-  }, DEFAULT_SETTINGS),
+    return Object.fromEntries(rows.map((r) => [r.key, r.value]));
+  }, {}),
 );
+
+export const getSettings = cache(async (): Promise<SiteSettings> => {
+  const stored = await getStoredSettings();
+  if (!stored || typeof stored !== "object") return DEFAULT_SETTINGS;
+  const out = {} as Record<SettingsKey, unknown>;
+  for (const key of Object.keys(SETTINGS_GROUPS) as SettingsKey[]) {
+    out[key] = parseSettingsGroup(key, (stored as Record<string, unknown>)[key]);
+  }
+  return out as SiteSettings;
+});
 
 const toMediaItem = (m: s.Media): MediaItem => ({
   id: m.id,

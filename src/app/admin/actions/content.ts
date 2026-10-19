@@ -1,5 +1,6 @@
 "use server";
 
+import { refresh } from "next/cache";
 import { mapRichText, objectSchema } from "@/lib/blocks/fields";
 import { type ActionResult, UUID_RE, guarded } from "@/lib/admin/action-helpers";
 import { ENTITIES, type EntityData, type EntityKey } from "@/lib/admin/entities";
@@ -77,6 +78,8 @@ export async function savePageAction(id: string | null, input: PageInput, publis
       return { ok: true, id: saved.id, message: "Published. The live site has been updated." };
     }
     await logAudit({ user, action: id ? "page.save" : "page.create", entityType: "page", entityId: saved.id, summary: `Saved draft of page "${input.title}"` });
+    // A draft changes nothing public, so nothing is revalidated; refresh only the editor's own status.
+    refresh();
     return { ok: true, id: saved.id, message: "Draft saved. Visitors still see the last published version." };
   });
   return sectionErrors ? { ...result, sectionErrors } : result;

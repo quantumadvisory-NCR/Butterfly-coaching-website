@@ -1,7 +1,6 @@
 "use client";
 
 import { CheckCircleIcon, WarningCircleIcon } from "@phosphor-icons/react";
-import { useRouter } from "next/navigation";
 import { Tabs } from "radix-ui";
 import { useState, useTransition } from "react";
 import { type MediaView, saveNavigationAction, saveSettingsAction } from "@/app/admin/actions/operations";
@@ -38,10 +37,10 @@ function contrast(a: string, b: string) {
 function ContrastChecks({ theme }: { theme: Record<string, unknown> }) {
   const value = (key: string) => String(theme[key] ?? "");
   const checks = [
-    { label: "Button text (navy on accent)", ratio: contrast(value("navy"), value("accent")) },
-    { label: "Links (primary on white)", ratio: contrast(value("primary"), "#ffffff") },
-    { label: "Body text on white", ratio: contrast(value("ink"), "#ffffff") },
-    { label: "Body text on pale blue", ratio: contrast(value("ink"), value("sky")) },
+    { label: "Button and announcement text (navy on accent)", ratio: contrast(value("navy"), value("accent")) },
+    { label: "Links (primary on the page background)", ratio: contrast(value("primary"), value("background")) },
+    { label: "Body text on the page background", ratio: contrast(value("ink"), value("background")) },
+    { label: "Headings (navy on the page background)", ratio: contrast(value("navy"), value("background")) },
     { label: "White text on navy", ratio: contrast("#ffffff", value("navy")) },
   ];
   return (
@@ -69,7 +68,6 @@ function ContrastChecks({ theme }: { theme: Record<string, unknown> }) {
 
 function SettingsGroupForm({ groupKey, initial }: { groupKey: SettingsKey; initial: Record<string, unknown> }) {
   const group = SETTINGS_GROUPS[groupKey];
-  const router = useRouter();
   const [data, setData] = useState(initial);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<Status>(null);
@@ -81,7 +79,6 @@ function SettingsGroupForm({ groupKey, initial }: { groupKey: SettingsKey; initi
       if (result.ok) {
         setErrors({});
         setStatus({ tone: "success", text: result.message ?? "Saved." });
-        router.refresh();
       } else {
         setErrors(result.errors ?? {});
         setStatus({ tone: "error", text: result.message });
@@ -162,7 +159,6 @@ const MENUS = [
 ] as const;
 
 function MenuForm({ menu, initial }: { menu: (typeof MENUS)[number]; initial: Record<string, unknown>[] }) {
-  const router = useRouter();
   const [data, setData] = useState<Record<string, unknown>>({ items: initial });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<Status>(null);
@@ -194,7 +190,6 @@ function MenuForm({ menu, initial }: { menu: (typeof MENUS)[number]; initial: Re
               if (result.ok) {
                 setErrors({});
                 setStatus({ tone: "success", text: result.message ?? "Saved." });
-                router.refresh();
               } else {
                 setErrors(result.errors ?? {});
                 setStatus({ tone: "error", text: result.message });

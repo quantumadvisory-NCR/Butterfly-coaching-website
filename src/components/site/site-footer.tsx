@@ -151,9 +151,9 @@ export function SiteFooter({
       </div>
 
       <div className="border-t border-white/10">
-        {/* Keeps clear of the floating WhatsApp button: extra room below on phones, and to the right
-            wherever the page margin is narrower than the button (below 1440px). */}
-        <div className="container-site flex flex-col gap-3 pb-24 pt-6 text-sm text-white/70 md:flex-row md:items-center md:justify-between md:pb-6 md:pr-16 min-[90rem]:pr-0">
+        {/* Keeps clear of the floating "Need help?" and WhatsApp buttons: extra room below on phones,
+            and to the right wherever the page margin is narrower than the buttons. */}
+        <div className="container-site flex flex-col gap-3 pb-24 pt-6 text-sm text-white/70 md:flex-row md:items-center md:justify-between md:pb-6 md:pr-[13.5rem] min-[108rem]:pr-0">
           <p>
             © {new Date().getFullYear()} {footer.copyrightName || brand.siteName}. All rights reserved.
           </p>

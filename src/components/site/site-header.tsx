@@ -1,6 +1,6 @@
 "use client";
 
-import { CaretDownIcon, ListIcon, PhoneIcon, WhatsappLogoIcon, XIcon } from "@phosphor-icons/react";
+import { ArrowRightIcon, CaretDownIcon, ListIcon, PhoneIcon, WhatsappLogoIcon, XIcon } from "@phosphor-icons/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -44,7 +44,7 @@ function NavAnchor({ node, className, onClick }: { node: NavNode; className?: st
 
 function DesktopNav({ nav, pathname }: { nav: NavNode[]; pathname: string }) {
   const itemClass =
-    "inline-flex h-11 items-center gap-1 rounded-full px-3 text-[0.9375rem] font-semibold text-navy transition-colors hover:bg-sky data-[state=open]:bg-sky";
+    "inline-flex h-11 items-center gap-1 rounded-full px-3 text-[0.9375rem] font-semibold text-navy transition-colors hover:bg-tint data-[state=open]:bg-tint";
   return (
     <NavigationMenu.Root aria-label="Main" delayDuration={80} className="hidden lg:block">
       <NavigationMenu.List className="flex items-center gap-0.5">
@@ -66,13 +66,13 @@ function DesktopNav({ nav, pathname }: { nav: NavNode[]; pathname: string }) {
                 <CaretDownIcon aria-hidden weight="bold" className="size-3.5 transition-transform duration-200 group-data-[state=open]:rotate-180" />
               </NavigationMenu.Trigger>
               <NavigationMenu.Content className="absolute left-0 top-full z-[var(--z-header)] w-[21rem] pt-2 data-[state=open]:animate-[pop-in_0.18s_var(--ease-out-soft)]">
-                <ul className="grid gap-0.5 rounded-card border border-sky-line bg-surface p-2 shadow-lift">
+                <ul className="grid gap-0.5 rounded-card border border-line bg-surface p-2 shadow-lift">
                   {node.children.map((child) => (
                     <li key={child.id}>
                       <NavigationMenu.Link asChild active={pathname === child.href}>
                         <Link
                           href={child.href}
-                          className="block rounded-xl px-3.5 py-2.5 hover:bg-sky focus-visible:bg-sky data-[active]:bg-sky"
+                          className="block rounded-xl px-3.5 py-2.5 hover:bg-tint focus-visible:bg-tint data-[active]:bg-tint"
                         >
                           <span className="block font-semibold text-navy">{child.label}</span>
                           {child.description && <span className="mt-0.5 block text-sm leading-snug text-muted">{child.description}</span>}
@@ -98,14 +98,14 @@ function MobileNav({ nav, pathname, cta, tel, phoneDisplay, whatsapp, siteName }
     setOpen(false);
   }, [pathname]);
   const close = () => setOpen(false);
-  const linkClass = "flex min-h-12 items-center rounded-xl px-3 text-[1.0625rem] font-semibold text-navy hover:bg-sky";
+  const linkClass = "flex min-h-12 items-center rounded-xl px-3 text-[1.0625rem] font-semibold text-navy hover:bg-tint";
 
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger asChild>
         <button
           type="button"
-          className="-mr-2 grid size-12 place-items-center rounded-full text-navy hover:bg-sky lg:hidden"
+          className="-mr-2 grid size-12 place-items-center rounded-full text-navy hover:bg-tint lg:hidden"
           aria-label="Open menu"
         >
           <ListIcon aria-hidden weight="bold" className="size-6" />
@@ -120,10 +120,10 @@ function MobileNav({ nav, pathname, cta, tel, phoneDisplay, whatsapp, siteName }
           <VisuallyHidden.Root>
             <Dialog.Title>{siteName} menu</Dialog.Title>
           </VisuallyHidden.Root>
-          <div className="flex h-[var(--header-height)] shrink-0 items-center justify-between border-b border-sky-line pl-5 pr-3">
+          <div className="flex h-[var(--header-height)] shrink-0 items-center justify-between border-b border-line pl-5 pr-3">
             <span className="font-display text-lg font-bold text-navy">Menu</span>
             <Dialog.Close asChild>
-              <button type="button" aria-label="Close menu" className="grid size-12 place-items-center rounded-full text-navy hover:bg-sky">
+              <button type="button" aria-label="Close menu" className="grid size-12 place-items-center rounded-full text-navy hover:bg-tint">
                 <XIcon aria-hidden weight="bold" className="size-6" />
               </button>
             </Dialog.Close>
@@ -141,7 +141,7 @@ function MobileNav({ nav, pathname, cta, tel, phoneDisplay, whatsapp, siteName }
                     <ul className="grid gap-0.5">
                       {node.children.map((child) => (
                         <li key={child.id}>
-                          <NavAnchor node={child} onClick={close} className={cn(linkClass, pathname === child.href && "bg-sky text-primary")} />
+                          <NavAnchor node={child} onClick={close} className={cn(linkClass, pathname === child.href && "bg-tint text-primary")} />
                         </li>
                       ))}
                     </ul>
@@ -150,7 +150,7 @@ function MobileNav({ nav, pathname, cta, tel, phoneDisplay, whatsapp, siteName }
               )}
             </ul>
           </nav>
-          <div className="shrink-0 border-t border-sky-line p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))]">
+          <div className="shrink-0 border-t border-line p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))]">
             {cta && (
               <Link href={cta.href} onClick={close} data-track="cta_click" data-track-label={`Menu: ${cta.label}`} className="btn btn-primary w-full">
                 {cta.label}
@@ -177,24 +177,38 @@ function MobileNav({ nav, pathname, cta, tel, phoneDisplay, whatsapp, siteName }
   );
 }
 
+/** The thin yellow strip above the menu. Edited in Admin > Settings > Header and announcement. */
+function AnnouncementBar({ announcement }: { announcement: NonNullable<Props["announcement"]> }) {
+  const external = announcement.link ? isExternalHref(announcement.link.href) : false;
+  return (
+    <div className="bg-accent text-navy">
+      <p className="container-site flex flex-wrap items-center justify-center gap-x-3 gap-y-0.5 py-2 text-center text-[0.8125rem] font-semibold leading-snug sm:text-sm">
+        <span>{announcement.text}</span>
+        {announcement.link && (
+          <Link
+            href={announcement.link.href}
+            data-track="cta_click"
+            data-track-label={`Announcement: ${announcement.link.label}`}
+            target={external ? "_blank" : undefined}
+            rel={external ? "noopener noreferrer" : undefined}
+            className="group inline-flex min-h-6 items-center gap-1 font-bold underline decoration-navy/40 decoration-2 underline-offset-4 hover:decoration-navy"
+          >
+            {announcement.link.label}
+            <ArrowRightIcon aria-hidden weight="bold" className="size-3.5 transition-transform group-hover:translate-x-0.5" />
+          </Link>
+        )}
+      </p>
+    </div>
+  );
+}
+
 export function SiteHeader(props: Props) {
   const pathname = usePathname();
   const { announcement, logo, cta } = props;
   return (
     <>
-      {announcement && (
-        <div className="on-dark bg-navy text-white">
-          <p className="container-site py-2.5 text-center text-sm">
-            {announcement.text}{" "}
-            {announcement.link && (
-              <Link href={announcement.link.href} className="font-semibold text-accent underline underline-offset-4">
-                {announcement.link.label}
-              </Link>
-            )}
-          </p>
-        </div>
-      )}
-      <header className="sticky top-0 z-[var(--z-header)] border-b border-sky-line bg-surface/95 backdrop-blur-sm supports-[backdrop-filter]:bg-surface/90">
+      {announcement && <AnnouncementBar announcement={announcement} />}
+      <header className="sticky top-0 z-[var(--z-header)] border-b border-line/80 bg-cream/95 backdrop-blur-md supports-[backdrop-filter]:bg-cream/85">
         <div className="container-site flex h-[var(--header-height)] items-center justify-between gap-4">
           <Link href="/" aria-label={`${props.siteName} home`} className="flex min-h-11 shrink-0 items-center rounded-lg">
             <Image
@@ -204,7 +218,7 @@ export function SiteHeader(props: Props) {
               height={logo.height}
               unoptimized={logo.src.endsWith(".svg")}
               preload
-              className="h-9 w-auto md:h-10"
+              className="h-8 w-auto sm:h-9 lg:h-10"
             />
           </Link>
           <DesktopNav nav={props.nav} pathname={pathname} />

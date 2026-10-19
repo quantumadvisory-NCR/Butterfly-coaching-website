@@ -29,7 +29,7 @@ function Tool({ label, active, disabled, onClick, children }: { label: string; a
       onMouseDown={(event) => event.preventDefault()}
       onClick={onClick}
       className={cn(
-        "grid size-10 shrink-0 place-items-center rounded-lg text-navy transition-colors hover:bg-sky disabled:opacity-40",
+        "grid size-10 shrink-0 place-items-center rounded-lg text-navy transition-colors hover:bg-tint disabled:opacity-40",
         active && "bg-navy text-white hover:bg-navy",
       )}
     >
@@ -149,7 +149,7 @@ export function RichTextEditor({
         </Tool>
       </div>
       {linking && (
-        <div className="flex flex-col gap-2 border-b border-line bg-sky p-2 sm:flex-row">
+        <div className="flex flex-col gap-2 border-b border-line bg-tint p-2 sm:flex-row">
           <label htmlFor={`${id}-link`} className="sr-only">
             Link address
           </label>

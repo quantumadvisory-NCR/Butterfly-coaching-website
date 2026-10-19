@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { createUserAction, deleteUserAction, resetUserPasswordAction, updateUserAction } from "@/app/admin/actions/operations";
 import { cn } from "@/lib/utils";
@@ -11,7 +10,6 @@ type User = { id: string; email: string; fullName: string; role: string; isActiv
 type RoleInfo = { value: string; label: string; description: string };
 
 export function UsersManager({ users, roles, currentUserId }: { users: User[]; roles: RoleInfo[]; currentUserId: string }) {
-  const router = useRouter();
   const [form, setForm] = useState({ fullName: "", email: "", role: "editor", password: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
@@ -24,10 +22,7 @@ export function UsersManager({ users, roles, currentUserId }: { users: User[]; r
       const result = await work();
       setMessage({ ok: result.ok, text: result.message ?? "" });
       setErrors(result.ok ? {} : (result.errors ?? {}));
-      if (result.ok) {
-        after?.();
-        router.refresh();
-      }
+      if (result.ok) after?.();
     });
 
   return (
@@ -43,7 +38,7 @@ export function UsersManager({ users, roles, currentUserId }: { users: User[]; r
                 <div className="min-w-0">
                   <p className="flex flex-wrap items-center gap-2 font-semibold text-navy">
                     <span className="[overflow-wrap:anywhere]">{user.fullName || user.email}</span>
-                    {self && <span className="rounded-full bg-sky px-2 py-0.5 text-xs font-bold text-primary-strong">You</span>}
+                    {self && <span className="rounded-full bg-tint px-2 py-0.5 text-xs font-bold text-primary-strong">You</span>}
                     {!user.isActive && <StatusBadge status="archived" label="Deactivated" />}
                   </p>
                   <p className="text-sm text-muted [overflow-wrap:anywhere]">
@@ -81,7 +76,6 @@ export function UsersManager({ users, roles, currentUserId }: { users: User[]; r
                         description="They will lose access immediately. Their past changes stay in the audit log."
                         confirmLabel="Delete account"
                         action={() => deleteUserAction(user.id)}
-                        onDone={() => router.refresh()}
                       />
                     </>
                   )}

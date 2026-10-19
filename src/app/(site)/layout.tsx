@@ -1,7 +1,7 @@
 import { Analytics } from "@/components/site/analytics";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
-import { WhatsAppButton } from "@/components/site/whatsapp-button";
+import { SupportDock } from "@/components/site/support-dock";
 import { getSiteChrome } from "@/lib/content/chrome";
 import { telHref, whatsappHref } from "@/lib/settings";
 
@@ -37,7 +37,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
         {children}
       </main>
       <SiteFooter settings={settings} nav={chrome.navigation} logo={chrome.logoDark} />
-      {whatsapp && <WhatsAppButton href={whatsapp} />}
+      <SupportDock panel={chrome.support} whatsapp={whatsapp} />
       <Analytics ga4Id={ga4Id} gtmId={gtmId} requireConsent={settings.integrations.consentBanner} />
     </>
   );

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PageEditor } from "@/components/admin/page-editor";
 import { PageHeader } from "@/components/admin/ui";
+import { UUID_RE } from "@/lib/admin/action-helpers";
 import { mediaViews } from "@/lib/admin/editor-data";
 import { referenceOptions } from "@/lib/admin/entity-store";
 import { listRevisions, loadPage } from "@/lib/admin/page-store";
@@ -13,10 +14,15 @@ export default async function EditPagePage({ params, searchParams }: { params: P
   const user = await requireUser();
   const [{ id }, { saved }] = await Promise.all([params, searchParams]);
   const isNew = id === "new";
-  const loaded = isNew ? null : await loadPage(id);
+  if (!isNew && !UUID_RE.test(id)) notFound();
+  // Everything the editor needs, fetched together rather than one query after another.
+  const [loaded, refOptions, media, revisions] = await Promise.all([
+    isNew ? null : loadPage(id),
+    referenceOptions(),
+    mediaViews(),
+    isNew ? [] : listRevisions(id),
+  ]);
   if (!isNew && !loaded) notFound();
-
-  const [refOptions, media, revisions] = await Promise.all([referenceOptions(), mediaViews(), isNew ? [] : listRevisions(id)]);
 
   return (
     <>

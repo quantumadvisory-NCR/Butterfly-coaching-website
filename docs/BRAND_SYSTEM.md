@@ -4,6 +4,8 @@ The visual system for the Butterfly Coaching Academy (BCA) website: where the pa
 
 The design tokens live in one place, [`src/app/globals.css`](../src/app/globals.css). The five core colours and the typefaces can be changed without code in **Admin > Settings > Colours and typography**.
 
+> **October 2026 redesign: cream replaces pale blue.** The principal background of the public site *and* the admin is now cream **`#F7EFE2`** (rgb 247, 239, 226), set by `--bca-background` / `--color-background`. The pale-blue page and section backgrounds (`#eff7ff`, `#d2e9fc`, `#c3dcf3`) are retired; blue survives only as a restrained text accent (links, the second line of the homepage headline). Sections no longer alternate colours: every standard section sits on cream, cards and forms use warm white, and navy is kept for the "Choose your path" panel, featured story, closing call to action and footer. Section 2 below lists the current tokens; sections 1 and 2's iPEC evidence is kept for the history of the palette.
+
 ## 1. Where the palette comes from
 
 The brief asked for a palette based on the colours the live iPEC website actually uses, with no guessed values. On 10 October 2026 the colours were read directly from `https://www.ipeccoaching.com/`:
@@ -62,15 +64,16 @@ BCA uses iPEC's blue, navy and yellow family as its base. This suits BCA unusual
 | `--bca-primary` | `#0068bf` | Verified (iPEC primary blue) | Links, eyebrows, secondary highlights |
 | `--bca-navy` | `#0f256a` | Verified (iPEC navy) | Headings, dark sections, footer, button text |
 | `--bca-accent` | `#f5ba00` | Verified (iPEC CTA yellow) | Primary buttons, accent shapes, focus ring on dark |
-| `--bca-sky` | `#eff7ff` | Verified (iPEC pale blue) | Alternating section background, hero |
-| `--bca-ink` | `#444746` | Verified (iPEC body text) | Body copy |
-| `--color-sky-deep` | `#d2e9fc` | Verified (iPEC) | Photo panels behind portrait cut-outs |
-| `--color-cream` | `#faf3e3` | Verified (iPEC) | Reserved warm surface |
-| `--color-line` | `#dedede` | Verified (iPEC) | Borders in the admin |
-| `--color-mist` | `#f5f5f5` | Verified (iPEC) | Admin background |
-| `--color-sky-line` | `#c3dcf3` | Derived (estimate) | Borders on pale blue and white sections |
-| `--color-muted` | `#5f6362` | Derived (estimate) | Secondary text. Darker than iPEC's `#6c6c6c` so it passes AA on pale blue |
-| `--color-primary-strong` | 82% primary + black | Derived | Text on pale blue badges |
+| `--bca-background` / `--color-background` / `--color-cream` | **`#F7EFE2`** | Owner-specified (October 2026) | The page background everywhere, public site and admin |
+| `--bca-ink` / `--color-text` | `#444746` | Verified (iPEC body text) | Body copy |
+| `--color-surface` | `#fffdf9` | Derived (warm white) | Cards, forms, menus, dialogs, the help panel |
+| `--color-tint` | cream mixed 14% with `#c8a671` (about `#f0e5d2`) | Derived | Hover fills, chips, quiet panels |
+| `--color-tint-deep` | cream mixed 26% with `#c8a671` (about `#ebdcc5`) | Derived | Panels behind portrait photographs |
+| `--color-border` / `--color-line` | `#e3d6c2` | Derived (warm) | Borders and dividers, public and admin |
+| `--color-mist` | cream mixed 45% with white | Derived | Table headers and quiet fills in the admin |
+| `--color-accent-soft` | accent mixed 22% with white | Derived | The pale end of the yellow hover edge on pathway cards |
+| `--color-muted` | `#5b5f5d` | Derived | Secondary text: 5.7 to 1 on cream, 5.3 to 1 on the tint |
+| `--color-primary-strong` | 82% primary + black | Derived | Text on tinted badges in the admin |
 | `--color-accent-strong` | 86% accent + brown | Derived | Reserved |
 | `--color-danger` / `--color-success` | `#b3261e` / `#1c6b3f` | Original | Form errors and confirmations |
 | WhatsApp button | `#0f7a5f` | Original | Darker than WhatsApp green so the white icon reaches 5.29 to 1 |
@@ -81,17 +84,18 @@ BCA uses iPEC's blue, navy and yellow family as its base. This suits BCA unusual
 
 | Pair | Ratio | Result |
 |---|---|---|
-| Navy text on accent yellow (primary button) | 7.97 to 1 | Pass |
-| White on navy (dark sections, footer) | 14.07 to 1 | Pass |
-| Body ink on white | 9.39 to 1 | Pass |
-| Body ink on pale blue | 8.69 to 1 | Pass |
-| Primary blue on white (links) | 5.63 to 1 | Pass |
-| Primary blue on pale blue (eyebrows) | 5.20 to 1 | Pass |
-| Muted text on white / pale blue | 6.09 / 5.63 to 1 | Pass |
-| Accent yellow on navy (eyebrows on dark) | 7.97 to 1 | Pass |
-| Navy headings on white / pale blue | 14.07 / 13.01 to 1 | Pass |
-| Error text on white | 6.54 to 1 | Pass |
-| Form field border on white (non-text, needs 3 to 1) | 3.28 to 1 | Pass |
+| Navy text on accent yellow (primary button, announcement bar) | 7.97 to 1 | Pass |
+| White on navy (pathway panel, featured story, footer) | 14.07 to 1 | Pass |
+| Navy headings on cream | 12.32 to 1 | Pass |
+| Body ink on cream | 8.23 to 1 | Pass |
+| Body ink on warm white (cards) | 9.25 to 1 | Pass |
+| Primary blue on cream (links, second headline line) | 4.93 to 1 | Pass |
+| Primary blue on warm white | 5.54 to 1 | Pass |
+| Muted text on cream / tint | 5.68 / 5.20 to 1 | Pass |
+| Accent yellow on navy (quote marks, eyebrows on dark) | 7.97 to 1 | Pass |
+| Form field border on warm white (non-text, needs 3 to 1) | 3.2 to 1 or more | Pass |
+
+Decorative dividers (`--color-line` on cream, 1.25 to 1) are not the only way to identify any control, so they are exempt from the 3 to 1 non-text rule.
 
 Ratios are calculated with the WCAG relative-luminance formula. Yellow is **never** used for text on a light background (it would fail at 1.76 to 1). The admin's theme editor recalculates these ratios live and warns before a failing combination is saved.
 
@@ -132,7 +136,7 @@ Body text never drops below 16px. Paragraphs are capped at about 68 characters p
 - Form fields use `--radius-field` (0.75rem).
 - Feature images take one large "wing" corner (`--radius-wing`, 7.5rem) on wide screens. This is BCA's signature shape, echoing a butterfly wing.
 
-**Brand accent:** a solid sun-yellow disc tucked behind key photographs (hero, founder). No gradients, no glass effects.
+**Brand accent:** on the homepage hero, soft butterfly wings in accent yellow behind an arched photograph, with one fine dotted orbit line. They sit behind the photo, never over faces, and scale with it. Elsewhere a solid sun-yellow disc sits behind the founder photograph. The only gradient in the system is the pale-to-warm yellow edge that appears on a "Choose your path" card on hover or keyboard focus. No glass effects.
 
 **Layers:** z-index values come only from the documented scale (`--z-sticky`, `--z-header`, `--z-floating`, `--z-overlay`, `--z-toast`).
 

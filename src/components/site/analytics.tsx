@@ -85,7 +85,7 @@ export function Analytics({ ga4Id, gtmId, requireConsent }: Props) {
         <div
           role="region"
           aria-label="Cookie consent"
-          className="fixed inset-x-3 bottom-3 z-[var(--z-toast)] mx-auto max-w-xl rounded-card border border-sky-line bg-surface p-5 shadow-lift sm:left-4 sm:right-auto sm:mx-0"
+          className="fixed inset-x-3 bottom-3 z-[var(--z-toast)] mx-auto max-w-xl rounded-card border border-line bg-surface p-5 shadow-lift sm:left-4 sm:right-auto sm:mx-0"
         >
           <p className="text-[0.9375rem]">
             We would like to use analytics cookies to understand how this site is used. Nothing is collected unless you agree.{" "}

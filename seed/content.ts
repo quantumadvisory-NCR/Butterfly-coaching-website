@@ -593,6 +593,84 @@ const FOUNDER_FACTS = [
   { value: "24+", label: "years of professional experience" },
 ];
 
+/* The homepage's top half (hero, pathways, figures) and its FAQ. Shared with
+   scripts/upgrade-homepage.ts, which brings the live homepage up to this layout. */
+export const HOME_HERO = {
+  variant: "home",
+  // The accreditation wording and the proof points are flagged for owner verification in docs/CONTENT_APPROVAL_CHECKLIST.md.
+  eyebrow: "ICF-accredited coach education · India",
+  heading: "Learning that stays.",
+  headingAccent: "Coaching that transforms.",
+  subheading: "ICF-accredited coach training built on practice, spaced review and founder mentoring.",
+  primaryCta: BOOK,
+  secondaryCta: link("Explore programmes", "/coaching-certifications/"),
+  chips: [
+    { label: "ICF-accredited", icon: "seal" },
+    { label: "Founded by Anup Mittal, MCC", icon: "person" },
+    { label: "4,100+ hours of founder coaching", icon: "clock" },
+  ],
+  trustText: "Join coaches learning through practice, reflection and feedback.",
+  trustPhotos: true,
+  // Authentic BCA photograph: Anup Mittal with learners around a practice table.
+  image: m("gallery.anup-with-table-group"),
+  imageTall: null,
+  imageFocus: "left",
+  credentialValue: "Anup Mittal, MCC",
+  credentialLabel: "Master Certified Coach, ICF",
+};
+
+export const HOME_PATHS = {
+  layout: "panel",
+  heading: "Choose your path",
+  intro: "Three ways to work with us, depending on where you are headed.",
+  items: [
+    {
+      title: "Become a Coach",
+      body: "ACC, PCC and MCC pathways",
+      link: link("Explore coach training", "/coaching-certifications/"),
+      icon: "cap",
+      image: m("photo.path-become-a-coach"),
+    },
+    {
+      title: "Grow as a Leader",
+      body: "Coaching skills for HR, L&D and managers",
+      link: link("Start with Level 1", "/level-1-acc-coach-program/"),
+      icon: "trend",
+      image: m("photo.path-grow-as-a-leader"),
+    },
+    {
+      title: "Develop your Organisation",
+      body: "Corporate coaching and leadership programmes",
+      link: link("See corporate programmes", "/services/corporate-programs/"),
+      icon: "buildings",
+      image: m("photo.path-develop-your-organisation"),
+    },
+  ],
+};
+
+/** Verified figures only. "Coaches trained" and "Organisations partnered" stay empty, and so hidden, until the owner confirms them. */
+export const HOME_STATS = {
+  heading: "Butterfly Coaching Academy in figures",
+  showHeading: false,
+  items: [
+    { value: "4,100", prefix: "", suffix: "+", label: "Hours of one-to-one coaching by our founder", countUp: true },
+    { value: "3", prefix: "", suffix: "", label: "ICF credential pathways: ACC, PCC and MCC", countUp: true },
+    { value: "24", prefix: "", suffix: "+", label: "Years of professional experience behind our founder", countUp: true },
+    { value: "2022", prefix: "", suffix: "", label: "Founded by Anup Mittal, MCC", countUp: false },
+    { value: "", prefix: "", suffix: "+", label: "Coaches trained", countUp: true },
+    { value: "", prefix: "", suffix: "", label: "Organisations partnered", countUp: true },
+  ],
+};
+
+export const HOME_FAQ = {
+  heading: "Questions, answered.",
+  intro: "Straight answers on programmes, eligibility, formats and how to enquire. If you are still deciding, we will help you choose.",
+  group: "home",
+  helpHeading: "Still unsure? Talk to us.",
+  helpText: "A short conversation is often the quickest way to find the programme that fits where you are headed.",
+  cta: BOOK,
+};
+
 const closingCta = (heading = "Ready to find your next step?"): Section => ({
   type: "cta",
   data: {
@@ -613,18 +691,15 @@ export const PAGES: PageSeed[] = [
     sections: [
       {
         type: "hero",
-        data: {
-          variant: "home",
-          eyebrow: "",
-          // Mandatory hero copy. The accreditation wording is flagged for owner
-          // verification in docs/CONTENT_APPROVAL_CHECKLIST.md before launch.
-          heading: "Learning that stays",
-          subheading: "ICF-accredited coach training built on practice, spaced review and founder mentoring.",
-          primaryCta: BOOK,
-          secondaryCta: link("Explore programmes", "/coaching-certifications/"),
-          image: m("photo.hero-coaching-conversation"),
-          imageTall: m("photo.hero-coaching-conversation-portrait"),
-        },
+        data: HOME_HERO,
+      },
+      {
+        type: "path_cards",
+        data: HOME_PATHS,
+      },
+      {
+        type: "stats",
+        data: HOME_STATS,
       },
       {
         type: "trust_strip",
@@ -635,44 +710,13 @@ export const PAGES: PageSeed[] = [
             { image: m("icf.level-2"), name: "ICF Level 2 accredited coaching education" },
             { image: m("icf.level-3"), name: "ICF Level 3 accredited coaching education" },
           ],
-          facts: [
-            { value: "2022", label: "Founded by Anup Mittal, MCC" },
-            { value: "4,100+", label: "hours of one-to-one coaching by our founder" },
-            { value: "3", label: "ICF credential pathways: ACC, PCC and MCC" },
-          ],
-        },
-      },
-      {
-        type: "path_cards",
-        data: {
-          heading: "Choose your path",
-          intro: "Three ways to work with us, depending on where you are headed.",
-          items: [
-            {
-              title: "Become a coach",
-              body: "Explore professional coach education and the ACC, PCC and MCC pathways.",
-              link: link("Explore coach training", "/coaching-certifications/"),
-              image: m("photo.path-become-a-coach"),
-            },
-            {
-              title: "Grow as a leader",
-              body: "Discover coaching skills for leadership, HR, L&D and professional development.",
-              link: link("Start with Level 1", "/level-1-acc-coach-program/"),
-              image: m("photo.path-grow-as-a-leader"),
-            },
-            {
-              title: "Develop your organisation",
-              body: "Explore corporate coaching and leadership development.",
-              link: link("See corporate programmes", "/services/corporate-programs/"),
-              image: m("photo.path-develop-your-organisation"),
-            },
-          ],
+          facts: [],
         },
       },
       {
         type: "feature_list",
         data: {
-          background: "sky",
+          background: "cream",
           heading: "Why learners choose BCA",
           intro: "Coach training should change how you work, not only what you know.",
           items: [
@@ -705,7 +749,7 @@ export const PAGES: PageSeed[] = [
       {
         type: "timeline",
         data: {
-          background: "sky",
+          background: "cream",
           heading: "The learning journey",
           intro: "Every programme follows the same rhythm, so each skill builds on the last.",
           steps: [
@@ -730,22 +774,17 @@ export const PAGES: PageSeed[] = [
       {
         type: "testimonials",
         data: {
-          background: "sky",
+          background: "cream",
           heading: "Student stories",
           intro: "What learning with BCA is like, in our learners' own words.",
           source: "featured",
-          limit: 3,
+          limit: 4,
           cta: link("Read more student stories", "/testimonial/"),
         },
       },
       {
         type: "faq",
-        data: {
-          heading: "Questions, answered",
-          intro: "The essentials on programmes, eligibility, formats and how to enquire.",
-          group: "home",
-          cta: link("Contact us", "/contact-us/"),
-        },
+        data: HOME_FAQ,
       },
       closingCta(),
     ],
@@ -784,7 +823,7 @@ export const PAGES: PageSeed[] = [
       {
         type: "comparison_table",
         data: {
-          background: "sky",
+          background: "cream",
           anchor: "compare",
           heading: "Compare the ICF pathways",
           intro: "From foundation to depth to mastery.",
@@ -811,7 +850,7 @@ export const PAGES: PageSeed[] = [
       {
         type: "feature_list",
         data: {
-          background: "sky",
+          background: "cream",
           heading: "How we build real capability",
           intro: "Coaching is built through practice, observation, reflection and lived experience, not theory alone.",
           items: [
@@ -875,7 +914,7 @@ export const PAGES: PageSeed[] = [
       {
         type: "image_text",
         data: {
-          background: "sky",
+          background: "cream",
           heading: "Supervision for practising coaches",
           body: "<p>An ongoing reflective space to look at your work, your patterns and your challenges, and to think through ethical questions with an experienced coach.</p>",
           bullets: ["Examine your practice", "Explore ethical dilemmas", "Notice patterns in your client work", "Build self-awareness and resilience"],
@@ -897,7 +936,7 @@ export const PAGES: PageSeed[] = [
           ],
         },
       },
-      { type: "faq", data: { background: "sky", heading: "Mentoring questions", intro: "", group: "mentoring", cta: NO_LINK } },
+      { type: "faq", data: { background: "cream", heading: "Mentoring questions", intro: "", group: "mentoring", cta: NO_LINK } },
       {
         type: "contact_form",
         data: {
@@ -949,7 +988,7 @@ export const PAGES: PageSeed[] = [
       {
         type: "timeline",
         data: {
-          background: "sky",
+          background: "cream",
           heading: "How an engagement works",
           intro: "Coaching is available virtually, on site or as a mix of both.",
           steps: [
@@ -973,7 +1012,7 @@ export const PAGES: PageSeed[] = [
       {
         type: "contact_form",
         data: {
-          background: "sky",
+          background: "cream",
           heading: "Enquire about coaching",
           intro: "Tell us a little about what you want to work on and we will suggest a next step.",
           formType: "coaching",
@@ -1046,7 +1085,7 @@ export const PAGES: PageSeed[] = [
       {
         type: "image_text",
         data: {
-          background: "sky",
+          background: "cream",
           heading: "Designed around your context",
           body: "<p>Programmes are built for your organisation, not delivered off the shelf, through a blend of learning, coaching and practice.</p>",
           bullets: [
@@ -1065,7 +1104,7 @@ export const PAGES: PageSeed[] = [
       {
         type: "contact_form",
         data: {
-          background: "sky",
+          background: "cream",
           heading: "Tell us about your organisation",
           intro: "We start by learning about your context, your challenges and what you want to achieve.",
           formType: "corporate",
@@ -1111,7 +1150,7 @@ export const PAGES: PageSeed[] = [
       {
         type: "feature_list",
         data: {
-          background: "sky",
+          background: "cream",
           heading: "How we teach",
           intro: "Awareness leads to choice, choice leads to action, and action leads to transformation.",
           items: [
@@ -1138,7 +1177,7 @@ export const PAGES: PageSeed[] = [
       {
         type: "trust_strip",
         data: {
-          background: "sky",
+          background: "cream",
           heading: "ICF accreditation",
           logos: [
             { image: m("icf.level-1"), name: "ICF Level 1 accredited coaching education" },
@@ -1151,7 +1190,7 @@ export const PAGES: PageSeed[] = [
       {
         type: "rich_text",
         data: {
-          background: "sky",
+          background: "cream",
           heading: "Accreditation and credentials",
           body:
             "<p>BCA holds International Coaching Federation (ICF) accreditation for its Level 1, Level 2 and Level 3 coach education programmes. Our founder, Anup Mittal, holds the ICF Master Certified Coach (MCC) credential.</p>" +
@@ -1239,7 +1278,7 @@ export const PAGES: PageSeed[] = [
       {
         type: "video",
         data: {
-          background: "sky",
+          background: "cream",
           anchor: "videos",
           heading: "Videos",
           intro: "From Coach Anup's YouTube channel.",

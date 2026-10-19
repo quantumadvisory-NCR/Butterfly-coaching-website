@@ -23,7 +23,7 @@ export function TimelineBlock({ data }: BlockProps<"timeline">) {
               {i < steps.length - 1 && (
                 <span
                   aria-hidden
-                  className="absolute left-6 top-12 h-[calc(100%-3rem)] w-px bg-sky-line lg:left-12 lg:top-6 lg:h-px lg:w-[calc(100%+1.5rem-3rem)]"
+                  className="absolute left-6 top-12 h-[calc(100%-3rem)] w-px bg-line lg:left-12 lg:top-6 lg:h-px lg:w-[calc(100%+1.5rem-3rem)]"
                 />
               )}
               <span

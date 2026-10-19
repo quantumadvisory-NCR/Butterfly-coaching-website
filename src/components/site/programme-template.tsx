@@ -61,7 +61,7 @@ export async function ProgrammeTemplate({
   return (
     <>
       {/* Hero */}
-      <section className="bg-sky">
+      <section className="bg-cream">
         <div className="container-site pb-12 pt-5 md:pb-16 lg:pb-20">
           <Breadcrumbs items={breadcrumbs} />
           <div className={cn("mt-6 grid items-center gap-9 md:mt-8", hero && "lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:gap-14")}>
@@ -102,7 +102,7 @@ export async function ProgrammeTemplate({
 
       {/* Key facts */}
       {facts.length > 0 && (
-        <section aria-label="Programme at a glance" className="border-b border-sky-line bg-surface">
+        <section aria-label="Programme at a glance" className="border-y border-line bg-cream">
           <dl className="container-site grid grid-cols-2 gap-x-6 gap-y-6 py-8 md:grid-cols-3 md:py-10 lg:flex lg:flex-wrap lg:justify-between">
             {facts.map((fact) => (
               <div key={fact.label} className="flex flex-col-reverse border-l-2 border-accent pl-4">
@@ -115,16 +115,16 @@ export async function ProgrammeTemplate({
       )}
 
       {/* Overview and highlights */}
-      <section className="section-space bg-surface">
+      <section className="section-space bg-cream">
         <div className="container-site grid gap-10 lg:grid-cols-12 lg:gap-14">
           <div className="reveal lg:col-span-7">
             <h2 className="text-h2">About this pathway</h2>
             <RichText html={p.descriptionHtml} className="prose-lg mt-5" />
-            {p.accreditationNote && <p className="mt-6 rounded-field bg-sky px-4 py-3 text-[0.9375rem] text-navy">{p.accreditationNote}</p>}
+            {p.accreditationNote && <p className="mt-6 rounded-field bg-tint px-4 py-3 text-[0.9375rem] text-navy">{p.accreditationNote}</p>}
           </div>
           {p.highlights.length > 0 && (
             <aside className="reveal lg:col-span-5">
-              <div className="rounded-card bg-sky p-6 md:p-8">
+              <div className="rounded-card bg-tint p-6 md:p-8">
                 <h3 className="text-h3">Programme highlights</h3>
                 <div className="mt-5">
                   <CheckList items={p.highlights} />
@@ -137,7 +137,7 @@ export async function ProgrammeTemplate({
 
       {/* Audience and eligibility */}
       {(p.audience.length > 0 || p.eligibility.length > 0) && (
-        <section className="section-space bg-sky">
+        <section className="section-space bg-cream">
           <div className="container-site grid gap-10 md:grid-cols-2 md:gap-12">
             {p.audience.length > 0 && (
               <div className="reveal">
@@ -161,7 +161,7 @@ export async function ProgrammeTemplate({
 
       {/* Journey */}
       {p.modules.length > 0 && (
-        <section id="journey" className="section-space bg-surface">
+        <section id="journey" className="section-space bg-cream">
           <div className="container-site grid gap-9 lg:grid-cols-12 lg:gap-12">
             <div className="lg:col-span-4">
               <h2 className="text-h2">The journey, step by step</h2>
@@ -170,7 +170,7 @@ export async function ProgrammeTemplate({
             <ol className="lg:col-span-8">
               {p.modules.map((module, i) => (
                 <li key={module.id} className="reveal relative flex gap-5 pb-8 last:pb-0">
-                  {i < p.modules.length - 1 && <span aria-hidden className="absolute left-6 top-12 h-[calc(100%-3rem)] w-px bg-sky-line" />}
+                  {i < p.modules.length - 1 && <span aria-hidden className="absolute left-6 top-12 h-[calc(100%-3rem)] w-px bg-line" />}
                   <span
                     className={cn(
                       "relative z-[1] grid size-12 shrink-0 place-items-center rounded-full font-display text-lg font-bold",
@@ -182,7 +182,7 @@ export async function ProgrammeTemplate({
                   <div className="min-w-0 pt-1.5">
                     <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
                       <h3 className="text-h3">{module.title}</h3>
-                      {module.hoursLabel && <span className="rounded-full bg-sky px-3 py-0.5 text-sm font-semibold text-navy">{module.hoursLabel}</span>}
+                      {module.hoursLabel && <span className="rounded-full bg-tint px-3 py-0.5 text-sm font-semibold text-navy">{module.hoursLabel}</span>}
                     </div>
                     {module.description && <p className="mt-2 max-w-prose">{module.description}</p>}
                   </div>
@@ -195,7 +195,7 @@ export async function ProgrammeTemplate({
 
       {/* Outcomes */}
       {p.outcomes.length > 0 && (
-        <section className="section-space bg-sky">
+        <section className="section-space bg-cream">
           <div className="container-site">
             <h2 className="text-h2">What you will build</h2>
             <div className="reveal mt-8 rounded-card bg-surface p-6 md:p-9">
@@ -207,14 +207,14 @@ export async function ProgrammeTemplate({
 
       {/* Dates and fees: shown only when real data exists */}
       {(cohorts.length > 0 || p.feeText) && (
-        <section className="section-space bg-surface">
+        <section className="section-space bg-cream">
           <div className="container-site grid gap-10 md:grid-cols-2 md:gap-12">
             {cohorts.length > 0 && (
               <div>
                 <h2 className="text-h2">Upcoming cohorts</h2>
                 <ul className="mt-6 grid gap-3">
                   {cohorts.map((cohort) => (
-                    <li key={cohort.id} className="rounded-card border border-sky-line p-5">
+                    <li key={cohort.id} className="rounded-card border border-line p-5">
                       <p className="font-display text-lg font-bold text-navy">
                         {cohort.label || "Cohort"}: starts {formatDate(cohort.startDate)}
                       </p>
@@ -242,7 +242,7 @@ export async function ProgrammeTemplate({
 
       {/* Faculty */}
       {faculty.length > 0 && (
-        <section className="section-space border-t border-sky-line bg-surface">
+        <section className="section-space border-t border-line bg-cream">
           <div className="container-site">
             <h2 className="text-h2">Who you will learn with</h2>
             <ul className="mt-9 grid gap-x-6 gap-y-9 sm:grid-cols-2 lg:grid-cols-4">
@@ -250,7 +250,7 @@ export async function ProgrammeTemplate({
                 const photo = ctx.media[person.photoId ?? ""] ?? null;
                 return (
                   <li key={person.id} className="reveal flex items-center gap-4 sm:block">
-                    <div className="relative size-24 shrink-0 overflow-hidden rounded-full bg-sky-deep sm:aspect-[4/5] sm:size-auto sm:w-full sm:rounded-card">
+                    <div className="relative size-24 shrink-0 overflow-hidden rounded-full bg-tint-deep sm:aspect-[4/5] sm:size-auto sm:w-full sm:rounded-card">
                       {photo && <MediaImage media={photo} fill alt="" sizes="(min-width: 64rem) 22vw, (min-width: 40rem) 44vw, 96px" className="!object-top" />}
                     </div>
                     <div className="sm:mt-4">
@@ -267,7 +267,7 @@ export async function ProgrammeTemplate({
 
       {/* Student stories linked to this programme */}
       {stories.length > 0 && (
-        <section className="section-space bg-sky">
+        <section className="section-space bg-cream">
           <div className="container-site">
             <h2 className="text-h2">What {p.credential ?? "programme"} learners say</h2>
             <div className="mt-9">
@@ -280,7 +280,7 @@ export async function ProgrammeTemplate({
 
       {/* FAQs */}
       {faqs.length > 0 && (
-        <section className="section-space bg-surface">
+        <section className="section-space bg-cream">
           <div className="container-site grid gap-9 lg:grid-cols-12 lg:gap-12">
             <div className="lg:col-span-4">
               <h2 className="text-h2">Questions about {p.credential ?? "this programme"}</h2>
@@ -294,7 +294,7 @@ export async function ProgrammeTemplate({
       )}
 
       {/* Enquiry */}
-      <section id="enquire" className="section-space bg-sky">
+      <section id="enquire" className="section-space bg-cream">
         <div className="container-site grid gap-10 lg:grid-cols-12 lg:gap-14">
           <div className="lg:col-span-5">
             <h2 className="text-h2">Talk to us about {p.credential ? `the ${p.credential} pathway` : p.name}</h2>
@@ -303,7 +303,7 @@ export async function ProgrammeTemplate({
             </p>
           </div>
           <div className="lg:col-span-7">
-            <div className="rounded-card border border-sky-line bg-surface p-5 shadow-card sm:p-7 md:p-9">
+            <div className="rounded-card border border-line bg-surface p-5 shadow-card sm:p-7 md:p-9">
               <EnquiryForm type="programme" programmes={allProgrammes.map((x) => ({ id: x.id, name: x.name }))} defaultProgrammeId={p.id} />
             </div>
           </div>
@@ -330,7 +330,7 @@ function ProfilesFallback({ ctx }: { ctx: BlockContext }) {
   return (
     <ProfilesBlock
       ctx={ctx}
-      data={{ heading: "Meet the founder", intro: "", source: "founder", facts: [], cta: { label: "About BCA", href: "/about-us/" }, background: "sky", anchor: "" }}
+      data={{ heading: "Meet the founder", intro: "", source: "founder", facts: [], cta: { label: "About BCA", href: "/about-us/" }, background: "cream", anchor: "" }}
     />
   );
 }

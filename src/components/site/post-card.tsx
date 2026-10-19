@@ -6,7 +6,7 @@ import { formatDate, readingMinutes } from "@/lib/utils";
 export function PostCard({ post, image, showExcerpt = false }: { post: PostView; image: MediaItem | null; showExcerpt?: boolean }) {
   return (
     <li className="group relative isolate flex flex-col">
-      <div className="relative aspect-[16/10] overflow-hidden rounded-card bg-sky-deep">
+      <div className="relative aspect-[16/10] overflow-hidden rounded-card bg-tint-deep">
         {image && (
           <MediaImage
             media={image}

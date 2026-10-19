@@ -13,9 +13,11 @@ const shared = [
     type: "select",
     name: "background",
     label: "Background",
+    help: "Cream is the standard page background. Use warm white sparingly, for a section that should stand forward.",
+    // Older pages stored "white" or "sky" (the pale-blue theme). Both render as cream, and saving converts them to "cream".
     options: [
-      { value: "white", label: "White" },
-      { value: "sky", label: "Pale blue" },
+      { value: "cream", label: "Cream (standard)" },
+      { value: "surface", label: "Warm white" },
     ],
   },
   {
@@ -41,9 +43,53 @@ const hero = [
   },
   { type: "text", name: "eyebrow", label: "Small label above the heading", maxLength: 60 },
   { type: "text", name: "heading", label: "Heading", required: true, maxLength: 90 },
+  {
+    type: "text",
+    name: "headingAccent",
+    label: "Second line of the heading (homepage)",
+    help: "Optional. Shown on its own line in the accent colour, e.g. \"Coaching that transforms.\"",
+    maxLength: 90,
+  },
   { type: "textarea", name: "subheading", label: "Supporting statement", maxLength: 320, rows: 3 },
   link("primaryCta", "Primary button"),
   link("secondaryCta", "Secondary button"),
+  {
+    type: "list",
+    name: "chips",
+    label: "Proof points under the buttons (homepage)",
+    help: "Short, verified facts only. They are shown as small labels.",
+    itemLabel: "Proof point",
+    titleField: "label",
+    max: 4,
+    fields: [
+      { type: "text", name: "label", label: "Text", required: true, maxLength: 48 },
+      {
+        type: "select",
+        name: "icon",
+        label: "Icon",
+        options: [
+          { value: "seal", label: "Seal (accreditation)" },
+          { value: "person", label: "Person (founder)" },
+          { value: "clock", label: "Clock (hours)" },
+          { value: "cap", label: "Graduation cap (pathways)" },
+          { value: "none", label: "No icon" },
+        ],
+      },
+    ],
+  },
+  {
+    type: "text",
+    name: "trustText",
+    label: "Trust line (homepage)",
+    help: "One short sentence beside learner photos. Do not use a number unless it is verified.",
+    maxLength: 120,
+  },
+  {
+    type: "boolean",
+    name: "trustPhotos",
+    label: "Show learner photos beside the trust line",
+    help: "Uses photographs from approved testimonials only.",
+  },
   { type: "image", name: "image", label: "Image" },
   {
     type: "image",
@@ -51,6 +97,19 @@ const hero = [
     label: "Tall image for wide screens",
     help: "Optional portrait crop shown beside the heading on laptops and desktops. Leave empty to reuse the main image.",
   },
+  {
+    type: "select",
+    name: "imageFocus",
+    label: "Photo crop (homepage)",
+    help: "Which part of the photograph stays in view inside the arched frame.",
+    options: [
+      { value: "focal", label: "Use the image's focal point" },
+      { value: "left", label: "Keep the left side in view" },
+      { value: "right", label: "Keep the right side in view" },
+    ],
+  },
+  { type: "text", name: "credentialValue", label: "Credential card: title", help: 'Optional small card on the photograph, e.g. "Anup Mittal, MCC".', maxLength: 40 },
+  { type: "text", name: "credentialLabel", label: "Credential card: detail", help: 'e.g. "Master Certified Coach, ICF". Only use credentials that are accurate.', maxLength: 60 },
 ] as const satisfies readonly Field[];
 
 const richText = [
@@ -76,6 +135,16 @@ const imageText = [
 ] as const satisfies readonly Field[];
 
 const pathCards = [
+  {
+    type: "select",
+    name: "layout",
+    label: "Layout",
+    help: "The navy panel overlaps the bottom of a homepage hero placed directly above it.",
+    options: [
+      { value: "panel", label: "Navy panel with icon cards" },
+      { value: "images", label: "Image cards" },
+    ],
+  },
   { type: "text", name: "heading", label: "Heading", required: true, maxLength: 120 },
   { type: "textarea", name: "intro", label: "Introduction", maxLength: 300, rows: 2 },
   {
@@ -89,7 +158,19 @@ const pathCards = [
       { type: "text", name: "title", label: "Title", required: true, maxLength: 60 },
       { type: "textarea", name: "body", label: "Description", maxLength: 240, rows: 3 },
       link("link", "Link"),
-      { type: "image", name: "image", label: "Image" },
+      {
+        type: "select",
+        name: "icon",
+        label: "Icon (navy panel)",
+        options: [
+          { value: "cap", label: "Graduation cap" },
+          { value: "trend", label: "Rising line" },
+          { value: "buildings", label: "Buildings" },
+          { value: "compass", label: "Compass" },
+          { value: "users", label: "People" },
+        ],
+      },
+      { type: "image", name: "image", label: "Image (image cards)" },
     ],
   },
 ] as const satisfies readonly Field[];
@@ -213,7 +294,9 @@ const faq = [
     label: "FAQ group",
     help: "Questions come from FAQs in the admin menu.",
   },
-  link("cta", "Button"),
+  { type: "text", name: "helpHeading", label: "Help card heading", help: 'Optional, e.g. "Still unsure? Talk to us." Leave empty for no help card.', maxLength: 80 },
+  { type: "textarea", name: "helpText", label: "Help card text", maxLength: 240, rows: 2 },
+  link("cta", "Button", "Shown in the help card when there is one. A WhatsApp button is added beside it automatically."),
 ] as const satisfies readonly Field[];
 
 const timeline = [
@@ -338,6 +421,27 @@ const trustStrip = [
   },
 ] as const satisfies readonly Field[];
 
+const stats = [
+  { type: "text", name: "heading", label: "Heading", help: "Optional. Read by screen readers; shown only if you tick the box below.", maxLength: 120 },
+  { type: "boolean", name: "showHeading", label: "Show the heading on the page" },
+  {
+    type: "list",
+    name: "items",
+    label: "Figures",
+    help: "Publish verified figures only. A figure with no number is hidden, so you can prepare one and fill it in once it is confirmed. Up to four filled-in figures are shown, in this order.",
+    itemLabel: "Figure",
+    titleField: "label",
+    max: 6,
+    fields: [
+      { type: "text", name: "value", label: "Figure", help: "Digits as they should appear, e.g. 4,100 or 2022. Leave empty to hide this figure.", maxLength: 12 },
+      { type: "text", name: "prefix", label: "Before the number", help: 'Optional, e.g. "₹".', maxLength: 4 },
+      { type: "text", name: "suffix", label: "After the number", help: 'Optional, e.g. "+".', maxLength: 6 },
+      { type: "text", name: "label", label: "What it measures", required: true, maxLength: 80 },
+      { type: "boolean", name: "countUp", label: "Count up when it comes into view", help: "Leave off for years and similar figures." },
+    ],
+  },
+] as const satisfies readonly Field[];
+
 const blogTeasers = [
   { type: "text", name: "heading", label: "Heading", required: true, maxLength: 120 },
   { type: "textarea", name: "intro", label: "Introduction", maxLength: 300, rows: 2 },
@@ -368,6 +472,7 @@ export type BlockData = {
   newsletter: DataOf<typeof newsletter> & Shared;
   resource_downloads: DataOf<typeof resourceDownloads> & Shared;
   trust_strip: DataOf<typeof trustStrip> & Shared;
+  stats: DataOf<typeof stats> & Shared;
   blog_teasers: DataOf<typeof blogTeasers> & Shared;
 };
 
@@ -406,6 +511,7 @@ export const BLOCKS: readonly BlockDefinition[] = [
   define("newsletter", "Newsletter signup", "Email signup form.", newsletter),
   define("resource_downloads", "Resource downloads", "Published downloadable resources.", resourceDownloads),
   define("trust_strip", "Trust strip", "Accreditation badges, logos and key facts.", trustStrip),
+  define("stats", "Statistics strip", "Up to four verified figures that count up as they come into view.", stats),
   define("blog_teasers", "Latest articles", "The most recent blog posts.", blogTeasers),
 ];
 

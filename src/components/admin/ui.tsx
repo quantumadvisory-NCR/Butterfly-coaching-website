@@ -1,5 +1,5 @@
 import { ArrowSquareOutIcon, CheckCircleIcon, InfoIcon, WarningIcon } from "@phosphor-icons/react/dist/ssr";
-import Link from "next/link";
+import { AdminLink as Link } from "@/components/admin/admin-link";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
@@ -49,7 +49,7 @@ const STATUS_STYLES: Record<string, string> = {
   draft: "bg-warning-soft text-[#6b4e00]",
   pending: "bg-warning-soft text-[#6b4e00]",
   in_progress: "bg-warning-soft text-[#6b4e00]",
-  contacted: "bg-sky text-primary-strong",
+  contacted: "bg-tint text-primary-strong",
   new: "bg-navy text-white",
   archived: "bg-mist text-muted",
   rejected: "bg-danger-soft text-danger",
@@ -73,7 +73,7 @@ export function StatusBadge({ status, label }: { status: string; label?: string 
 
 export function Notice({ tone = "info", children, className }: { tone?: "info" | "success" | "warning" | "danger"; children: ReactNode; className?: string }) {
   const styles = {
-    info: "bg-sky text-navy",
+    info: "bg-tint text-navy",
     success: "bg-success-soft text-success",
     warning: "bg-warning-soft text-[#5c4300]",
     danger: "bg-danger-soft text-danger",
@@ -131,7 +131,7 @@ export function RecordTable({ columns, children }: { columns: string[]; children
 }
 
 export function RecordRow({ children }: { children: ReactNode }) {
-  return <tr className="border-t border-line first:border-t-0 max-md:block max-md:p-4 md:hover:bg-sky/40">{children}</tr>;
+  return <tr className="border-t border-line first:border-t-0 max-md:block max-md:p-4 md:hover:bg-tint/40">{children}</tr>;
 }
 
 export function RecordCell({ label, children, className, primary }: { label: string; children: ReactNode; className?: string; primary?: boolean }) {

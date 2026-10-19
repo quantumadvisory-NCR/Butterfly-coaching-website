@@ -121,7 +121,7 @@ function EnquiryFormInner({ type: baseType, programmes, defaultProgrammeId, subm
       </div>
 
       {type !== baseType && (
-        <p className="rounded-field bg-sky px-4 py-3 text-sm font-semibold text-navy">{ENQUIRY_LABELS[type]}</p>
+        <p className="rounded-field bg-tint px-4 py-3 text-sm font-semibold text-navy">{ENQUIRY_LABELS[type]}</p>
       )}
 
       {state.status === "error" && state.message && (

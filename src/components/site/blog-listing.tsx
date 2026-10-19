@@ -55,7 +55,7 @@ export async function BlogListing({ heading, intro, basePath, filter, query = ""
 
   return (
     <>
-      <section className="bg-sky">
+      <section className="bg-cream">
         <div className="container-site pb-10 pt-5 md:pb-14">
           <Breadcrumbs items={crumbs} />
           <div className="mt-6 flex flex-col gap-7 md:mt-8 lg:flex-row lg:items-end lg:justify-between">
@@ -80,7 +80,7 @@ export async function BlogListing({ heading, intro, basePath, filter, query = ""
             <nav aria-label="Categories" className="mt-8">
               <ul className="flex flex-wrap gap-2">
                 <li>
-                  <Link href="/blog/" className={cn("inline-flex min-h-11 items-center rounded-full px-4 text-sm font-semibold", !activeCategory ? "bg-navy text-white" : "bg-surface text-navy hover:bg-sky-deep")}>
+                  <Link href="/blog/" className={cn("inline-flex min-h-11 items-center rounded-full px-4 text-sm font-semibold", !activeCategory ? "bg-navy text-white" : "bg-surface text-navy hover:bg-tint-deep")}>
                     All articles
                   </Link>
                 </li>
@@ -90,7 +90,7 @@ export async function BlogListing({ heading, intro, basePath, filter, query = ""
                       href={`/blog/category/${category.slug}/`}
                       className={cn(
                         "inline-flex min-h-11 items-center rounded-full px-4 text-sm font-semibold",
-                        activeCategory === category.slug ? "bg-navy text-white" : "bg-surface text-navy hover:bg-sky-deep",
+                        activeCategory === category.slug ? "bg-navy text-white" : "bg-surface text-navy hover:bg-tint-deep",
                       )}
                     >
                       {category.name}
@@ -103,7 +103,7 @@ export async function BlogListing({ heading, intro, basePath, filter, query = ""
         </div>
       </section>
 
-      <section className="section-space bg-surface">
+      <section className="section-space bg-cream">
         <div className="container-site">
           {query && (
             <p role="status" className="mb-8 text-lead">
@@ -118,7 +118,7 @@ export async function BlogListing({ heading, intro, basePath, filter, query = ""
 
           {lead && (
             <article className="group relative isolate mb-12 grid items-center gap-7 md:mb-16 lg:grid-cols-2 lg:gap-12">
-              <div className="relative aspect-[16/10] overflow-hidden rounded-card bg-sky-deep lg:rounded-tl-[var(--radius-wing)]">
+              <div className="relative aspect-[16/10] overflow-hidden rounded-card bg-tint-deep lg:rounded-tl-[var(--radius-wing)]">
                 {leadImage && (
                   <MediaImage media={leadImage} fill alt="" preload sizes="(min-width: 64rem) 46vw, 100vw" className="transition-transform duration-700 ease-out group-hover:scale-[1.03]" />
                 )}
@@ -146,7 +146,7 @@ export async function BlogListing({ heading, intro, basePath, filter, query = ""
           )}
 
           {pageCount > 1 && (
-            <nav aria-label="Pagination" className="mt-12 flex items-center justify-between gap-4 border-t border-sky-line pt-6">
+            <nav aria-label="Pagination" className="mt-12 flex items-center justify-between gap-4 border-t border-line pt-6">
               {current > 1 ? (
                 <Link href={pageHref(current - 1)} className="btn btn-quiet btn-sm" rel="prev">
                   Newer
@@ -168,12 +168,12 @@ export async function BlogListing({ heading, intro, basePath, filter, query = ""
           )}
 
           {tags.length > 0 && (
-            <div className="mt-14 border-t border-sky-line pt-8">
+            <div className="mt-14 border-t border-line pt-8">
               <h2 className="text-h3">Browse by topic</h2>
               <ul className="mt-4 flex flex-wrap gap-2">
                 {tags.map((tag) => (
                   <li key={tag.slug}>
-                    <Link href={`/blog/tag/${tag.slug}/`} className="inline-flex min-h-11 items-center rounded-full bg-sky px-4 text-sm font-semibold text-navy hover:bg-sky-deep">
+                    <Link href={`/blog/tag/${tag.slug}/`} className="inline-flex min-h-11 items-center rounded-full bg-tint px-4 text-sm font-semibold text-navy hover:bg-tint-deep">
                       {tag.name}
                     </Link>
                   </li>

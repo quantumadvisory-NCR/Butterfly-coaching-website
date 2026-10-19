@@ -41,10 +41,47 @@ const social = [
 ] as const satisfies readonly Field[];
 
 const header = [
-  { type: "boolean", name: "announcementEnabled", label: "Show the announcement bar" },
-  { type: "text", name: "announcementText", label: "Announcement text", maxLength: 140 },
-  { type: "link", name: "announcementLink", label: "Announcement link" },
+  { type: "boolean", name: "announcementEnabled", label: "Show the announcement bar", help: "The thin yellow strip above the menu." },
+  {
+    type: "text",
+    name: "announcementText",
+    label: "Announcement text",
+    help: 'Write {date} where the cohort date should appear, e.g. "Next ACC cohort starts {date} · Limited seats". The bar stays hidden while {date} has no date, or once that date has passed.',
+    maxLength: 140,
+  },
+  {
+    type: "date",
+    name: "announcementDate",
+    label: "Cohort start date",
+    help: "Shown in place of {date}, written out in full (for example 12 January 2027).",
+  },
+  { type: "link", name: "announcementLink", label: "Announcement link", help: 'For example "Reserve yours" linking to /level-1-acc-coach-program/.' },
   { type: "link", name: "cta", label: "Header button" },
+] as const satisfies readonly Field[];
+
+const support = [
+  { type: "boolean", name: "enabled", label: 'Show the "Need help?" button', help: "A small button in the bottom corner of every page, next to WhatsApp." },
+  { type: "text", name: "heading", label: "Panel heading", maxLength: 80 },
+  { type: "textarea", name: "body", label: "Panel text", maxLength: 240, rows: 2 },
+  {
+    type: "list",
+    name: "links",
+    label: "Options in the panel",
+    itemLabel: "Option",
+    titleField: "label",
+    max: 5,
+    fields: [
+      { type: "text", name: "label", label: "Label", required: true, maxLength: 40 },
+      {
+        type: "url",
+        name: "href",
+        label: "Link",
+        required: true,
+        help: 'A page such as /coaching-certifications/, or one of the shortcuts "booking", "whatsapp" or "phone".',
+      },
+      { type: "text", name: "description", label: "Short description", maxLength: 80 },
+    ],
+  },
 ] as const satisfies readonly Field[];
 
 const footer = [
@@ -91,8 +128,13 @@ export const BODY_FONTS = [
 const theme = [
   { type: "color", name: "primary", label: "Primary blue", help: "Links, secondary buttons and highlights." },
   { type: "color", name: "navy", label: "Navy", help: "Headings and dark sections." },
-  { type: "color", name: "accent", label: "Accent yellow", help: "Primary buttons." },
-  { type: "color", name: "sky", label: "Pale blue background" },
+  { type: "color", name: "accent", label: "Accent yellow", help: "Primary buttons and the announcement bar." },
+  {
+    type: "color",
+    name: "background",
+    label: "Page background",
+    help: "The cream behind every page of the website and the admin. The brand value is #F7EFE2.",
+  },
   { type: "color", name: "ink", label: "Body text" },
   { type: "select", name: "headingFont", label: "Heading typeface", options: HEADING_FONTS },
   { type: "select", name: "bodyFont", label: "Body typeface", options: BODY_FONTS },
@@ -111,7 +153,8 @@ export const SETTINGS_GROUPS = {
   brand: { label: "Brand and logo", fields: brand },
   contact: { label: "Contact details", fields: contact },
   social: { label: "Social links", fields: social },
-  header: { label: "Header", fields: header },
+  header: { label: "Header and announcement", fields: header },
+  support: { label: "Need help panel", fields: support },
   footer: { label: "Footer", fields: footer },
   newsletter: { label: "Newsletter", fields: newsletter },
   integrations: { label: "Booking and analytics", fields: integrations },
@@ -125,18 +168,19 @@ export type SiteSettings = {
   contact: DataOf<typeof contact>;
   social: DataOf<typeof social>;
   header: DataOf<typeof header>;
+  support: DataOf<typeof support>;
   footer: DataOf<typeof footer>;
   newsletter: DataOf<typeof newsletter>;
   integrations: DataOf<typeof integrations>;
   theme: DataOf<typeof theme>;
 };
 
-/** Design tokens. Colour values verified against ipeccoaching.com: see docs/BRAND_SYSTEM.md. */
+/** Design tokens: see docs/BRAND_SYSTEM.md. The cream page background #F7EFE2 is the brand's principal colour. */
 export const DEFAULT_THEME: SiteSettings["theme"] = {
   primary: "#0068bf",
   navy: "#0f256a",
   accent: "#f5ba00",
-  sky: "#eff7ff",
+  background: "#f7efe2",
   ink: "#444746",
   headingFont: "jakarta",
   bodyFont: "jakarta",
@@ -164,10 +208,23 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   },
   social: { linkedin: "", instagram: "", facebook: "", youtube: "", x: "" },
   header: {
+    // Off until the owner sets a confirmed cohort date: the bar never shows a placeholder.
     announcementEnabled: false,
-    announcementText: "",
-    announcementLink: { label: "", href: "" },
+    announcementText: "Next ACC cohort starts {date} · Limited seats",
+    announcementDate: "",
+    announcementLink: { label: "Reserve yours", href: "/level-1-acc-coach-program/" },
     cta: { label: "Book a discovery call", href: "booking" },
+  },
+  support: {
+    enabled: true,
+    heading: "Not sure where to start?",
+    body: "Tell us what you're looking for and we'll help you find the right next step.",
+    links: [
+      { label: "Explore programmes", href: "/coaching-certifications/", description: "Compare the ACC, PCC and MCC pathways" },
+      { label: "Book a discovery call", href: "booking", description: "A short conversation about your goals" },
+      { label: "WhatsApp us", href: "whatsapp", description: "Quick questions, answered by our team" },
+      { label: "Send an enquiry", href: "/contact-us/#enquire", description: "We reply by email or phone" },
+    ],
   },
   footer: {
     tagline: "Coach education, mentoring and leadership development built on practice, reflection and feedback.",
@@ -198,7 +255,7 @@ export function parseSettingsGroup<K extends SettingsKey>(key: K, value: unknown
     data[field.name] = parsed.success ? (parsed.data as Record<string, unknown>)[field.name] : fallback[field.name];
   }
   if (key === "theme") {
-    for (const token of ["primary", "navy", "accent", "sky", "ink"] as const) {
+    for (const token of ["primary", "navy", "accent", "background", "ink"] as const) {
       if (!HEX.test(String(data[token]))) data[token] = DEFAULT_THEME[token];
     }
   }

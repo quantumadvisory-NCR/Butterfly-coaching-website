@@ -1,4 +1,5 @@
 import { LinkedinLogoIcon, QuotesIcon } from "@phosphor-icons/react/dist/ssr";
+import { type Story, StoryShowcase } from "@/components/site/story-showcase";
 import { ButtonLink } from "@/components/ui/button-link";
 import { MediaImage } from "@/components/ui/media-image";
 import { Section, SectionHeading } from "@/components/ui/section";
@@ -12,7 +13,7 @@ function FacultyCard({ person, ctx }: { person: FacultyView; ctx: BlockContext }
   const photo = pickMedia(ctx, person.photoId);
   return (
     <li className="reveal flex flex-col">
-      <div className="relative aspect-[4/5] overflow-hidden rounded-card bg-sky-deep">
+      <div className="relative aspect-[4/5] overflow-hidden rounded-card bg-tint-deep">
         {photo && (
           <MediaImage
             media={photo}
@@ -63,7 +64,7 @@ export async function ProfilesBlock({ data, ctx }: BlockProps<"profiles">) {
           <div className="grid items-center gap-9 lg:grid-cols-12 lg:gap-14">
             <div className="reveal relative mx-auto w-full max-w-md lg:col-span-5 lg:max-w-none">
               <div aria-hidden className="absolute -right-3 top-8 size-24 rounded-full bg-accent md:size-32 lg:-right-6" />
-              <div className="relative aspect-[5/6] overflow-hidden rounded-card rounded-tl-[var(--radius-wing)] bg-sky-deep">
+              <div className="relative aspect-[5/6] overflow-hidden rounded-card rounded-tl-[var(--radius-wing)] bg-tint-deep">
                 {photo && (
                   <MediaImage
                     media={photo}
@@ -102,7 +103,7 @@ export async function ProfilesBlock({ data, ctx }: BlockProps<"profiles">) {
         )}
 
         {showTeam && (
-          <div className={cn(showFounder && "mt-16 border-t border-sky-line pt-14 md:mt-20 md:pt-16")}>
+          <div className={cn(showFounder && "mt-16 border-t border-line pt-14 md:mt-20 md:pt-16")}>
             {!showFounder && <SectionHeading heading={data.heading} intro={data.intro} />}
             {showFounder && <h3 className="text-h2">Faculty and mentor coaches</h3>}
             <ul className="mt-9 grid gap-x-6 gap-y-11 sm:grid-cols-2 lg:grid-cols-4">
@@ -132,7 +133,7 @@ function Attribution({ t, ctx, size = "md" }: { t: TestimonialView; ctx: BlockCo
   return (
     <figcaption className="mt-6 flex items-center gap-3.5">
       {photo ? (
-        <span className={cn("relative shrink-0 overflow-hidden rounded-full bg-sky-deep", size === "lg" ? "size-16" : "size-12")}>
+        <span className={cn("relative shrink-0 overflow-hidden rounded-full bg-tint-deep", size === "lg" ? "size-16" : "size-12")}>
           <MediaImage media={photo} fill alt="" sizes="64px" className="!object-top" />
         </span>
       ) : (
@@ -153,7 +154,7 @@ export function TestimonialGrid({ items, ctx }: { items: TestimonialView[]; ctx:
   return (
     <div className="gap-6 [column-fill:_balance] md:columns-2 lg:columns-3">
       {items.map((t) => (
-        <figure key={t.id} className="mb-6 break-inside-avoid rounded-card border border-sky-line bg-surface p-6 md:p-7">
+        <figure key={t.id} className="mb-6 break-inside-avoid rounded-card border border-line bg-surface p-6 md:p-7">
           <QuotesIcon aria-hidden weight="fill" className="size-7 text-accent" />
           <blockquote className="mt-3 leading-relaxed text-ink">
             <p>“{t.quote}”</p>
@@ -172,44 +173,37 @@ export async function TestimonialsBlock({ data, ctx }: BlockProps<"testimonials"
   if (items.length === 0) return null;
   const cta = usableLink(data.cta, ctx.settings);
 
-  // Featured: one lead story with supporting quotes beside it.
+  // Featured: an editorial showcase, one story told large with the others to choose from.
   if (data.source === "featured") {
-    const [lead, ...rest] = items;
-    if (!lead) return null;
+    const stories: Story[] = items.map((t) => ({
+      id: t.id,
+      name: t.name,
+      role: [t.roleTitle, t.organisation].filter(Boolean).join(", "),
+      excerpt: t.excerpt,
+      quote: t.quote,
+      photo: pickMedia(ctx, t.photoId),
+    }));
     return (
       <Section background={data.background} anchor={data.anchor}>
         <div className="container-site">
-          <SectionHeading heading={data.heading} intro={data.intro} />
-          <div className="mt-9 grid gap-5 md:mt-12 md:gap-6 lg:grid-cols-12">
-            <figure className={cn("reveal relative overflow-hidden rounded-card bg-navy p-7 text-white md:p-10 lg:p-12", rest.length ? "lg:col-span-7" : "lg:col-span-12")}>
-              <QuotesIcon aria-hidden weight="fill" className="size-10 text-accent" />
-              <blockquote className="mt-5 font-display text-[clamp(1.25rem,1.05rem+0.9vw,1.75rem)] font-medium leading-snug tracking-tight">
-                <p>“{lead.excerpt || lead.quote}”</p>
-              </blockquote>
-              <div className="[&_.text-muted]:text-white/70 [&_.text-navy]:text-white">
-                <Attribution t={lead} ctx={ctx} size="lg" />
-              </div>
-            </figure>
-            {rest.length > 0 && (
-              <div className="grid gap-5 md:grid-cols-2 md:gap-6 lg:col-span-5 lg:grid-cols-1">
-                {rest.map((t) => (
-                  <figure key={t.id} className="reveal rounded-card border border-sky-line bg-surface p-6 md:p-7">
-                    <blockquote className="text-[1.0313rem] leading-relaxed text-navy">
-                      <p>“{t.excerpt || t.quote}”</p>
-                    </blockquote>
-                    <Attribution t={t} ctx={ctx} />
-                  </figure>
-                ))}
-              </div>
-            )}
-          </div>
-          {cta && (
-            <div className="mt-9">
-              <ButtonLink href={cta.href} variant="secondary">
+          <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+            <div className="max-w-2xl">
+              <p className="eyebrow mb-3 flex items-center gap-2">
+                <span aria-hidden className="h-0.5 w-6 rounded-full bg-accent" />
+                In their own words
+              </p>
+              <h2 className="text-h2">{data.heading}</h2>
+              {data.intro && <p className="mt-4 max-w-xl text-lead text-ink">{data.intro}</p>}
+            </div>
+            {cta && (
+              <ButtonLink href={cta.href} variant="secondary" className="self-start md:shrink-0 md:self-auto">
                 {cta.label}
               </ButtonLink>
-            </div>
-          )}
+            )}
+          </div>
+          <div className="reveal mt-9 md:mt-11">
+            <StoryShowcase stories={stories} label="Choose a student story" />
+          </div>
         </div>
       </Section>
     );

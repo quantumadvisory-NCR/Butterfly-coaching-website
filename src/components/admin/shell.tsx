@@ -25,7 +25,7 @@ import {
   FileArrowDownIcon,
 } from "@phosphor-icons/react";
 import Image from "next/image";
-import Link from "next/link";
+import { AdminLink as Link } from "@/components/admin/admin-link";
 import { usePathname } from "next/navigation";
 import { Dialog, VisuallyHidden } from "radix-ui";
 import { type ComponentType, useEffect, useState } from "react";
@@ -176,7 +176,7 @@ export function AdminShell({
   );
 
   return (
-    <div className="min-h-dvh bg-mist lg:grid lg:grid-cols-[17rem_minmax(0,1fr)]">
+    <div className="min-h-dvh bg-cream lg:grid lg:grid-cols-[17rem_minmax(0,1fr)]">
       {/* Desktop sidebar */}
       <aside className="on-dark sticky top-0 hidden h-dvh flex-col gap-6 overflow-y-auto bg-navy p-4 lg:flex">
         <div className="pt-1">{brand}</div>

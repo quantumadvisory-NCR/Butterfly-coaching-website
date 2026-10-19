@@ -7,6 +7,7 @@ import { ButtonLink } from "@/components/ui/button-link";
 import { MediaImage } from "@/components/ui/media-image";
 import { Section, SectionHeading } from "@/components/ui/section";
 import { getFaqs, getPosts } from "@/lib/content/public";
+import { whatsappHref } from "@/lib/settings";
 import { formatDate, readingMinutes } from "@/lib/utils";
 import { JsonLd } from "@/components/site/json-ld";
 import { type BlockProps, pickMedia, usableLink } from "./types";
@@ -16,21 +17,53 @@ export async function FaqBlock({ data, ctx }: BlockProps<"faq">) {
   const items = (await getFaqs()).filter((faq) => faq.groupKey === group && !faq.programmeId);
   if (items.length === 0) return null;
   const cta = usableLink(data.cta, ctx.settings);
+  const whatsapp = whatsappHref(ctx.settings.contact);
+  const helpCard = Boolean(data.helpHeading);
   return (
     <Section background={data.background} anchor={data.anchor}>
       <div className="container-site grid gap-9 lg:grid-cols-12 lg:gap-12">
-        <div className="lg:col-span-4">
-          <SectionHeading heading={data.heading} intro={data.intro} />
-          {cta && (
-            <div className="mt-7">
-              <ButtonLink href={cta.href} variant="secondary">
-                {cta.label}
-              </ButtonLink>
+        <div className="lg:col-span-5 xl:col-span-4">
+          <div className="lg:sticky lg:top-[calc(var(--header-height)+2rem)]">
+            <div>
+              {/* A thin yellow wing-stroke above the heading: the butterfly, at a whisper. */}
+              <svg aria-hidden viewBox="0 0 120 60" className="pointer-events-none mb-3 h-9 w-[4.5rem] text-accent">
+                <path d="M60 52 C48 22 26 6 12 10 C0 14 2 34 16 42 C30 50 48 52 60 52 Z" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+                <path d="M60 52 C72 22 94 6 108 10 C120 14 118 34 104 42 C90 50 72 52 60 52 Z" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" opacity="0.55" />
+              </svg>
+              <SectionHeading heading={data.heading} intro={data.intro} />
             </div>
-          )}
+            {helpCard ? (
+              <div className="mt-8 rounded-card border border-line bg-surface p-6">
+                <p className="font-display text-lg font-bold text-navy">{data.helpHeading}</p>
+                {data.helpText && <p className="mt-1.5 text-[0.9688rem] text-ink">{data.helpText}</p>}
+                {(cta || whatsapp) && (
+                  <div className="mt-5 flex flex-col gap-2.5 min-[26rem]:flex-row min-[26rem]:flex-wrap">
+                    {cta && (
+                      <ButtonLink href={cta.href} size="sm">
+                        {cta.label}
+                      </ButtonLink>
+                    )}
+                    {whatsapp && (
+                      <ButtonLink href={whatsapp} variant="quiet" size="sm" trackLabel="FAQ: WhatsApp" icon={<WhatsappLogoIcon aria-hidden weight="fill" className="size-4 text-[#0f7a5f]" />}>
+                        WhatsApp us
+                      </ButtonLink>
+                    )}
+                  </div>
+                )}
+              </div>
+            ) : (
+              cta && (
+                <div className="mt-7">
+                  <ButtonLink href={cta.href} variant="secondary">
+                    {cta.label}
+                  </ButtonLink>
+                </div>
+              )
+            )}
+          </div>
         </div>
-        <div className="lg:col-span-8">
-          <Accordion items={items.map((f) => ({ id: f.id, question: f.question, answerHtml: f.answerHtml }))} />
+        <div className="lg:col-span-7 xl:col-span-8">
+          <Accordion numbered items={items.map((f) => ({ id: f.id, question: f.question, answerHtml: f.answerHtml }))} />
         </div>
       </div>
       <FaqJsonLd items={items} />
@@ -96,7 +129,7 @@ export function CtaBlock({ data, ctx }: BlockProps<"cta">) {
 
 export function NewsletterBlock({ data, ctx }: BlockProps<"newsletter">) {
   return (
-    <Section background={data.background === "white" ? "white" : "sky"} anchor={data.anchor}>
+    <Section background={data.background} anchor={data.anchor}>
       <div className="container-site grid items-center gap-7 lg:grid-cols-2 lg:gap-14">
         <SectionHeading heading={data.heading} intro={data.body} />
         <NewsletterForm consentText={ctx.settings.newsletter.consentText} idPrefix="block" />
@@ -125,7 +158,7 @@ export async function BlogTeasersBlock({ data, ctx }: BlockProps<"blog_teasers">
             const image = pickMedia(ctx, post.featuredImageId);
             return (
               <li key={post.id} className="reveal group relative isolate flex flex-col">
-                <div className="relative aspect-[16/10] overflow-hidden rounded-card bg-sky-deep">
+                <div className="relative aspect-[16/10] overflow-hidden rounded-card bg-tint-deep">
                   {image && (
                     <MediaImage
                       media={image}

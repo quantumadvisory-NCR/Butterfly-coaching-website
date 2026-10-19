@@ -23,6 +23,32 @@ describe.skipIf(!hasDatabase)("database", () => {
     expect(unprotected).toEqual([]);
   });
 
+  it("never pipelines queries, which Supabase's transaction pooler cannot handle", async () => {
+    db();
+    const pool = (globalThis as unknown as { __bcaDb?: { sql?: { options: Record<string, unknown> } } }).__bcaDb?.sql;
+    expect(pool?.options.max_pipeline).toBe(0);
+    expect(pool?.options.prepare).toBe(false);
+    // Many concurrent parameterless queries (the pattern that hung the live admin editors) all complete.
+    const results = await Promise.all(Array.from({ length: 24 }, (_, i) => db().execute(sql.raw(`select ${i} as n`))));
+    expect(results.map((rows) => Number([...rows][0]!.n))).toEqual(Array.from({ length: 24 }, (_, i) => i));
+  });
+
+  it("still runs transactions, on their own pool, alongside concurrent queries", async () => {
+    // With pipelining switched off on the main pool, postgres.js refuses transactions there (UNSAFE_TRANSACTION),
+    // so they must go to the separate transaction pool. Read-only: nothing is written.
+    const [inTransaction, ...outside] = await Promise.all([
+      db().transaction(async (tx) => {
+        const [a] = await tx.execute<{ n: number }>(sql`select 1::int as n`);
+        const [b] = await tx.execute<{ inside: boolean }>(sql`select now() = statement_timestamp() as inside`);
+        return { n: a!.n, inside: b!.inside };
+      }),
+      ...Array.from({ length: 8 }, (_, i) => db().execute(sql.raw(`select ${i} as n`))),
+    ]);
+    // Inside a transaction now() is fixed at its start, so it differs from the statement time.
+    expect(inTransaction).toEqual({ n: 1, inside: false });
+    expect(outside).toHaveLength(8);
+  });
+
   it("grants no policies to anonymous visitors (deny by default)", async () => {
     const rows = await db().execute<{ n: number }>(sql`select count(*)::int as n from pg_policies where schemaname = 'public'`);
     expect(rows[0]!.n).toBe(0);

@@ -8,16 +8,43 @@ Nothing below was guessed. Where the existing website was unclear or contradicte
 
 ### 1. The accreditation claim in the hero
 
-The homepage says, as instructed:
+The homepage (redesigned October 2026) says, as instructed:
 
-> **Learning that stays**
+> ICF-accredited coach education · India
+> **Learning that stays. Coaching that transforms.**
 > ICF-accredited coach training built on practice, spaced review and founder mentoring.
 
-- [ ] Confirm BCA's current ICF accreditation covers what this sentence implies. The existing site states that BCA holds Level 1 and Level 2 accreditation.
+- [ ] Confirm BCA's current ICF accreditation covers what these lines imply. The site shows the ICF Level 1, 2 and 3 accreditation badges.
 - [ ] Confirm "spaced review" describes something learners actually experience in your programmes. The phrase comes from the brief; the existing site does not use it.
 - [ ] Confirm "founder mentoring" is accurate for every programme, including cohorts led by other faculty.
 
 Change it in: **Pages > Home > Hero**.
+
+### 1a. Hero proof points, trust line and photograph (added October 2026)
+
+| Shown | Source | Please check |
+|---|---|---|
+| "ICF-accredited" | Accreditation badges already on the site | Same check as item 1 |
+| "Founded by Anup Mittal, MCC" | Founder profile | None expected |
+| "4,100+ hours of founder coaching" | Founder profile: "more than 4,100 hours of one-to-one coaching" | The figure is Anup's own one-to-one hours, worded so it is not read as BCA's total |
+| Card on the photo: "Anup Mittal, MCC / Master Certified Coach, ICF" | Founder profile | None expected |
+| "Join coaches learning through practice, reflection and feedback." | Written to avoid an unverified number | Replace with a count of coaches trained only once that number is confirmed |
+| Small learner photos beside that line | Photos of people with approved testimonials | Same consent as item 5 |
+| Hero photograph: Anup with learners at a practice table | Authentic BCA photo (`gallery/anup-with-table-group.jpg`) | Confirm consent of the people pictured. A background-removed ("cut-out") practice-lab photo of Anup with two or three learners would be the ideal replacement: upload it and choose it as the hero image |
+
+Change them in: **Pages > Home > Hero** (proof points, trust line, photo crop and credential card).
+
+### 1b. Figures in the statistics strip (added October 2026)
+
+Only figures that already appear on the site are published: **4,100+** hours of one-to-one coaching by our founder, **3** ICF credential pathways, **24+** years of the founder's professional experience, founded **2022**.
+
+- [ ] **Coaches trained** and **Organisations partnered** are prepared but empty, so they are hidden. Enter each number in **Pages > Home > Statistics strip** only once it is verified. Up to four filled-in figures show, in list order, so move a new one up the list if it should replace one of the four.
+
+### 1c. Announcement bar (added October 2026)
+
+The yellow strip above the menu reads "Next ACC cohort starts {date} · Limited seats · Reserve yours". It is switched off, and it stays hidden until a cohort date is entered, so visitors never see a placeholder. It also hides itself the day after that date.
+
+- [ ] When the next ACC cohort date is confirmed: **Settings > Header and announcement**, enter the **Cohort start date**, tick **Show the announcement bar**, save.
 
 ### 2. Level 3 (MCC) accreditation
 

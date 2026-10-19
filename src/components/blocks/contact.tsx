@@ -16,7 +16,7 @@ import type { BlockProps } from "./types";
 function DetailRow({ icon, label, children }: { icon: ReactNode; label: string; children: ReactNode }) {
   return (
     <li className="flex gap-4">
-      <span className="grid size-11 shrink-0 place-items-center rounded-full bg-sky text-primary">{icon}</span>
+      <span className="grid size-11 shrink-0 place-items-center rounded-full bg-tint text-primary">{icon}</span>
       <div className="min-w-0">
         <p className="text-sm text-muted">{label}</p>
         <div className="font-semibold text-navy [overflow-wrap:anywhere]">{children}</div>
@@ -108,7 +108,7 @@ export async function ContactFormBlock({ data, ctx }: BlockProps<"contact_form">
       <div className="container-site grid gap-10 lg:grid-cols-12 lg:gap-14">
         <div className={data.showDetails ? "lg:col-span-7" : "mx-auto w-full max-w-3xl lg:col-span-12"}>
           <SectionHeading heading={data.heading} intro={data.intro} />
-          <div className="mt-8 rounded-card border border-sky-line bg-surface p-5 shadow-card sm:p-7 md:p-9">
+          <div className="mt-8 rounded-card border border-line bg-surface p-5 shadow-card sm:p-7 md:p-9">
             <EnquiryForm type={data.formType as "general"} programmes={programmes} />
           </div>
         </div>

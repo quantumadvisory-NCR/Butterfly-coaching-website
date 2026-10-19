@@ -1,5 +1,5 @@
 import { desc } from "drizzle-orm";
-import Link from "next/link";
+import { AdminLink as Link } from "@/components/admin/admin-link";
 import { Card, Notice, PageHeader, StatusBadge } from "@/components/admin/ui";
 import { contentCounts } from "@/lib/admin/entity-store";
 import { hasRole, requireUser } from "@/lib/auth";

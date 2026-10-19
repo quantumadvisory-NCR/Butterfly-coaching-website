@@ -3,7 +3,7 @@
  * Callers must have authorised the user first (see app/admin/actions).
  */
 import "server-only";
-import { asc, desc, eq, isNull, sql } from "drizzle-orm";
+import { type AnyColumn, and, asc, desc, eq, isNull, sql } from "drizzle-orm";
 import type { Option, ReferenceTarget } from "@/lib/blocks/fields";
 import { db } from "@/lib/db";
 import * as s from "@/lib/db/schema";
@@ -57,10 +57,21 @@ export async function referenceOptions(): Promise<Record<ReferenceTarget, Option
 
 /* ---- list ---------------------------------------------------------------- */
 
-export async function listEntities(key: EntityKey): Promise<ListRow[]> {
+/**
+ * Rows for a content type's list screen. Each query selects only the columns the
+ * list shows (never article bodies or rich text). Pass `only` to fetch the row
+ * for a single record, which the editor and the audit log use for its title.
+ */
+export async function listEntities(key: EntityKey, only?: string): Promise<ListRow[]> {
+  const one = <T extends { id: AnyColumn }>(table: T) => (only ? eq(table.id, only) : undefined);
   switch (key) {
     case "programmes": {
-      const rows = await db().select().from(s.programmes).orderBy(asc(s.programmes.position));
+      const t = s.programmes;
+      const rows = await db()
+        .select({ id: t.id, name: t.name, path: t.path, status: t.status, isFeatured: t.isFeatured, kind: t.kind, accreditationStatus: t.accreditationStatus })
+        .from(t)
+        .where(one(t))
+        .orderBy(asc(t.position));
       return rows.map((r) => ({
         id: r.id,
         title: r.name,
@@ -71,11 +82,21 @@ export async function listEntities(key: EntityKey): Promise<ListRow[]> {
       }));
     }
     case "faculty": {
-      const rows = await db().select().from(s.faculty).orderBy(asc(s.faculty.position));
+      const t = s.faculty;
+      const rows = await db()
+        .select({ id: t.id, name: t.name, credential: t.credential, roleTitle: t.roleTitle, status: t.status, isFounder: t.isFounder })
+        .from(t)
+        .where(one(t))
+        .orderBy(asc(t.position));
       return rows.map((r) => ({ id: r.id, title: r.name, subtitle: [r.credential, r.roleTitle].filter(Boolean).join(", "), status: r.status, flags: r.isFounder ? ["Founder"] : [] }));
     }
     case "testimonials": {
-      const rows = await db().select().from(s.testimonials).orderBy(asc(s.testimonials.position));
+      const t = s.testimonials;
+      const rows = await db()
+        .select({ id: t.id, name: t.name, quote: sql<string>`left(${t.quote}, 120)`, status: t.status, isFeatured: t.isFeatured })
+        .from(t)
+        .where(one(t))
+        .orderBy(asc(t.position));
       return rows.map((r) => ({
         id: r.id,
         title: r.name,
@@ -85,11 +106,21 @@ export async function listEntities(key: EntityKey): Promise<ListRow[]> {
       }));
     }
     case "faqs": {
-      const rows = await db().select().from(s.faqs).where(isNull(s.faqs.programmeId)).orderBy(asc(s.faqs.groupKey), asc(s.faqs.position));
+      const t = s.faqs;
+      const rows = await db()
+        .select({ id: t.id, question: t.question, groupKey: t.groupKey, status: t.status })
+        .from(t)
+        .where(and(isNull(t.programmeId), one(t)))
+        .orderBy(asc(t.groupKey), asc(t.position));
       return rows.map((r) => ({ id: r.id, title: r.question, subtitle: `Group: ${r.groupKey}`, status: r.status }));
     }
     case "posts": {
-      const rows = await db().select().from(s.posts).orderBy(desc(s.posts.publishedAt), desc(s.posts.createdAt));
+      const t = s.posts;
+      const rows = await db()
+        .select({ id: t.id, title: t.title, slug: t.slug, status: t.status, publishedAt: t.publishedAt })
+        .from(t)
+        .where(one(t))
+        .orderBy(desc(t.publishedAt), desc(t.createdAt));
       return rows.map((r) => ({
         id: r.id,
         title: r.title,
@@ -99,19 +130,31 @@ export async function listEntities(key: EntityKey): Promise<ListRow[]> {
       }));
     }
     case "categories": {
-      const rows = await db().select().from(s.categories).orderBy(asc(s.categories.name));
+      const t = s.categories;
+      const rows = await db().select({ id: t.id, name: t.name, slug: t.slug }).from(t).where(one(t)).orderBy(asc(t.name));
       return rows.map((r) => ({ id: r.id, title: r.name, subtitle: `/blog/category/${r.slug}/`, href: `/blog/category/${r.slug}/` }));
     }
     case "tags": {
-      const rows = await db().select().from(s.tags).orderBy(asc(s.tags.name));
+      const t = s.tags;
+      const rows = await db().select({ id: t.id, name: t.name, slug: t.slug }).from(t).where(one(t)).orderBy(asc(t.name));
       return rows.map((r) => ({ id: r.id, title: r.name, subtitle: `/blog/tag/${r.slug}/`, href: `/blog/tag/${r.slug}/` }));
     }
     case "resources": {
-      const rows = await db().select().from(s.resources).orderBy(asc(s.resources.position));
+      const t = s.resources;
+      const rows = await db()
+        .select({ id: t.id, title: t.title, description: t.description, status: t.status, fileId: t.fileId })
+        .from(t)
+        .where(one(t))
+        .orderBy(asc(t.position));
       return rows.map((r) => ({ id: r.id, title: r.title, subtitle: r.description, status: r.status, flags: r.fileId ? [] : ["No file attached"] }));
     }
     case "redirects": {
-      const rows = await db().select().from(s.redirects).orderBy(asc(s.redirects.sourcePath));
+      const t = s.redirects;
+      const rows = await db()
+        .select({ id: t.id, sourcePath: t.sourcePath, destination: t.destination, statusCode: t.statusCode, isActive: t.isActive })
+        .from(t)
+        .where(one(t))
+        .orderBy(asc(t.sourcePath));
       return rows.map((r) => ({
         id: r.id,
         title: r.sourcePath,
@@ -120,6 +163,12 @@ export async function listEntities(key: EntityKey): Promise<ListRow[]> {
       }));
     }
   }
+}
+
+/** The list row for one record: its title, status and public address. */
+export async function entityRow(key: EntityKey, id: string): Promise<ListRow | null> {
+  const [row] = await listEntities(key, id);
+  return row ?? null;
 }
 
 /* ---- load ---------------------------------------------------------------- */
@@ -277,15 +326,16 @@ type ContentStatus = (typeof s.CONTENT_STATUS)[number];
 
 /** True when another page, programme or post already answers at this path. */
 async function pathTakenBy(path: string, except: { table: "pages" | "programmes" | "posts"; id: string | null }): Promise<string | null> {
-  const [page] = await db().select({ id: s.pages.id }).from(s.pages).where(eq(s.pages.path, path)).limit(1);
-  if (page && !(except.table === "pages" && except.id === page.id)) return "a page";
-  const [programme] = await db().select({ id: s.programmes.id, kind: s.programmes.kind }).from(s.programmes).where(eq(s.programmes.path, path)).limit(1);
-  if (programme && !(except.table === "programmes" && except.id === programme.id)) return "a programme";
   const segments = path.split("/").filter(Boolean);
-  if (segments.length === 1) {
-    const [post] = await db().select({ id: s.posts.id }).from(s.posts).where(eq(s.posts.slug, segments[0]!)).limit(1);
-    if (post && !(except.table === "posts" && except.id === post.id)) return "an article";
-  }
+  // Three independent lookups, run together rather than one after another.
+  const [[page], [programme], [post]] = await Promise.all([
+    db().select({ id: s.pages.id }).from(s.pages).where(eq(s.pages.path, path)).limit(1),
+    db().select({ id: s.programmes.id }).from(s.programmes).where(eq(s.programmes.path, path)).limit(1),
+    segments.length === 1 ? db().select({ id: s.posts.id }).from(s.posts).where(eq(s.posts.slug, segments[0]!)).limit(1) : Promise.resolve([]),
+  ]);
+  if (page && !(except.table === "pages" && except.id === page.id)) return "a page";
+  if (programme && !(except.table === "programmes" && except.id === programme.id)) return "a programme";
+  if (post && !(except.table === "posts" && except.id === post.id)) return "an article";
   return null;
 }
 
@@ -576,8 +626,7 @@ export async function removeEntity(key: EntityKey, id: string): Promise<void> {
 }
 
 export async function entityTitle(key: EntityKey, id: string): Promise<string> {
-  const rows = await listEntities(key);
-  return rows.find((row) => row.id === id)?.title ?? id;
+  return (await entityRow(key, id))?.title ?? id;
 }
 
 /** Counts used on the admin dashboard. */

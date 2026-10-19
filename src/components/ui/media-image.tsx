@@ -17,6 +17,8 @@ type Props = {
   alt?: string;
   className?: string;
   quality?: 70 | 75 | 85;
+  /** Overrides the focal point, e.g. "30% 40%", when one crop needs a different emphasis. */
+  position?: string;
 };
 
 /**
@@ -24,7 +26,7 @@ type Props = {
  * reserved dimensions (no layout shift), lazy loading by default and
  * focal-point cropping.
  */
-export function MediaImage({ media, sizes, fill, preload, alt, className, quality = 75 }: Props) {
+export function MediaImage({ media, sizes, fill, preload, alt, className, quality = 75, position }: Props) {
   if (!media || media.kind !== "image") return null;
   const altText = alt ?? media.alt;
   const shared = {
@@ -37,7 +39,7 @@ export function MediaImage({ media, sizes, fill, preload, alt, className, qualit
     unoptimized: isVector(media),
   };
   if (fill) {
-    return <Image {...shared} alt={altText} fill className={cn("object-cover", className)} style={{ objectPosition: focal(media) }} />;
+    return <Image {...shared} alt={altText} fill className={cn("object-cover", className)} style={{ objectPosition: position ?? focal(media) }} />;
   }
   return (
     <Image

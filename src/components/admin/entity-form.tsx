@@ -65,7 +65,6 @@ export function EntityForm({ entityKey, id, initial, refOptions, media, canDelet
         setDirty(false);
         setStatus({ tone: "success", text: result.message ?? "Saved." });
         if (!id) router.replace(`/admin/${config.route}/${result.id}/?saved=1`);
-        else router.refresh();
       } else {
         setErrors(result.errors ?? {});
         setStatus({ tone: "error", text: result.message });
@@ -132,7 +131,6 @@ export function EntityForm({ entityKey, id, initial, refOptions, media, canDelet
                 onDone={() => {
                   setDirty(false);
                   router.push(`/admin/${config.route}/`);
-                  router.refresh();
                 }}
               />
             )}

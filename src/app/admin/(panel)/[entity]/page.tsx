@@ -1,6 +1,6 @@
 import { PlusIcon } from "@phosphor-icons/react/dist/ssr";
 import type { Metadata } from "next";
-import Link from "next/link";
+import { AdminLink as Link } from "@/components/admin/admin-link";
 import { notFound } from "next/navigation";
 import { EmptyState, PageHeader, RecordCell, RecordRow, RecordTable, StatusBadge } from "@/components/admin/ui";
 import { entityByRoute } from "@/lib/admin/entities";
@@ -76,7 +76,7 @@ export default async function EntityListPage({ params }: Props) {
                   <span className="flex flex-wrap gap-1.5">
                     {row.status && <StatusBadge status={row.status} label={config.key === "redirects" ? (row.status === "published" ? "Active" : "Off") : undefined} />}
                     {row.flags?.map((flag) => (
-                      <span key={flag} className="inline-flex items-center whitespace-nowrap rounded-full bg-sky px-2.5 py-0.5 text-xs font-bold text-primary-strong">
+                      <span key={flag} className="inline-flex items-center whitespace-nowrap rounded-full bg-tint px-2.5 py-0.5 text-xs font-bold text-primary-strong">
                         {flag}
                       </span>
                     ))}

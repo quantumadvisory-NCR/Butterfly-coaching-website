@@ -17,7 +17,7 @@ export function GalleryBlock({ data, ctx }: BlockProps<"gallery">) {
           {images.map((item, i) => (
             <li key={`${item.media!.id}-${i}`} className="mb-5 break-inside-avoid">
               <figure>
-                <div className="overflow-hidden rounded-card bg-sky-deep">
+                <div className="overflow-hidden rounded-card bg-tint-deep">
                   <MediaImage media={item.media} sizes="(min-width: 64rem) 31vw, (min-width: 30rem) 46vw, 100vw" />
                 </div>
                 {(item.caption || item.media!.caption) && (
@@ -58,7 +58,7 @@ export async function ResourceDownloadsBlock({ data, ctx }: BlockProps<"resource
     // Nothing published yet: stay invisible on the live site, explain in preview.
     return ctx.preview ? (
       <Section background={data.background}>
-        <p className="container-site rounded-card border border-dashed border-sky-line p-6 text-muted">
+        <p className="container-site rounded-card border border-dashed border-line p-6 text-muted">
           Resource downloads: no resources are published yet. Add them under Resources in the admin.
         </p>
       </Section>
@@ -70,8 +70,8 @@ export async function ResourceDownloadsBlock({ data, ctx }: BlockProps<"resource
         <SectionHeading heading={data.heading} intro={data.intro} />
         <ul className="mt-9 grid gap-5 md:mt-12 md:grid-cols-2">
           {resources.map((resource) => (
-            <li key={resource.id} className="flex items-start gap-4 rounded-card border border-sky-line bg-surface p-6">
-              <span className="grid size-12 shrink-0 place-items-center rounded-full bg-sky text-primary">
+            <li key={resource.id} className="flex items-start gap-4 rounded-card border border-line bg-surface p-6">
+              <span className="grid size-12 shrink-0 place-items-center rounded-full bg-tint text-primary">
                 <FilePdfIcon aria-hidden weight="fill" className="size-6" />
               </span>
               <div className="min-w-0">

@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { EntityForm } from "@/components/admin/entity-form";
 import { Notice, PageHeader } from "@/components/admin/ui";
+import { UUID_RE } from "@/lib/admin/action-helpers";
 import { mediaViews } from "@/lib/admin/editor-data";
 import { entityByRoute } from "@/lib/admin/entities";
-import { listEntities, loadEntity, referenceOptions } from "@/lib/admin/entity-store";
+import { entityRow, loadEntity, referenceOptions } from "@/lib/admin/entity-store";
 import { hasRole, requireUser } from "@/lib/auth";
 import { defaultsFor } from "@/lib/blocks/fields";
 
@@ -23,17 +24,18 @@ export default async function EntityEditPage({ params, searchParams }: Props) {
   if (!config) notFound();
   const user = await requireUser(config.minRole);
   const isNew = id === "new";
+  // An address that is not a record id would otherwise reach the database as an invalid uuid and fail with a server error.
+  if (!isNew && !UUID_RE.test(id)) notFound();
 
-  const [existing, refOptions, media, rows] = await Promise.all([
+  const [existing, refOptions, media, row] = await Promise.all([
     isNew ? null : loadEntity(config.key, id),
     referenceOptions(),
     mediaViews(),
-    isNew ? [] : listEntities(config.key),
+    isNew ? null : entityRow(config.key, id),
   ]);
   if (!isNew && !existing) notFound();
 
   const initial = (existing as Record<string, unknown> | null) ?? { ...defaultsFor(config.fields), ...config.defaults };
-  const row = rows.find((r) => r.id === id);
 
   return (
     <>

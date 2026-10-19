@@ -1,7 +1,7 @@
 "use client";
 
 import { DesktopIcon, DeviceMobileIcon, DeviceTabletIcon } from "@phosphor-icons/react";
-import Link from "next/link";
+import { AdminLink as Link } from "@/components/admin/admin-link";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 

@@ -1,4 +1,5 @@
 import { CheckIcon } from "@phosphor-icons/react/dist/ssr";
+import { CountUp } from "@/components/ui/count-up";
 import { Breadcrumbs } from "@/components/site/breadcrumbs";
 import { ButtonLink } from "@/components/ui/button-link";
 import { MediaImage } from "@/components/ui/media-image";
@@ -88,7 +89,7 @@ export function FeatureListBlock({ data, ctx }: BlockProps<"feature_list">) {
             {items.map((item, i) => (
               <li
                 key={`${item.title}-${i}`}
-                className={cn("reveal py-7 md:py-8", i > 0 && "border-t border-sky-line", i === 0 && "pt-0 md:pt-0 lg:pt-2")}
+                className={cn("reveal py-7 md:py-8", i > 0 && "border-t border-line", i === 0 && "pt-0 md:pt-0 lg:pt-2")}
               >
                 <h3 className="text-h3">{item.title}</h3>
                 {item.body && <p className="mt-2.5 max-w-prose">{item.body}</p>}
@@ -108,14 +109,52 @@ export function FeatureListBlock({ data, ctx }: BlockProps<"feature_list">) {
   );
 }
 
+/** Up to four verified figures. Figures without a number are never shown, so nothing unconfirmed reaches the page. */
+export function StatsBlock({ data }: BlockProps<"stats">) {
+  const items = data.items.filter((item) => item.label && /\d/.test(item.value ?? "")).slice(0, 4);
+  if (items.length === 0) return null;
+  const headingId = `stats-${data.anchor || "figures"}`;
+  return (
+    <section id={data.anchor || undefined} aria-labelledby={data.heading ? headingId : undefined} className={cn(data.background === "surface" ? "bg-surface" : "bg-cream", "pb-[var(--section-space)]")}>
+      <div className="container-site">
+        {data.heading && (
+          <h2 id={headingId} className={data.showHeading ? "mb-8 text-h2" : "sr-only"}>
+            {data.heading}
+          </h2>
+        )}
+        <dl
+          className={cn(
+            "grid grid-cols-2 gap-x-5 gap-y-8 sm:gap-x-8",
+            items.length === 3 && "md:grid-cols-3",
+            items.length === 4 && "lg:grid-cols-4",
+          )}
+        >
+          {items.map((item) => (
+            <div key={item.label} className="reveal flex flex-col-reverse justify-end border-l-[3px] border-accent pl-4 sm:pl-5">
+              <dt className="mt-1.5 text-[0.9375rem] leading-snug text-ink">{item.label}</dt>
+              <dd className="font-display text-[clamp(2.25rem,1.55rem+2.6vw,3.5rem)] font-extrabold leading-none tracking-[-0.03em] text-navy">
+                {item.countUp && /^[\d,]+$/.test(item.value) ? (
+                  <CountUp value={Number(item.value.replace(/,/g, ""))} grouped={item.value.includes(",")} prefix={item.prefix} suffix={item.suffix} />
+                ) : (
+                  <span className="tabular-nums">{`${item.prefix}${item.value}${item.suffix}`}</span>
+                )}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </section>
+  );
+}
+
 /** Accreditation badges, client logos and a few verified facts. */
 export function TrustStripBlock({ data, ctx }: BlockProps<"trust_strip">) {
   const logos = data.logos.map((logo) => ({ ...logo, media: pickMedia(ctx, logo.image) })).filter((l) => l.media);
   const facts = data.facts.filter((f) => f.value && f.label);
   if (logos.length === 0 && facts.length === 0) return null;
   return (
-    <section id={data.anchor || undefined} className={cn("border-b border-sky-line", data.background === "sky" ? "bg-sky" : "bg-surface")}>
-      <div className="container-site flex flex-col gap-7 py-8 md:py-10 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
+    <section id={data.anchor || undefined} className={data.background === "surface" ? "bg-surface" : "bg-cream"}>
+      <div className="container-site flex flex-col gap-7 border-y border-line py-8 md:py-10 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
         {logos.length > 0 && (
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
             {data.heading && <h2 className="max-w-[15rem] font-sans text-[0.9375rem] font-semibold leading-snug text-navy">{data.heading}</h2>}

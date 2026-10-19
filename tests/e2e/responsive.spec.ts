@@ -81,10 +81,10 @@ for (const viewport of VIEWPORTS) {
         });
         expect(overlap, "hero heading overlaps the hero image").toBe(false);
 
-        // 8. The floating WhatsApp button never covers footer links.
+        // 8. The floating support controls (Need help and WhatsApp) never cover footer links.
         await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
         const covered = await page.evaluate(() => {
-          const fab = document.querySelector('a[data-track-label="Floating button"]');
+          const fab = document.querySelector("[data-support-dock]");
           if (!fab) return [];
           const f = fab.getBoundingClientRect();
           return Array.from(document.querySelectorAll<HTMLElement>("footer a, footer button, footer input"))
@@ -94,7 +94,7 @@ for (const viewport of VIEWPORTS) {
             })
             .map((el) => (el.textContent ?? "").trim().slice(0, 30));
         });
-        expect(covered, "footer controls hidden behind the WhatsApp button").toEqual([]);
+        expect(covered, "footer controls hidden behind the floating support controls").toEqual([]);
         await page.evaluate(() => window.scrollTo(0, 0));
 
         mkdirSync(`${SCREENS}/${viewport.name}`, { recursive: true });
@@ -116,9 +116,10 @@ for (const viewport of VIEWPORTS) {
         const box = (await button.boundingBox())!;
         expect(box.y + box.height, `"${label}" is below the first screen`).toBeLessThanOrEqual(viewport.height);
       }
-      // The heading wraps naturally: never more than two lines.
+      // The two-sentence heading wraps naturally: at most three lines from tablet width up (as in the
+      // design reference), four on phones, and the buttons above still sit on the first screen.
       const lines = await h1.evaluate((el) => Math.round(el.getBoundingClientRect().height / parseFloat(getComputedStyle(el).lineHeight)));
-      expect(lines).toBeLessThanOrEqual(2);
+      expect(lines).toBeLessThanOrEqual(viewport.width >= 768 ? 3 : 4);
     });
   });
 }

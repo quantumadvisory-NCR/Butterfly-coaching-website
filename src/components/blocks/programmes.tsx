@@ -25,7 +25,7 @@ function CertificationCard({ p, ctx }: { p: ProgrammeView; ctx: BlockContext }) 
   const badge = p.accreditationStatus === "accredited" ? pickMedia(ctx, p.badgeId) : null;
   const facts = programmeFacts(p).slice(0, 3);
   return (
-    <li className="reveal group relative isolate flex flex-col rounded-card border border-sky-line bg-surface p-6 transition-shadow duration-300 hover:shadow-lift md:p-7 lg:p-8">
+    <li className="reveal group relative isolate flex flex-col rounded-card border border-line bg-surface p-6 transition-shadow duration-300 hover:shadow-lift md:p-7 lg:p-8">
       <div className="flex items-start justify-between gap-4">
         <div>
           {p.levelLabel && <p className="text-sm font-semibold text-primary">{p.levelLabel}</p>}
@@ -49,7 +49,7 @@ function CertificationCard({ p, ctx }: { p: ProgrammeView; ctx: BlockContext }) 
       </h3>
       {p.summary && <p className="mt-2.5">{p.summary}</p>}
       {facts.length > 0 && (
-        <dl className="mt-6 grid gap-2.5 border-t border-sky-line pt-5 text-[0.9375rem]">
+        <dl className="mt-6 grid gap-2.5 border-t border-line pt-5 text-[0.9375rem]">
           {facts.map((fact) => (
             <div key={fact.label} className="flex items-baseline justify-between gap-4">
               <dt className="text-muted">{fact.label}</dt>
@@ -72,7 +72,7 @@ function ServiceCard({ p, ctx, stacked }: { p: ProgrammeView; ctx: BlockContext;
   return (
     <li
       className={cn(
-        "reveal group relative isolate grid overflow-hidden rounded-card border border-sky-line bg-surface transition-shadow duration-300 hover:shadow-lift sm:grid-cols-[minmax(0,0.42fr)_minmax(0,1fr)] md:grid-cols-1",
+        "reveal group relative isolate grid overflow-hidden rounded-card border border-line bg-surface transition-shadow duration-300 hover:shadow-lift sm:grid-cols-[minmax(0,0.42fr)_minmax(0,1fr)] md:grid-cols-1",
         !stacked && "xl:grid-cols-[minmax(0,0.42fr)_minmax(0,1fr)]",
       )}
     >
@@ -203,7 +203,7 @@ export async function ComparisonTableBlock({ data, ctx }: BlockProps<"comparison
         <SectionHeading heading={data.heading} intro={data.intro} />
 
         {/* Tablet and desktop */}
-        <div className="reveal mt-9 hidden overflow-hidden rounded-card border border-sky-line bg-surface md:mt-12 md:block">
+        <div className="reveal mt-9 hidden overflow-hidden rounded-card border border-line bg-surface md:mt-12 md:block">
           <table className="w-full border-collapse text-left text-[0.9375rem]">
             <caption className="sr-only">{data.heading}</caption>
             <thead>
@@ -218,8 +218,8 @@ export async function ComparisonTableBlock({ data, ctx }: BlockProps<"comparison
             </thead>
             <tbody>
               {table.rows.map((row, r) => (
-                <tr key={row.label} className={cn(r > 0 && "border-t border-sky-line")}>
-                  <th scope="row" className="bg-sky p-5 align-top font-semibold text-navy">
+                <tr key={row.label} className={cn(r > 0 && "border-t border-line")}>
+                  <th scope="row" className="bg-tint p-5 align-top font-semibold text-navy">
                     {row.label}
                   </th>
                   {table.columns.map((column, c) => (
@@ -230,8 +230,8 @@ export async function ComparisonTableBlock({ data, ctx }: BlockProps<"comparison
                 </tr>
               ))}
               {table.links && (
-                <tr className="border-t border-sky-line">
-                  <td className="bg-sky p-5" />
+                <tr className="border-t border-line">
+                  <td className="bg-tint p-5" />
                   {table.columns.map((column, c) => (
                     <td key={column} className="px-5 py-3">
                       {table.links?.[c] && <TextLink href={table.links[c]}>View pathway</TextLink>}
@@ -246,7 +246,7 @@ export async function ComparisonTableBlock({ data, ctx }: BlockProps<"comparison
         {/* Phones: one card per column */}
         <ul className="mt-9 grid gap-4 md:hidden">
           {table.columns.map((column, c) => (
-            <li key={column} className="overflow-hidden rounded-card border border-sky-line bg-surface">
+            <li key={column} className="overflow-hidden rounded-card border border-line bg-surface">
               <h3 className="bg-navy px-5 py-4 font-display text-lg font-semibold text-white">{column}</h3>
               <dl className="grid gap-4 p-5">
                 {table.rows.map((row) =>
@@ -259,7 +259,7 @@ export async function ComparisonTableBlock({ data, ctx }: BlockProps<"comparison
                 )}
               </dl>
               {table.links?.[c] && (
-                <div className="border-t border-sky-line px-5 py-2">
+                <div className="border-t border-line px-5 py-2">
                   <TextLink href={table.links[c]}>View pathway</TextLink>
                 </div>
               )}

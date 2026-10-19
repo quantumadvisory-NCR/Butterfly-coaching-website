@@ -125,7 +125,6 @@ export function PageEditor({ id, initial, meta, revisions, refOptions, media, ca
         setStatus({ tone: "success", text: result.message ?? "Saved." });
         if (then) then(result.id);
         if (!id) router.replace(`/admin/pages/${result.id}/?saved=1`);
-        else router.refresh();
       } else {
         setErrors(result.errors ?? {});
         const bySection = "sectionErrors" in result && result.sectionErrors ? result.sectionErrors : {};
@@ -215,7 +214,7 @@ export function PageEditor({ id, initial, meta, revisions, refOptions, media, ca
                       aria-expanded={open}
                       aria-controls={`section-${section.key}`}
                       onClick={() => setOpenKey(open ? null : section.key)}
-                      className="flex min-h-12 min-w-0 flex-[1_1_12rem] items-center gap-3 rounded-xl px-2 text-left hover:bg-sky"
+                      className="flex min-h-12 min-w-0 flex-[1_1_12rem] items-center gap-3 rounded-xl px-2 text-left hover:bg-tint"
                     >
                       <CaretDownIcon weight="bold" className={cn("size-4 shrink-0 transition-transform", open && "rotate-180")} />
                       <span className="min-w-0">
@@ -318,7 +317,6 @@ export function PageEditor({ id, initial, meta, revisions, refOptions, media, ca
                     description="Visitors will no longer be able to open it. You can publish it again at any time."
                     confirmLabel="Unpublish"
                     action={() => setPageStatusAction(id, "draft")}
-                    onDone={() => router.refresh()}
                   />
                 )}
                 <button
@@ -343,7 +341,6 @@ export function PageEditor({ id, initial, meta, revisions, refOptions, media, ca
                     description="It will be hidden from visitors and kept here for reference."
                     confirmLabel="Archive"
                     action={() => setPageStatusAction(id, "archived")}
-                    onDone={() => router.refresh()}
                   />
                 )}
                 {canDelete && !meta?.isSystem && (
@@ -356,7 +353,6 @@ export function PageEditor({ id, initial, meta, revisions, refOptions, media, ca
                     onDone={() => {
                       setDirty(false);
                       router.push("/admin/pages/");
-                      router.refresh();
                     }}
                   />
                 )}
@@ -507,7 +503,7 @@ export function PageEditor({ id, initial, meta, revisions, refOptions, media, ca
             <div className="flex items-center justify-between gap-3 border-b border-line px-4 py-3 sm:px-6">
               <Dialog.Title className="text-lg">Add a section</Dialog.Title>
               <Dialog.Close asChild>
-                <button type="button" aria-label="Close" className="grid size-11 place-items-center rounded-full text-navy hover:bg-sky">
+                <button type="button" aria-label="Close" className="grid size-11 place-items-center rounded-full text-navy hover:bg-tint">
                   <XIcon weight="bold" className="size-5" />
                 </button>
               </Dialog.Close>
@@ -517,7 +513,7 @@ export function PageEditor({ id, initial, meta, revisions, refOptions, media, ca
                 <li key={block.type}>
                   <button
                     type="button"
-                    className="h-full w-full rounded-xl border border-line p-3.5 text-left hover:border-primary hover:bg-sky"
+                    className="h-full w-full rounded-xl border border-line p-3.5 text-left hover:border-primary hover:bg-tint"
                     onClick={() => {
                       const section: Section = { key: newKey(), type: block.type, data: defaultBlockData(block.type as BlockType), isHidden: false };
                       update([...sections, section]);

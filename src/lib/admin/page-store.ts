@@ -49,9 +49,12 @@ export async function listPages() {
 
 export async function loadPage(id: string) {
   if (!UUID.test(id)) return null;
-  const [page] = await db().select().from(s.pages).where(eq(s.pages.id, id)).limit(1);
+  // Both queries in one round trip: the sections do not depend on the page row.
+  const [[page], sections] = await Promise.all([
+    db().select().from(s.pages).where(eq(s.pages.id, id)).limit(1),
+    db().select().from(s.pageSections).where(eq(s.pageSections.pageId, id)).orderBy(asc(s.pageSections.position)),
+  ]);
   if (!page) return null;
-  const sections = await db().select().from(s.pageSections).where(eq(s.pageSections.pageId, id)).orderBy(asc(s.pageSections.position));
   return { page, sections };
 }
 

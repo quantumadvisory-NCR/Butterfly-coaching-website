@@ -77,7 +77,8 @@ describe("seed content", () => {
   it("has the mandatory hero copy on the homepage, word for word", () => {
     const hero = PAGES.find((p) => p.path === "/")!.sections[0]!;
     expect(hero.type).toBe("hero");
-    expect(hero.data.heading).toBe("Learning that stays");
+    expect(hero.data.heading).toBe("Learning that stays.");
+    expect(hero.data.headingAccent).toBe("Coaching that transforms.");
     expect(hero.data.subheading).toBe("ICF-accredited coach training built on practice, spaced review and founder mentoring.");
     expect(hero.data.primaryCta).toEqual({ label: "Book a discovery call", href: "booking" });
     expect(hero.data.secondaryCta).toEqual({ label: "Explore programmes", href: "/coaching-certifications/" });
@@ -179,5 +180,26 @@ describe("seed content", () => {
       expect(schema.safeParse({ answerHtml: faq.answerHtml }).success).toBe(true);
       expect(sanitiseRichText(faq.answerHtml)).toBe(faq.answerHtml);
     }
+  });
+});
+
+describe("homepage redesign content", () => {
+  const home = PAGES.find((p) => p.path === "/")!;
+  const block = (type: string) => home.sections.find((s) => s.type === type)!;
+
+  it("opens with the hero, then the overlapping pathway panel, then the figures", () => {
+    expect(home.sections.slice(0, 3).map((s) => s.type)).toEqual(["hero", "path_cards", "stats"]);
+    expect(block("path_cards").data.layout).toBe("panel");
+  });
+
+  it("publishes no placeholder or unverified figure", () => {
+    const text = JSON.stringify(home.sections);
+    expect(text).not.toMatch(/\[(DATE|X)\]/i);
+    const items = block("stats").data.items as { value: string; label: string }[];
+    const shown = items.filter((item) => /\d/.test(item.value)).map((item) => item.value);
+    expect(shown).toEqual(["4,100", "3", "24", "2022"]);
+    // Prepared for the owner, but empty (so hidden) until verified.
+    expect(items.find((item) => item.label === "Coaches trained")?.value).toBe("");
+    expect(items.find((item) => item.label === "Organisations partnered")?.value).toBe("");
   });
 });

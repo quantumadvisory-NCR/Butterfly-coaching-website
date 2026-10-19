@@ -423,7 +423,7 @@ function ListControl({ id, field, value, onChange, error, errors, path, refOptio
                   aria-expanded={open}
                   aria-controls={panelId}
                   onClick={() => setOpenIndex(open ? null : i)}
-                  className="flex min-h-11 min-w-0 flex-1 items-center gap-2 rounded-lg px-2 text-left hover:bg-sky"
+                  className="flex min-h-11 min-w-0 flex-1 items-center gap-2 rounded-lg px-2 text-left hover:bg-tint"
                 >
                   <CaretDownIcon weight="bold" className={cn("size-4 shrink-0 transition-transform", open && "rotate-180")} />
                   <span className="truncate font-semibold text-navy">{title}</span>

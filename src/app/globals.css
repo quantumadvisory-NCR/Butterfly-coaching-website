@@ -1,27 +1,46 @@
 @import "tailwindcss";
 
 /* ==========================================================================
-   Butterfly Coaching Academy design tokens
-   Colour values are verified against ipeccoaching.com and documented in
-   docs/BRAND_SYSTEM.md. The five --bca-* tokens and the two typefaces can be
-   changed in Admin > Settings > Colours and typography; everything else
-   derives from them.
+   Butterfly Coaching Academy design tokens: the single source of truth for
+   the public website and the admin. Documented in docs/BRAND_SYSTEM.md.
+
+   The principal background is cream #F7EFE2 (rgb 247 239 226). The five
+   --bca-* tokens and the two typefaces can be changed in Admin > Settings >
+   Colours and typography; everything else derives from them.
    ========================================================================== */
 
 :root {
   --bca-primary: #0068bf;
   --bca-navy: #0f256a;
   --bca-accent: #f5ba00;
-  --bca-sky: #eff7ff;
+  --bca-background: #f7efe2;
   --bca-ink: #444746;
 
   --font-heading: var(--font-jakarta);
   --font-body: var(--font-jakarta);
 
   /* Layout */
-  --gutter: clamp(1.25rem, 0.5rem + 3.4vw, 2.5rem);
+  --gutter: clamp(1rem, 0.25rem + 3.4vw, 2.5rem);
   --section-space: clamp(3.75rem, 2.25rem + 5.6vw, 7rem);
-  --header-height: 4.25rem;
+  --header-height: 4rem;
+  --container-max: 75rem;
+
+  /* Spacing scale (4px base) for components that need fixed steps. */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+
+  /* Radii. Buttons are pills; cards, panels and images use --radius-card. */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1.25rem;
+  --radius-xl: 1.75rem;
+  --radius-pill: 999px;
 
   /* Layering scale. Use these, not ad-hoc z-index values. */
   --z-sticky: 30;
@@ -33,7 +52,7 @@
 
 @media (min-width: 64rem) {
   :root {
-    --header-height: 4.75rem;
+    --header-height: 4.5rem;
   }
 }
 
@@ -41,21 +60,32 @@
   /* Brand */
   --color-primary: var(--bca-primary);
   --color-primary-strong: color-mix(in srgb, var(--bca-primary) 82%, #000);
+  --color-primary-dark: var(--bca-navy);
   --color-navy: var(--bca-navy);
   --color-navy-soft: color-mix(in srgb, var(--bca-navy) 88%, #fff);
   --color-accent: var(--bca-accent);
+  --color-accent-yellow: var(--bca-accent);
   --color-accent-strong: color-mix(in srgb, var(--bca-accent) 86%, #5a3d00);
-  --color-sky: var(--bca-sky);
-  --color-sky-deep: #d2e9fc;
-  --color-sky-line: #c3dcf3;
-  --color-cream: #faf3e3;
+  /* Pale yellow for soft highlights and the hover edge on pathway cards. */
+  --color-accent-soft: color-mix(in srgb, var(--bca-accent) 22%, #fff);
+
+  /* Backgrounds. Cream is the page itself; every section sits on it. */
+  --color-background: var(--bca-background);
+  --color-cream: var(--bca-background);
+  /* A step deeper than cream: hover fills, chips, quiet panels. */
+  --color-tint: color-mix(in srgb, var(--bca-background) 86%, #c8a671);
+  /* Two steps deeper: the panel behind portrait photographs. */
+  --color-tint-deep: color-mix(in srgb, var(--bca-background) 74%, #c8a671);
+  /* Warm white for cards, forms, menus and dialogs. */
+  --color-surface: #fffdf9;
 
   /* Neutrals */
+  --color-text: var(--bca-ink);
   --color-ink: var(--bca-ink);
-  --color-muted: #5f6362;
-  --color-line: #dedede;
-  --color-mist: #f5f5f5;
-  --color-surface: #ffffff;
+  --color-muted: #5b5f5d;
+  --color-border: #e3d6c2;
+  --color-line: #e3d6c2;
+  --color-mist: color-mix(in srgb, var(--bca-background) 55%, #fff);
 
   /* Feedback */
   --color-danger: #b3261e;
@@ -84,14 +114,16 @@
   --text-lead--line-height: 1.55;
 
   /* Shape. One documented rule: buttons are pills, cards and images 1.25rem, fields 0.75rem. */
-  --radius-card: 1.25rem;
-  --radius-field: 0.75rem;
+  --radius-card: var(--radius-lg);
+  --radius-field: var(--radius-md);
+  --radius-panel: var(--radius-xl);
   --radius-wing: 7.5rem;
 
   --shadow-card: 0 1px 2px rgb(15 37 106 / 0.05), 0 12px 32px -12px rgb(15 37 106 / 0.16);
   --shadow-lift: 0 2px 4px rgb(15 37 106 / 0.06), 0 24px 48px -16px rgb(15 37 106 / 0.24);
+  --shadow-panel: 0 30px 60px -28px rgb(15 37 106 / 0.45), 0 12px 24px -16px rgb(15 37 106 / 0.2);
 
-  --container-site: 75rem;
+  --container-site: var(--container-max);
   --container-prose: 44rem;
 
   --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
@@ -108,7 +140,7 @@
   }
 
   body {
-    background: var(--color-surface);
+    background: var(--color-background);
     color: var(--color-ink);
     font-family: var(--font-sans);
     font-size: 1rem;
@@ -444,6 +476,61 @@
     font-size: 0.875rem;
     font-weight: 600;
     color: var(--color-danger);
+  }
+}
+
+/* "Choose your path" card. On hover and keyboard focus its edge warms into a
+   soft pale-to-warm yellow gradient; the card lifts slightly using transform
+   only, so neighbouring cards never move. */
+.path-card {
+  position: relative;
+  isolation: isolate;
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  box-shadow: 0 1px 0 rgb(255 255 255 / 0.6) inset;
+  transition:
+    transform 0.3s var(--ease-out-soft),
+    box-shadow 0.3s var(--ease-out-soft);
+}
+.path-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(135deg, #fff6d6 0%, var(--color-accent-soft) 30%, var(--color-accent) 72%, #ffd65c 100%);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s var(--ease-out-soft);
+  pointer-events: none;
+}
+.path-card:focus-within::before {
+  opacity: 1;
+}
+.path-card:has(a:focus-visible) {
+  box-shadow: 0 0 0 4px rgb(245 186 0 / 0.35);
+}
+.path-card a:focus-visible {
+  outline: none;
+}
+@media (hover: hover) {
+  .path-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 36px -20px rgb(245 186 0 / 0.55);
+  }
+  .path-card:hover::before {
+    opacity: 1;
+  }
+}
+/* Touch screens have no hover: keep a faint warm edge so each card still reads as a target. */
+@media (hover: none) {
+  .path-card::before {
+    opacity: 0.45;
   }
 }
 

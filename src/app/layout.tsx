@@ -42,13 +42,13 @@ export async function generateMetadata(): Promise<Metadata> {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#0f256a",
+  themeColor: "#f7efe2",
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { theme } = await getSettings();
   // Values are validated as 6-digit hex colours and known font keys in parseSettingsGroup().
-  const themeCss = `:root{--bca-primary:${theme.primary};--bca-navy:${theme.navy};--bca-accent:${theme.accent};--bca-sky:${theme.sky};--bca-ink:${theme.ink};--font-heading:${FONT_VARS[theme.headingFont] ?? FONT_VARS.jakarta};--font-body:${FONT_VARS[theme.bodyFont] ?? FONT_VARS.jakarta}}`;
+  const themeCss = `:root{--bca-primary:${theme.primary};--bca-navy:${theme.navy};--bca-accent:${theme.accent};--bca-background:${theme.background};--bca-ink:${theme.ink};--font-heading:${FONT_VARS[theme.headingFont] ?? FONT_VARS.jakarta};--font-body:${FONT_VARS[theme.bodyFont] ?? FONT_VARS.jakarta}}`;
   return (
     <html lang="en" data-scroll-behavior="smooth" className={`${jakarta.variable} ${schibsted.variable} ${manrope.variable} ${newsreader.variable}`}>
       <head>

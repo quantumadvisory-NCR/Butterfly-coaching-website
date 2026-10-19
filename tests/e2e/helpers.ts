@@ -102,6 +102,8 @@ export async function clippedText(page: Page, selector: string) {
     for (const el of Array.from(document.querySelectorAll<HTMLElement>(sel))) {
       const rect = el.getBoundingClientRect();
       if (rect.width === 0 || rect.height === 0) continue;
+      // Visually hidden (screen-reader-only) text is clipped on purpose.
+      if (getComputedStyle(el).clipPath !== "none") continue;
       if (el.scrollWidth > el.clientWidth + 2) out.push(`${el.tagName.toLowerCase()} "${(el.textContent ?? "").trim().slice(0, 50)}" (${el.scrollWidth}px in ${el.clientWidth}px)`);
     }
     return out.slice(0, 8);

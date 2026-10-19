@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { AdminLink as Link } from "@/components/admin/admin-link";
 import { redirect } from "next/navigation";
 import { AuthCard } from "@/components/admin/auth-card";
 import { LoginForm } from "@/components/admin/auth-forms";

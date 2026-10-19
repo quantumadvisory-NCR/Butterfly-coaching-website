@@ -1,6 +1,6 @@
 import { PlusIcon } from "@phosphor-icons/react/dist/ssr";
 import type { Metadata } from "next";
-import Link from "next/link";
+import { AdminLink as Link } from "@/components/admin/admin-link";
 import { PageHeader, RecordCell, RecordRow, RecordTable, StatusBadge } from "@/components/admin/ui";
 import { listPages } from "@/lib/admin/page-store";
 import { requireUser } from "@/lib/auth";

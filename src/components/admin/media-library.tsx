@@ -2,7 +2,7 @@
 
 import { ArrowsClockwiseIcon, MagnifyingGlassIcon, TrashIcon, UploadSimpleIcon, WarningIcon, XIcon } from "@phosphor-icons/react";
 import Image from "next/image";
-import Link from "next/link";
+import { AdminLink as Link } from "@/components/admin/admin-link";
 import { useRouter } from "next/navigation";
 import { Dialog } from "radix-ui";
 import { useRef, useState, useTransition } from "react";
@@ -249,7 +249,7 @@ function MediaEditor({ item, canDelete, onClose, onChanged }: { item: MediaView;
           <div className="flex items-center justify-between gap-3 border-b border-line px-4 py-3 sm:px-6">
             <Dialog.Title className="min-w-0 truncate text-lg">{item.filename}</Dialog.Title>
             <Dialog.Close asChild>
-              <button type="button" aria-label="Close" className="grid size-11 shrink-0 place-items-center rounded-full text-navy hover:bg-sky">
+              <button type="button" aria-label="Close" className="grid size-11 shrink-0 place-items-center rounded-full text-navy hover:bg-tint">
                 <XIcon weight="bold" className="size-5" />
               </button>
             </Dialog.Close>
