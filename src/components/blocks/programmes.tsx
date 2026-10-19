@@ -2,6 +2,7 @@ import { ArrowRightIcon } from "@phosphor-icons/react/dist/ssr";
 import Link from "next/link";
 import { ButtonLink, TextLink } from "@/components/ui/button-link";
 import { MediaImage } from "@/components/ui/media-image";
+import { SwipeRail } from "@/components/ui/swipe-rail";
 import { Section, SectionHeading } from "@/components/ui/section";
 import { type ProgrammeView, getProgrammes } from "@/lib/content/public";
 import { cn, formatHours } from "@/lib/utils";
@@ -21,11 +22,11 @@ export function programmeFacts(p: ProgrammeView) {
   return facts;
 }
 
-function CertificationCard({ p, ctx }: { p: ProgrammeView; ctx: BlockContext }) {
+function CertificationCard({ p, ctx, className }: { p: ProgrammeView; ctx: BlockContext; className?: string }) {
   const badge = p.accreditationStatus === "accredited" ? pickMedia(ctx, p.badgeId) : null;
   const facts = programmeFacts(p).slice(0, 3);
   return (
-    <li className="reveal group relative isolate flex flex-col rounded-card border border-line bg-surface p-6 transition-shadow duration-300 hover:shadow-lift md:p-7 lg:p-8">
+    <li className={cn("press reveal group relative isolate flex flex-col rounded-card border border-line bg-surface p-6 hover:shadow-lift md:p-7 lg:p-8", className)}>
       <div className="flex items-start justify-between gap-4">
         <div>
           {p.levelLabel && <p className="text-sm font-semibold text-primary">{p.levelLabel}</p>}
@@ -72,7 +73,7 @@ function ServiceCard({ p, ctx, stacked }: { p: ProgrammeView; ctx: BlockContext;
   return (
     <li
       className={cn(
-        "reveal group relative isolate grid overflow-hidden rounded-card border border-line bg-surface transition-shadow duration-300 hover:shadow-lift sm:grid-cols-[minmax(0,0.42fr)_minmax(0,1fr)] md:grid-cols-1",
+        "press reveal group relative isolate grid overflow-hidden rounded-card border border-line bg-surface hover:shadow-lift sm:grid-cols-[minmax(0,0.42fr)_minmax(0,1fr)] md:grid-cols-1",
         !stacked && "xl:grid-cols-[minmax(0,0.42fr)_minmax(0,1fr)]",
       )}
     >
@@ -134,12 +135,26 @@ export async function ProgrammeCardsBlock({ data, ctx }: BlockProps<"programme_c
             </ButtonLink>
           )}
         </div>
-        {certifications.length > 0 && (
-          <ul className={cn("mt-9 grid gap-5 md:mt-12 md:gap-6", certifications.length >= 3 ? "lg:grid-cols-3" : "md:grid-cols-2")}>
-            {certifications.map((p) => (
-              <CertificationCard key={p.id} p={p} ctx={ctx} />
-            ))}
-          </ul>
+        {certifications.length >= 3 ? (
+          // Three or more pathways swipe sideways on phones and tablets, edge to edge of the screen; a grid from desktop up.
+          <div className="reveal mt-7 md:mt-10">
+            <SwipeRail
+              label="Programme"
+              listClassName="gap-4 py-2 max-lg:-mx-[var(--gutter)] max-lg:scroll-px-[var(--gutter)] max-lg:px-[var(--gutter)] md:gap-5 lg:grid lg:grid-cols-3 lg:gap-6 lg:overflow-visible"
+            >
+              {certifications.map((p) => (
+                <CertificationCard key={p.id} p={p} ctx={ctx} className="max-lg:w-[85%] max-lg:shrink-0 max-lg:snap-start sm:max-lg:w-[58%]" />
+              ))}
+            </SwipeRail>
+          </div>
+        ) : (
+          certifications.length > 0 && (
+            <ul className="mt-9 grid gap-5 md:mt-12 md:grid-cols-2 md:gap-6">
+              {certifications.map((p) => (
+                <CertificationCard key={p.id} p={p} ctx={ctx} />
+              ))}
+            </ul>
+          )
         )}
         {services.length > 0 && (
           <ul className={cn("grid gap-5 md:gap-6", threeUp ? "md:grid-cols-3" : "md:grid-cols-2", certifications.length > 0 ? "mt-5 md:mt-6" : "mt-9 md:mt-12")}>

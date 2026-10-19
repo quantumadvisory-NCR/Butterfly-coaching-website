@@ -138,6 +138,7 @@
     scroll-padding-top: calc(var(--header-height) + 1.5rem);
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
   }
 
   body {
@@ -282,40 +283,20 @@
     background: var(--color-accent);
     color: var(--color-navy);
   }
-  .btn-primary:hover {
-    background: var(--color-navy);
-    color: #fff;
-  }
-  .on-dark .btn-primary:hover {
-    background: #fff;
-    color: var(--color-navy);
-  }
 
   .btn-secondary {
     border-color: var(--color-navy);
     color: var(--color-navy);
     background: transparent;
   }
-  .btn-secondary:hover {
-    background: var(--color-navy);
-    color: #fff;
-  }
   .on-dark .btn-secondary {
     border-color: rgb(255 255 255 / 0.7);
     color: #fff;
-  }
-  .on-dark .btn-secondary:hover {
-    background: #fff;
-    border-color: #fff;
-    color: var(--color-navy);
   }
 
   .btn-blue {
     background: var(--color-primary);
     color: #fff;
-  }
-  .btn-blue:hover {
-    background: var(--color-navy);
   }
 
   .btn-quiet {
@@ -323,16 +304,41 @@
     color: var(--color-navy);
     border-color: var(--color-line);
   }
-  .btn-quiet:hover {
-    border-color: var(--color-navy);
-  }
 
   .btn-danger {
     background: var(--color-danger);
     color: #fff;
   }
-  .btn-danger:hover {
-    background: color-mix(in srgb, var(--color-danger) 85%, #000);
+
+  /* Hover colours only where a pointer can hover: on a phone a tap would otherwise
+     leave a yellow button navy until the next tap somewhere else. */
+  @media (hover: hover) {
+    .btn-primary:hover {
+      background: var(--color-navy);
+      color: #fff;
+    }
+    .on-dark .btn-primary:hover {
+      background: #fff;
+      color: var(--color-navy);
+    }
+    .btn-secondary:hover {
+      background: var(--color-navy);
+      color: #fff;
+    }
+    .on-dark .btn-secondary:hover {
+      background: #fff;
+      border-color: #fff;
+      color: var(--color-navy);
+    }
+    .btn-blue:hover {
+      background: var(--color-navy);
+    }
+    .btn-quiet:hover {
+      border-color: var(--color-navy);
+    }
+    .btn-danger:hover {
+      background: color-mix(in srgb, var(--color-danger) 85%, #000);
+    }
   }
 
   .text-link {
@@ -601,6 +607,26 @@
   }
 }
 
+/* Cards that are one big link ("press") give a little under the finger, so a tap
+   feels answered before the next page arrives. Touch screens only: a mouse has
+   the hover state instead. */
+.press {
+  transition:
+    scale 0.15s var(--ease-out-soft),
+    box-shadow 0.3s var(--ease-out-soft);
+}
+@media (hover: none) {
+  .press:active,
+  .path-card:active,
+  .lift-card:active {
+    scale: 0.98;
+  }
+  .path-card,
+  .lift-card {
+    transition: scale 0.15s var(--ease-out-soft);
+  }
+}
+
 /* Art-directed <picture>: each crop keeps its own focal point. */
 .art-directed {
   object-position: var(--focal-wide, 50% 50%);
@@ -624,6 +650,9 @@
       animation: reveal-up linear both;
       animation-timeline: view();
       animation-range: entry 0% entry 4.5rem;
+    }
+    .swipe-rail > .reveal {
+      animation: none;
     }
   }
 

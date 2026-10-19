@@ -1,11 +1,12 @@
 "use client";
 
-import { CheckCircleIcon, WarningCircleIcon } from "@phosphor-icons/react";
+import { ArrowRightIcon, CheckCircleIcon, EyeSlashIcon, WarningCircleIcon } from "@phosphor-icons/react";
 import { Tabs } from "radix-ui";
 import { useState, useTransition } from "react";
 import { type MediaView, saveNavigationAction, saveSettingsAction } from "@/app/admin/actions/operations";
+import { announcementState } from "@/lib/announcement";
 import type { Field } from "@/lib/blocks/fields";
-import { DEFAULT_THEME, SETTINGS_GROUPS, type SettingsKey } from "@/lib/settings";
+import { DEFAULT_THEME, SETTINGS_GROUPS, type SettingsKey, type SiteSettings } from "@/lib/settings";
 import { cn } from "@/lib/utils";
 import { FieldRenderer } from "./field-renderer";
 import { MediaLibraryProvider } from "./media-picker";
@@ -64,6 +65,40 @@ function ContrastChecks({ theme }: { theme: Record<string, unknown> }) {
   );
 }
 
+/* ---- announcement preview for the header tab ------------------------------------ */
+
+/** The yellow bar exactly as visitors will see it once saved, or why it is hidden. Updates as you type. */
+function AnnouncementPreview({ header }: { header: Record<string, unknown> }) {
+  const state = announcementState(header as SiteSettings["header"]);
+  const link = header.announcementLink as { label?: string; href?: string } | undefined;
+  return (
+    <div className="rounded-xl bg-mist p-4">
+      <p className="font-semibold text-navy">Announcement bar preview</p>
+      {state.text ? (
+        <>
+          <p className="mt-0.5 text-sm text-muted">Visitors see this strip above the menu on every page once you save.</p>
+          <p className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-0.5 rounded-lg bg-accent px-3 py-2 text-center text-sm font-semibold text-navy">
+            <span>{state.text}</span>
+            {link?.label && link.href && (
+              <span className="inline-flex items-center gap-1 font-bold underline decoration-navy/40 decoration-2 underline-offset-4">
+                {link.label}
+                <ArrowRightIcon aria-hidden weight="bold" className="size-3.5" />
+              </span>
+            )}
+          </p>
+        </>
+      ) : (
+        <p className="mt-2 flex items-start gap-2 text-sm text-navy">
+          <EyeSlashIcon aria-hidden weight="bold" className="mt-0.5 size-4 shrink-0" />
+          <span>
+            <span className="font-semibold">Hidden from visitors.</span> {state.hidden}
+          </span>
+        </p>
+      )}
+    </div>
+  );
+}
+
 /* ---- settings ------------------------------------------------------------------ */
 
 function SettingsGroupForm({ groupKey, initial }: { groupKey: SettingsKey; initial: Record<string, unknown> }) {
@@ -95,6 +130,7 @@ function SettingsGroupForm({ groupKey, initial }: { groupKey: SettingsKey; initi
       className="grid gap-5"
     >
       <FieldRenderer fields={group.fields as readonly Field[]} value={data} onChange={setData} errors={errors} />
+      {groupKey === "header" && <AnnouncementPreview header={data} />}
       {groupKey === "theme" && (
         <>
           <ContrastChecks theme={data} />
@@ -113,11 +149,20 @@ function SettingsGroupForm({ groupKey, initial }: { groupKey: SettingsKey; initi
   );
 }
 
-export function SettingsTabs({ values, media }: { values: Record<SettingsKey, Record<string, unknown>>; media: MediaView[] }) {
+export function SettingsTabs({
+  values,
+  media,
+  initialTab,
+}: {
+  values: Record<SettingsKey, Record<string, unknown>>;
+  media: MediaView[];
+  /** Opens on this tab, e.g. from the dashboard's "Edit the announcement bar" (?tab=header). */
+  initialTab?: SettingsKey;
+}) {
   const keys = Object.keys(SETTINGS_GROUPS) as SettingsKey[];
   return (
     <MediaLibraryProvider initial={media}>
-      <Tabs.Root defaultValue={keys[0]} orientation="horizontal">
+      <Tabs.Root defaultValue={initialTab ?? keys[0]} orientation="horizontal">
         <Tabs.List aria-label="Settings sections" className="mb-5 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:thin]">
           {keys.map((key) => (
             <Tabs.Trigger

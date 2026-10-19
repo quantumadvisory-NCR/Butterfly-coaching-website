@@ -300,7 +300,8 @@ export type Resolved =
 /**
  * Maps a request path to content. Order: redirect, CMS page, programme, post.
  * A CMS page at a programme's path wins, so a programme can be given a fully
- * custom page from the page builder.
+ * custom page from the page builder; any programme without one (a new course,
+ * say) gets the standard programme page built from its details.
  */
 export const resolvePath = cache(async (rawPath: string): Promise<Resolved | null> => {
   const path = normalisePath(rawPath);
@@ -314,7 +315,7 @@ export const resolvePath = cache(async (rawPath: string): Promise<Resolved | nul
   const page = await getPublishedPage(path);
   if (page) return { kind: "page", page };
 
-  const programme = (await getProgrammes()).find((p) => p.path === path && p.kind === "certification");
+  const programme = (await getProgrammes()).find((p) => p.path === path);
   if (programme) return { kind: "programme", programme };
 
   const segments = path.split("/").filter(Boolean);

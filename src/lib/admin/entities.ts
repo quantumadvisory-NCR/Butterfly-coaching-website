@@ -22,15 +22,23 @@ const seo = [
 const programmeFields = [
   { type: "text", name: "name", label: "Programme name", required: true, maxLength: 120 },
   { type: "text", name: "slug", label: "Short identifier", required: true, help: "Lower-case letters, numbers and hyphens. Used internally.", maxLength: 80 },
-  { type: "text", name: "path", label: "Page address", required: true, help: "For example /level-1-acc-coach-program/. Changing this changes the public URL: add a redirect from the old address.", maxLength: 160 },
+  {
+    type: "text",
+    name: "path",
+    label: "Page address",
+    required: true,
+    help: "For example /level-1-acc-coach-program/. Once published, the course has its own page here, built from the details below. To design that page yourself instead, create a page at the same address in Pages. Changing the address changes the public URL: add a redirect from the old one.",
+    maxLength: 160,
+  },
   {
     type: "select",
     name: "kind",
     label: "Type",
+    help: "Decides where the course is listed: credential pathways get the large cards and the comparison table; the others the smaller cards beneath.",
     options: [
-      { value: "certification", label: "ICF credential pathway (has its own detail page)" },
-      { value: "service", label: "Service (links to a page you build in Pages)" },
-      { value: "corporate", label: "Corporate programme (links to a page you build in Pages)" },
+      { value: "certification", label: "ICF credential pathway" },
+      { value: "service", label: "Course or service" },
+      { value: "corporate", label: "Corporate programme" },
     ],
   },
   { type: "select", name: "status", label: "Status", options: STATUS },

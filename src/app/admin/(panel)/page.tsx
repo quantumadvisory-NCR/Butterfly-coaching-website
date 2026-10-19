@@ -2,6 +2,7 @@ import { desc } from "drizzle-orm";
 import { AdminLink as Link } from "@/components/admin/admin-link";
 import { Card, Notice, PageHeader, StatusBadge } from "@/components/admin/ui";
 import { contentCounts } from "@/lib/admin/entity-store";
+import { announcementState } from "@/lib/announcement";
 import { hasRole, requireUser } from "@/lib/auth";
 import { getSettings } from "@/lib/content/public";
 import { db } from "@/lib/db";
@@ -41,6 +42,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
   ]);
   const integrations = integrationStatus();
   const analytics = Boolean(settings.integrations.ga4Id || settings.integrations.gtmId);
+  const announcement = announcementState(settings.header);
 
   return (
     <>
@@ -111,6 +113,16 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
                 </Link>
               </li>
               <li>
+                <Link href="/admin/pages/new/" className="text-link">
+                  Create a new page
+                </Link>
+              </li>
+              <li>
+                <Link href="/admin/programmes/new/" className="text-link">
+                  Add a new course
+                </Link>
+              </li>
+              <li>
                 <Link href="/admin/programmes/" className="text-link">
                   Update programme details, dates and fees
                 </Link>
@@ -121,11 +133,19 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
                 </Link>
               </li>
               {hasRole(user, "admin") && (
-                <li>
-                  <Link href="/admin/settings/" className="text-link">
-                    Change contact details, colours and links
-                  </Link>
-                </li>
+                <>
+                  <li>
+                    <Link href="/admin/settings/?tab=header" className="text-link">
+                      Edit the announcement bar
+                    </Link>
+                    <span className="block text-sm text-muted">{announcement.text ? `Showing: “${announcement.text}”` : `Hidden. ${announcement.hidden}`}</span>
+                  </li>
+                  <li>
+                    <Link href="/admin/settings/" className="text-link">
+                      Change contact details, colours and links
+                    </Link>
+                  </li>
+                </>
               )}
             </ul>
           </Card>

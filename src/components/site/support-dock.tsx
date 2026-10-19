@@ -30,9 +30,10 @@ function iconFor(link: SupportLink): { Icon: IconType; tone: string; track: stri
 }
 
 /**
- * The floating support controls in the bottom corner: "Need help?", which
- * opens a small panel of next steps, and a separate WhatsApp shortcut. Both
- * stay clear of the cookie banner on smaller screens. The panel is a Radix
+ * The floating support controls in the bottom corner: a WhatsApp shortcut
+ * stacked above "Need help?", which opens a small panel of next steps. Stacked,
+ * they cover a narrow strip at the edge rather than a wide one across the text;
+ * both stay clear of the cookie banner on smaller screens. The panel is a Radix
  * popover: it takes focus when opened, closes with Escape or a click outside,
  * and returns focus to the button.
  */
@@ -40,7 +41,20 @@ export function SupportDock({ panel, whatsapp }: { panel: SupportPanel | null; w
   const [open, setOpen] = useState(false);
   if (!panel && !whatsapp) return null;
   return (
-    <div data-support-dock className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-[max(1rem,env(safe-area-inset-right))] z-[var(--z-floating)] flex items-center gap-2.5 max-lg:[html[data-consent-open]_&]:hidden print:hidden">
+    <div data-support-dock className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-[max(1rem,env(safe-area-inset-right))] z-[var(--z-floating)] flex flex-col items-end gap-2.5 max-lg:[html[data-consent-open]_&]:hidden print:hidden">
+      {whatsapp && (
+        <a
+          href={whatsapp}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-track="whatsapp_click"
+          data-track-label="Floating button"
+          className="grid size-12 place-items-center rounded-full bg-[#0f7a5f] text-white shadow-lift ring-2 ring-white transition-[transform,scale] duration-200 hover:-translate-y-0.5 active:scale-95 sm:size-14"
+        >
+          <WhatsappLogoIcon aria-hidden weight="fill" className="size-6 sm:size-7" />
+          <span className="sr-only">Chat with us on WhatsApp (opens in a new tab)</span>
+        </a>
+      )}
       {panel && (
         <Popover.Root open={open} onOpenChange={setOpen}>
           <Popover.Trigger asChild>
@@ -48,7 +62,7 @@ export function SupportDock({ panel, whatsapp }: { panel: SupportPanel | null; w
               type="button"
               data-track="cta_click"
               data-track-label="Need help: open"
-              className="inline-flex h-12 items-center gap-2 rounded-full bg-navy pl-3.5 pr-4 font-display text-[0.9375rem] font-semibold text-white shadow-lift ring-1 ring-white/10 transition-[transform,background-color] duration-200 hover:-translate-y-0.5 hover:bg-navy-soft data-[state=open]:bg-navy-soft sm:h-14 sm:pl-4 sm:pr-5"
+              className="inline-flex h-12 items-center gap-2 rounded-full bg-navy pl-3.5 pr-4 font-display text-[0.9375rem] font-semibold text-white shadow-lift ring-2 ring-white transition-[transform,background-color,scale] duration-200 hover:-translate-y-0.5 hover:bg-navy-soft active:scale-95 data-[state=open]:bg-navy-soft sm:h-14 sm:pl-4 sm:pr-5"
             >
               <span aria-hidden className="grid size-7 place-items-center rounded-full bg-accent text-navy">
                 {open ? <XIcon weight="bold" className="size-4" /> : <ChatCircleDotsIcon weight="fill" className="size-4" />}
@@ -114,19 +128,6 @@ export function SupportDock({ panel, whatsapp }: { panel: SupportPanel | null; w
             </Popover.Content>
           </Popover.Portal>
         </Popover.Root>
-      )}
-      {whatsapp && (
-        <a
-          href={whatsapp}
-          target="_blank"
-          rel="noopener noreferrer"
-          data-track="whatsapp_click"
-          data-track-label="Floating button"
-          className="grid size-12 place-items-center rounded-full bg-[#0f7a5f] text-white shadow-lift transition-transform duration-200 hover:-translate-y-0.5 sm:size-14"
-        >
-          <WhatsappLogoIcon aria-hidden weight="fill" className="size-6 sm:size-7" />
-          <span className="sr-only">Chat with us on WhatsApp (opens in a new tab)</span>
-        </a>
       )}
     </div>
   );

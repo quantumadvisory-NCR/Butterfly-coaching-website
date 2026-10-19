@@ -2,7 +2,7 @@
 
 import { WarningCircleIcon } from "@phosphor-icons/react";
 import { useActionState } from "react";
-import { type AuthState, changeOwnPasswordAction, loginAction, setupAction } from "@/app/admin/actions/auth";
+import { type AuthState, changeOwnPasswordAction, loginAction, setupAction, updateOwnNameAction } from "@/app/admin/actions/auth";
 
 const EMPTY: AuthState = {};
 
@@ -95,6 +95,20 @@ export function SetupForm() {
       <Input name="password" label="Choose a password" type="password" autoComplete="new-password" state={state} help="At least 12 characters, with a letter and a number." />
       <button type="submit" disabled={pending} className="btn btn-primary w-full">
         {pending ? "Creating account" : "Create owner account"}
+      </button>
+    </form>
+  );
+}
+
+export function NameForm({ fullName }: { fullName: string }) {
+  const [state, action, pending] = useActionState(updateOwnNameAction, { values: { fullName } });
+  const success = state.message === "Your name has been saved.";
+  return (
+    <form action={action} noValidate className="grid max-w-md gap-5">
+      <FormMessage state={state} success={success} />
+      <Input name="fullName" label="Your name" autoComplete="name" state={state} help="Shown in the admin, for example on the dashboard." />
+      <button type="submit" disabled={pending} className="btn btn-primary btn-sm justify-self-start">
+        {pending ? "Saving" : "Save name"}
       </button>
     </form>
   );

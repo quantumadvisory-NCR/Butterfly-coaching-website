@@ -126,7 +126,18 @@ Important: **anything left empty is not shown.** If you have not confirmed a fig
 - **Curriculum, faculty and FAQs**: the step-by-step journey, who teaches, and questions specific to this programme.
 - **Show on the homepage**: whether its card appears in "Explore programmes".
 
-The three ICF pathways have their own automatic pages. Mentoring, Coaching and Corporate are pages you edit under **Pages**; their Programme entry only supplies the card.
+### Adding a new course
+
+**Dashboard > Add a new course** (or **Programmes > New programme**).
+
+1. **Programme name**, a **Short identifier** (for example `team-coaching`) and the **Page address** (for example `/team-coaching/`).
+2. **Type**: *ICF credential pathway* puts it with the large cards and in the comparison table; *Course or service* and *Corporate programme* put it with the smaller cards beneath.
+3. Fill in what you have confirmed: summary, description, hours, fees and dates, images. Anything left empty is simply not shown.
+4. Set **Status** to **Published** and save.
+
+The course now has its own page at its address, built from these details, and appears on the programmes page, in "Explore programmes" (tick **Show on the homepage**) and in the sitemap. To add it to the menu, open **Navigation**.
+
+Want to design the page yourself instead? Create a page at the same address under **Pages**: a page built there always takes the place of the automatic one. That is how Mentoring, Coaching and Corporate work today; their Programme entry supplies the card.
 
 ## Testimonials
 
@@ -212,13 +223,19 @@ Send an old address to a new one. Use **Permanent** when a page has moved for go
 | Booking and analytics | Booking link; Google Analytics or Tag Manager; the consent banner |
 | Colours and typography | The five brand colours and the typefaces |
 
-**Announcement bar:** write `{date}` where the cohort date belongs, for example "Next ACC cohort starts {date} · Limited seats", and pick the **Cohort start date**. The bar stays hidden while there is no date and hides itself after the date has passed, so visitors never see a placeholder.
+**Announcement bar:** the yellow strip above the menu on every page. The quickest way in is **Dashboard > Edit the announcement bar**, which also tells you whether the bar is showing. Tick **Show the announcement bar**, write the text (for example "Next ACC cohort enrolling now · Limited seats") and set the **Announcement link** (for example "Reserve yours" going to `/level-1-acc-coach-program/`). The preview under the form shows the bar exactly as visitors will see it, or explains why it is hidden.
+
+To show a date, write `{date}` where it belongs, for example "Next ACC cohort starts {date} · Limited seats", and pick the **Cohort start date**. The bar then stays hidden while there is no date and hides itself after the date has passed, so visitors never see a placeholder.
 
 **Need help panel:** each option is a label, a link and a short description. Links can be a page address or the shortcuts `booking`, `whatsapp` and `phone`.
 
 **Colours:** the page background is `#FCFCFC`, the grey-white of the BCA logo artwork, shared by the website and this admin. The **Readability check** shows whether text will still be easy to read with your chosen colours. Avoid saving a combination marked "Too low".
 
 **Analytics:** nothing is tracked until you add an ID. With the consent banner on (recommended), visitors are asked first and nothing loads unless they accept.
+
+## Your account
+
+Click your name in the admin menu, or open `/admin/account/`. Change **Your name** (the dashboard greets you by it) or your password.
 
 ## Tips
 

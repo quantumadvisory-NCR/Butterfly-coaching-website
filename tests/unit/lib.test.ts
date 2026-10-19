@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { toCsv } from "@/lib/admin/csv";
+import { announcementState } from "@/lib/announcement";
 import { resolveAnnouncement } from "@/lib/content/chrome";
 import { hashPassword, verifyPassword } from "@/lib/auth/password";
 import { sanitisePlainText, sanitiseRichText } from "@/lib/sanitise";
@@ -142,8 +143,13 @@ describe("form validation", () => {
 });
 
 describe("announcement bar", () => {
-  const header = { ...DEFAULT_SETTINGS.header, announcementEnabled: true };
+  const header = { ...DEFAULT_SETTINGS.header, announcementEnabled: true, announcementText: "Next ACC cohort starts {date} · Limited seats" };
   const today = new Date("2026-10-19T06:00:00Z");
+
+  it("shows the owner's chosen wording by default, with no date needed", () => {
+    expect(resolveAnnouncement(DEFAULT_SETTINGS.header, today)).toBe("Next ACC cohort enrolling now · Limited seats");
+    expect(DEFAULT_SETTINGS.header.announcementLink).toEqual({ label: "Reserve yours", href: "/level-1-acc-coach-program/" });
+  });
 
   it("puts the cohort date into the text, written out in full", () => {
     expect(resolveAnnouncement({ ...header, announcementDate: "2027-01-12" }, today)).toBe("Next ACC cohort starts 12 January 2027 · Limited seats");
@@ -162,5 +168,13 @@ describe("announcement bar", () => {
   it("shows plain text with no date as written, and nothing when switched off", () => {
     expect(resolveAnnouncement({ ...header, announcementText: "Applications are open" }, today)).toBe("Applications are open");
     expect(resolveAnnouncement({ ...header, announcementEnabled: false, announcementText: "Applications are open" }, today)).toBeNull();
+  });
+  it("tells the admin why the bar is hidden", () => {
+    expect(announcementState({ ...header, announcementEnabled: false }, today).hidden).toMatch(/switched off/);
+    expect(announcementState({ ...header, announcementText: "  " }, today).hidden).toMatch(/no announcement text/);
+    expect(announcementState({ ...header, announcementDate: "" }, today).hidden).toMatch(/no cohort start date/);
+    expect(announcementState({ ...header, announcementDate: "2026-10-18" }, today).hidden).toMatch(/has passed/);
+    expect(announcementState({ ...header, announcementText: "Starts [DATE]" }, today).hidden).toMatch(/placeholder/);
+    expect(announcementState({ ...header, announcementDate: "2027-01-12" }, today)).toEqual({ text: "Next ACC cohort starts 12 January 2027 · Limited seats", hidden: null });
   });
 });

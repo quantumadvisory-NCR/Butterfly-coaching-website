@@ -2,6 +2,7 @@ import { ArrowRightIcon, BuildingsIcon, CompassIcon, GraduationCapIcon, TrendUpI
 import Link from "next/link";
 import type { ComponentType } from "react";
 import { MediaImage } from "@/components/ui/media-image";
+import { SwipeRail } from "@/components/ui/swipe-rail";
 import { Section, SectionHeading } from "@/components/ui/section";
 import { resolveHref } from "@/lib/settings";
 import { cn } from "@/lib/utils";
@@ -31,6 +32,44 @@ function PanelCards({ data, ctx }: BlockProps<"path_cards">) {
   if (items.length === 0) return null;
   const overlaps = ctx.prev?.type === "hero" && ctx.prev.variant === "home";
   const headingId = `path-${data.anchor || "choose"}`;
+  // Three or more paths swipe sideways on phones and tablets, edge to edge of the panel; a grid from desktop up.
+  const rail = items.length >= 3;
+  const cards = items.map((item, i) => {
+    const href = item.link?.href ? resolveHref(item.link.href, ctx.settings) : null;
+    // Cards saved before icons existed get one by position, so three older cards never share an icon.
+    const Icon = ICONS[item.icon] ?? ICONS[POSITION_ICONS[i] ?? "compass"] ?? ICONS.compass!;
+    return (
+      <li
+        key={`${item.title}-${i}`}
+        className={cn("path-card group flex flex-col p-5 sm:p-6", rail && "max-lg:w-[82%] max-lg:shrink-0 max-lg:snap-start sm:max-lg:w-[46%]")}
+      >
+        <span aria-hidden className="grid size-11 place-items-center rounded-xl bg-accent text-navy transition-transform duration-300 group-hover:-rotate-6">
+          <Icon weight="bold" className="size-5" />
+        </span>
+        <h3 className="mt-4 text-[1.25rem] leading-snug tracking-tight !text-navy">
+          {href ? (
+            <Link
+              href={href}
+              data-track="cta_click"
+              data-track-label={`Path: ${item.title}`}
+              className="outline-none after:absolute after:inset-0 after:z-10 after:rounded-[inherit]"
+            >
+              {item.title}
+            </Link>
+          ) : (
+            item.title
+          )}
+        </h3>
+        {item.body && <p className="mt-1.5 text-[0.9688rem] leading-relaxed text-ink">{item.body}</p>}
+        {href && item.link.label && (
+          <span aria-hidden className="mt-auto inline-flex items-center gap-1.5 pt-4 text-[0.9375rem] font-bold text-navy">
+            {item.link.label}
+            <ArrowRightIcon weight="bold" className="size-4 transition-transform duration-200 group-hover:translate-x-1" />
+          </span>
+        )}
+      </li>
+    );
+  });
   return (
     <section
       id={data.anchor || undefined}
@@ -45,41 +84,20 @@ function PanelCards({ data, ctx }: BlockProps<"path_cards">) {
             </h2>
             {data.intro && <p className="max-w-md text-[1.0313rem] leading-snug text-white/80 md:text-right">{data.intro}</p>}
           </div>
-          <ul className={cn("mt-7 grid gap-4 md:mt-8 md:gap-5", items.length >= 3 ? "md:grid-cols-3" : "md:grid-cols-2", items.length === 4 && "lg:grid-cols-4")}>
-            {items.map((item, i) => {
-              const href = item.link?.href ? resolveHref(item.link.href, ctx.settings) : null;
-              // Cards saved before icons existed get one by position, so three older cards never share an icon.
-              const Icon = ICONS[item.icon] ?? ICONS[POSITION_ICONS[i] ?? "compass"] ?? ICONS.compass!;
-              return (
-                <li key={`${item.title}-${i}`} className="path-card group flex flex-col p-5 sm:p-6">
-                  <span aria-hidden className="grid size-11 place-items-center rounded-xl bg-accent text-navy transition-transform duration-300 group-hover:-rotate-6">
-                    <Icon weight="bold" className="size-5" />
-                  </span>
-                  <h3 className="mt-4 text-[1.25rem] leading-snug tracking-tight !text-navy">
-                    {href ? (
-                      <Link
-                        href={href}
-                        data-track="cta_click"
-                        data-track-label={`Path: ${item.title}`}
-                        className="outline-none after:absolute after:inset-0 after:z-10 after:rounded-[inherit]"
-                      >
-                        {item.title}
-                      </Link>
-                    ) : (
-                      item.title
-                    )}
-                  </h3>
-                  {item.body && <p className="mt-1.5 text-[0.9688rem] leading-relaxed text-ink">{item.body}</p>}
-                  {href && item.link.label && (
-                    <span aria-hidden className="mt-auto inline-flex items-center gap-1.5 pt-4 text-[0.9375rem] font-bold text-navy">
-                      {item.link.label}
-                      <ArrowRightIcon weight="bold" className="size-4 transition-transform duration-200 group-hover:translate-x-1" />
-                    </span>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
+          {rail ? (
+            <SwipeRail
+              label="Path"
+              tone="dark"
+              listClassName={cn(
+                "mt-5 gap-4 py-2 max-lg:-mx-5 max-lg:scroll-px-5 max-lg:px-5 sm:max-lg:-mx-8 sm:max-lg:scroll-px-8 sm:max-lg:px-8 md:mt-6 lg:mt-8 lg:grid lg:gap-5 lg:overflow-visible lg:py-0",
+                items.length === 4 ? "lg:grid-cols-4" : "lg:grid-cols-3",
+              )}
+            >
+              {cards}
+            </SwipeRail>
+          ) : (
+            <ul className="mt-7 grid gap-4 md:mt-8 md:grid-cols-2 md:gap-5">{cards}</ul>
+          )}
         </div>
       </div>
     </section>

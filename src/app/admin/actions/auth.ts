@@ -1,10 +1,14 @@
 "use server";
 
 import { timingSafeEqual } from "node:crypto";
+import { eq } from "drizzle-orm";
+import { refresh } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { logAudit } from "@/lib/audit";
 import { assertUser, createStaffUser, getSessionUser, passwordProblem, setStaffPassword, signIn, signOut, staffCount } from "@/lib/auth";
+import { db } from "@/lib/db";
+import { profiles } from "@/lib/db/schema";
 import { rateLimit } from "@/lib/security";
 
 export type AuthState = { message?: string; errors?: Record<string, string>; values?: Record<string, string> };
@@ -92,6 +96,25 @@ export async function setupAction(_prev: AuthState, formData: FormData): Promise
   await logAudit({ user: { id, email: parsed.data.email }, action: "setup", entityType: "user", entityId: id, summary: "Created the first owner account" });
   await signIn(parsed.data.email, parsed.data.password);
   redirect("/admin/");
+}
+
+const ownName = z.string().trim().min(2, "Enter your name.").max(120, "Use 120 characters or fewer.");
+
+/** Anyone signed in can change the name shown on their own account (the dashboard greets them by it). */
+export async function updateOwnNameAction(_prev: AuthState, formData: FormData): Promise<AuthState> {
+  let user;
+  try {
+    user = await assertUser();
+  } catch {
+    return { message: "Your session has expired. Please sign in again." };
+  }
+  const fullName = String(formData.get("fullName") ?? "");
+  const parsed = ownName.safeParse(fullName);
+  if (!parsed.success) return { errors: { fullName: parsed.error.issues[0]?.message ?? "Enter your name." }, values: { fullName } };
+  await db().update(profiles).set({ fullName: parsed.data, updatedAt: new Date() }).where(eq(profiles.id, user.id));
+  await logAudit({ user, action: "user.update", entityType: "user", entityId: user.id, summary: "Changed own name" });
+  refresh();
+  return { message: "Your name has been saved.", values: { fullName: parsed.data } };
 }
 
 export async function changeOwnPasswordAction(_prev: AuthState, formData: FormData): Promise<AuthState> {

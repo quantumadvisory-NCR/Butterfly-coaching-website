@@ -46,7 +46,7 @@ const header = [
     type: "text",
     name: "announcementText",
     label: "Announcement text",
-    help: 'Write {date} where the cohort date should appear, e.g. "Next ACC cohort starts {date} · Limited seats". The bar stays hidden while {date} has no date, or once that date has passed.',
+    help: 'For example "Next ACC cohort enrolling now · Limited seats". To show a date, write {date} where it should appear, e.g. "Next ACC cohort starts {date} · Limited seats": the bar then stays hidden while no date is set, and hides itself once that date has passed.',
     maxLength: 140,
   },
   {
@@ -209,8 +209,8 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   social: { linkedin: "", instagram: "", facebook: "", youtube: "", x: "" },
   header: {
     // Off until the owner sets a confirmed cohort date: the bar never shows a placeholder.
-    announcementEnabled: false,
-    announcementText: "Next ACC cohort starts {date} · Limited seats",
+    announcementEnabled: true,
+    announcementText: "Next ACC cohort enrolling now · Limited seats",
     announcementDate: "",
     announcementLink: { label: "Reserve yours", href: "/level-1-acc-coach-program/" },
     cta: { label: "Book a discovery call", href: "booking" },

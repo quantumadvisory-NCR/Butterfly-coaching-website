@@ -19,7 +19,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   };
 
   for (const page of pages) if (!page.noindex) add(page.path, page.updatedAt, page.path === "/" ? 1 : 0.7);
-  for (const programme of programmes) if (programme.kind === "certification") add(programme.path, programme.updatedAt, 0.9);
+  // Pages come first, so a programme with a custom page is listed once.
+  for (const programme of programmes) add(programme.path, programme.updatedAt, programme.kind === "certification" ? 0.9 : 0.7);
   add("/blog/", posts[0]?.updatedAt, 0.6);
   for (const post of posts) add(`/${post.slug}/`, post.updatedAt, 0.5);
   return entries;

@@ -1,6 +1,9 @@
 import "server-only";
 import { type MediaMap, getMediaMap, getNavigation, getSettings } from "@/lib/content/public";
-import { type SiteSettings, resolveHref } from "@/lib/settings";
+import { resolveAnnouncement } from "@/lib/announcement";
+import { resolveHref } from "@/lib/settings";
+
+export { resolveAnnouncement } from "@/lib/announcement";
 
 export type LogoAsset = { src: string; width: number; height: number };
 
@@ -11,31 +14,6 @@ function logo(media: MediaMap, id: string | null, fallback: LogoAsset): LogoAsse
   const item = id ? media[id] : null;
   if (!item) return fallback;
   return { src: item.url, width: item.width ?? fallback.width, height: item.height ?? fallback.height };
-}
-
-/** Today's date in India as YYYY-MM-DD, so a cohort date expires at the end of its own day. */
-function todayInIndia(now = new Date()): string {
-  return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kolkata", year: "numeric", month: "2-digit", day: "2-digit" }).format(now);
-}
-
-/**
- * Resolves the announcement bar text. Returns null (bar hidden) when the bar is
- * off, when the text uses {date} but no date is set or the date has passed, or
- * when the text still holds a placeholder such as [DATE] or [X]. Visitors must
- * never see an unfinished announcement.
- */
-export function resolveAnnouncement(header: SiteSettings["header"], now = new Date()): string | null {
-  const raw = header.announcementText.trim();
-  if (!header.announcementEnabled || !raw) return null;
-  let text = raw;
-  if (raw.includes("{date}")) {
-    const date = header.announcementDate;
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || date < todayInIndia(now)) return null;
-    const formatted = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${date}T00:00:00Z`));
-    text = raw.replaceAll("{date}", formatted);
-  }
-  if (/\[[^\]]*\]|\{[^}]*\}/.test(text)) return null;
-  return text;
 }
 
 /** Everything the header and footer need, resolved once per request. */

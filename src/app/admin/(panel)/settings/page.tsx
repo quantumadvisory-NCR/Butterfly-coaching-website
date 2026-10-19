@@ -22,8 +22,9 @@ function Line({ ok, label, detail }: { ok: boolean; label: string; detail: strin
   );
 }
 
-export default async function SettingsPage() {
+export default async function SettingsPage({ searchParams }: { searchParams: Promise<{ tab?: string }> }) {
   await requireUser("admin");
+  const { tab } = await searchParams;
   // Read straight from the database (not the public cache) so the form always shows the saved values.
   const rows = await db().select().from(siteSettings);
   const stored = new Map(rows.map((row) => [row.key, row.value]));
@@ -36,7 +37,7 @@ export default async function SettingsPage() {
   return (
     <>
       <PageHeader title="Settings" description="Details used across the whole website. Changes apply as soon as you save." />
-      <SettingsTabs values={values} media={media} />
+      <SettingsTabs values={values} media={media} initialTab={tab && tab in SETTINGS_GROUPS ? (tab as SettingsKey) : undefined} />
 
       <Card title="Connections" description="These are set in the hosting environment rather than here. See docs/DEPLOYMENT.md." className="mt-6">
         <ul className="-my-2 divide-y divide-line">

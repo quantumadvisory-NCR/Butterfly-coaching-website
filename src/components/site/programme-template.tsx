@@ -32,7 +32,7 @@ function CheckList({ items, columns = false }: { items: string[]; columns?: bool
 }
 
 /**
- * Detail page for an ICF credential pathway. Every section is driven by the
+ * Detail page for a programme or course. Every section is driven by the
  * programme record, and sections with no data (fees, dates, brochure) are
  * left out rather than padded with placeholder copy.
  */

@@ -105,6 +105,8 @@ The second round of design changes (the logo's grey-white background, the rework
 
 Both columns are within the normal run-to-run spread. On a phone the Largest Contentful Paint element is the header logo in both builds; nearly all of its time is render delay under the simulated slow CPU, not network.
 
+**20 October 2026 (announcement bar, swipe rows on phones and tablets, stacked WhatsApp and help buttons, new-course pages, editable account name):** admin medians at ~2 ms were 107, 116, 222, 108, 115, 415 and 114 ms for the seven steps above, the same as before. Homepage Lighthouse (mobile, three runs): performance 86, 87, 85; Largest Contentful Paint 3.6 to 3.7 s; Total Blocking Time 140 to 150 ms (about 40 ms more, from the small script that drives the swipe rows' dots); Cumulative Layout Shift 0; accessibility, best practices and SEO 100.
+
 ## What still needs doing
 
 1. Done: deployed on 19 October 2026 (`main` 9a0da50, functions in Mumbai, `bom1`), and the live editors were checked: they open in about 0.3 to 1.2 s.
