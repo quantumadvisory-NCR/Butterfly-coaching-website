@@ -607,6 +607,30 @@
   }
 }
 
+/* "Why BCA" points on phones and tablets: an editorial sequence (number, then
+   text, joined by a thread) rather than three boxed cards. Desktop keeps the cards. */
+@media (width < 64rem) {
+  .why-step {
+    flex-direction: row;
+    gap: 1rem;
+    padding: 0 0 1.75rem;
+    border-color: transparent;
+    background: transparent;
+    box-shadow: none;
+  }
+  .why-step:last-child {
+    padding-bottom: 0;
+  }
+  .why-step::before {
+    display: none;
+  }
+  .why-step:hover {
+    translate: none;
+    border-color: transparent;
+    box-shadow: none;
+  }
+}
+
 /* Cards that are one big link ("press") give a little under the finger, so a tap
    feels answered before the next page arrives. Touch screens only: a mouse has
    the hover state instead. */
@@ -617,12 +641,10 @@
 }
 @media (hover: none) {
   .press:active,
-  .path-card:active,
-  .lift-card:active {
+  .path-card:active {
     scale: 0.98;
   }
-  .path-card,
-  .lift-card {
+  .path-card {
     transition: scale 0.15s var(--ease-out-soft);
   }
 }
@@ -650,9 +672,6 @@
       animation: reveal-up linear both;
       animation-timeline: view();
       animation-range: entry 0% entry 4.5rem;
-    }
-    .swipe-rail > .reveal {
-      animation: none;
     }
   }
 

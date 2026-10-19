@@ -61,38 +61,42 @@ export async function ProfilesBlock({ data, ctx }: BlockProps<"profiles">) {
     <Section background={data.background} anchor={data.anchor}>
       <div className="container-site">
         {showFounder && founder && (
-          <div className="grid items-center gap-9 lg:grid-cols-12 lg:gap-14">
-            <div className="reveal relative mx-auto w-full max-w-md lg:col-span-5 lg:max-w-none">
-              <div aria-hidden className="absolute -right-3 top-8 size-24 rounded-full bg-accent md:size-32 lg:-right-6" />
-              <div className="relative aspect-[5/6] overflow-hidden rounded-card rounded-tl-[var(--radius-wing)] bg-tint-deep">
+          // Phones and tablets: a compact portrait with the name and credentials beside it, then the story,
+          // the facts and the button across the full width. Desktop: portrait and text side by side.
+          <div className="grid items-center gap-9 max-lg:grid-cols-[minmax(0,0.42fr)_minmax(0,0.58fr)] max-lg:gap-x-5 max-lg:gap-y-6 md:max-lg:grid-cols-[minmax(0,0.34fr)_minmax(0,0.66fr)] md:max-lg:gap-x-8 lg:grid-cols-12 lg:gap-14">
+            <div className="reveal relative mx-auto w-full max-w-md max-lg:mx-0 max-lg:max-w-none lg:col-span-5 lg:max-w-none">
+              <div aria-hidden className="absolute -right-3 top-8 size-24 rounded-full bg-accent max-lg:hidden md:size-32 lg:-right-6" />
+              <div className="relative aspect-[5/6] overflow-hidden rounded-card rounded-tl-[var(--radius-wing)] bg-tint-deep max-lg:aspect-[4/5] max-lg:rounded-tl-[3.5rem]">
                 {photo && (
                   <MediaImage
                     media={photo}
                     fill
                     alt={`${founder.name}${founder.credential ? `, ${founder.credential}` : ""}, founder of Butterfly Coaching Academy`}
-                    sizes="(min-width: 64rem) 38vw, (min-width: 40rem) 28rem, 100vw"
+                    sizes="(min-width: 64rem) 38vw, (min-width: 48rem) 34vw, 42vw"
                     className="!object-top"
                   />
                 )}
               </div>
             </div>
-            <div className="reveal lg:col-span-7">
-              <p className="eyebrow mb-3">{data.heading}</p>
-              <h2 className="text-h2">{founder.name}</h2>
-              <p className="mt-2 font-semibold text-primary">{[founder.credential, founder.roleTitle].filter(Boolean).join(" · ")}</p>
-              {(data.intro || founder.shortBio) && <p className="mt-5 max-w-2xl text-lead">{data.intro || founder.shortBio}</p>}
+            <div className="reveal max-lg:contents lg:col-span-7">
+              <div className="max-lg:col-start-2 max-lg:row-start-1 max-lg:self-center">
+                <p className="eyebrow mb-3 max-md:mb-2">{data.heading}</p>
+                <h2 className="text-h2 max-md:text-[1.75rem] max-md:leading-tight">{founder.name}</h2>
+                <p className="mt-2 font-semibold text-primary max-md:text-[0.9375rem] max-md:leading-snug">{[founder.credential, founder.roleTitle].filter(Boolean).join(" · ")}</p>
+              </div>
+              {(data.intro || founder.shortBio) && <p className="mt-5 max-w-2xl text-lead max-lg:col-span-2 max-lg:mt-0">{data.intro || founder.shortBio}</p>}
               {facts.length > 0 && (
-                <dl className="mt-8 grid max-w-2xl grid-cols-1 gap-5 min-[30rem]:grid-cols-3">
+                <dl className="mt-8 grid max-w-2xl grid-cols-1 gap-5 min-[30rem]:grid-cols-3 max-lg:col-span-2 max-lg:mt-0 max-md:grid-cols-3 max-md:gap-3">
                   {facts.map((fact) => (
-                    <div key={fact.label} className="flex flex-col-reverse border-l-2 border-accent pl-4">
-                      <dt className="text-sm leading-snug text-muted">{fact.label}</dt>
-                      <dd className="font-display text-[1.75rem] font-bold leading-tight tracking-tight text-navy">{fact.value}</dd>
+                    <div key={fact.label} className="flex flex-col-reverse border-l-2 border-accent pl-4 max-md:pl-3">
+                      <dt className="text-sm leading-snug text-muted max-md:text-[0.8125rem]">{fact.label}</dt>
+                      <dd className="font-display text-[1.75rem] font-bold leading-tight tracking-tight text-navy max-md:text-[1.375rem]">{fact.value}</dd>
                     </div>
                   ))}
                 </dl>
               )}
               {cta && (
-                <div className="mt-9">
+                <div className="mt-9 max-lg:col-span-2 max-lg:mt-0">
                   <ButtonLink href={cta.href} variant="secondary">
                     {cta.label}
                   </ButtonLink>

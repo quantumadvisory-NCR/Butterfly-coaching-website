@@ -45,11 +45,11 @@ export default async function PagesListPage() {
             </RecordCell>
             <RecordCell label="" primary className="md:text-right">
               <span className="flex gap-3 max-md:mt-2 md:justify-end">
-                <Link href={`/admin/pages/${page.id}/`} className="text-sm font-semibold text-primary hover:underline">
+                <Link href={`/admin/pages/${page.id}/`} className="text-sm font-semibold text-primary hover:underline max-md:inline-flex max-md:min-h-11 max-md:items-center max-md:rounded-full max-md:border max-md:border-line max-md:bg-surface max-md:px-5 max-md:hover:border-primary max-md:hover:no-underline">
                   Edit<span className="sr-only"> {page.title}</span>
                 </Link>
                 {page.status === "published" && (
-                  <a href={page.path} target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-primary hover:underline">
+                  <a href={page.path} target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-primary hover:underline max-md:inline-flex max-md:min-h-11 max-md:items-center max-md:rounded-full max-md:border max-md:border-line max-md:bg-surface max-md:px-5 max-md:hover:border-primary max-md:hover:no-underline">
                     View<span className="sr-only"> {page.title} (opens in a new tab)</span>
                   </a>
                 )}

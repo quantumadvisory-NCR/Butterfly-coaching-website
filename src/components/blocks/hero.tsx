@@ -54,17 +54,17 @@ async function TrustRow({ text, photos, ctx }: { text: string; photos: boolean; 
     : [];
   if (!text && people.length === 0) return null;
   return (
-    <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-3">
+    <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-3 max-md:mt-5 max-md:flex-nowrap max-md:gap-x-3">
       {people.length > 0 && (
-        <span aria-hidden className="flex -space-x-2.5">
+        <span aria-hidden className="flex shrink-0 -space-x-2.5">
           {people.map((person) => (
-            <span key={person.id} className="relative size-10 overflow-hidden rounded-full bg-tint-deep ring-[3px] ring-page">
+            <span key={person.id} className="relative size-10 overflow-hidden rounded-full bg-tint-deep ring-[3px] ring-page max-md:size-9">
               <MediaImage media={pickMedia(ctx, person.photoId)} fill alt="" sizes="40px" className="!object-top" />
             </span>
           ))}
         </span>
       )}
-      {text && <p className="max-w-[22rem] text-[0.9375rem] leading-snug text-ink">{text}</p>}
+      {text && <p className="max-w-[22rem] text-[0.9375rem] leading-snug text-ink max-md:text-[0.875rem]">{text}</p>}
     </div>
   );
 }
@@ -116,19 +116,19 @@ export async function HeroBlock({ data, ctx }: BlockProps<"hero">) {
     <section className="relative isolate overflow-clip bg-page">
       <div
         className={cn(
-          "container-site grid items-center gap-10 pt-8 sm:pt-10 md:gap-12 lg:grid-cols-[minmax(0,1.12fr)_minmax(0,0.88fr)] lg:gap-8 lg:pt-14 xl:gap-14",
+          "container-site grid items-center gap-6 pt-4 max-[22.5rem]:gap-4 max-[22.5rem]:pt-3 sm:pt-6 md:gap-9 md:pt-8 lg:grid-cols-[minmax(0,1.12fr)_minmax(0,0.88fr)] lg:gap-8 lg:pt-14 xl:gap-14",
           overlapped ? "pb-20 sm:pb-24 lg:pb-48" : "pb-12 md:pb-16 lg:pb-16",
         )}
       >
         <div className="hero-enter min-w-0 max-w-[40rem]">
           {data.eyebrow && (
-            <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-line bg-surface/80 px-3.5 py-1.5 text-[0.8125rem] font-semibold leading-tight text-navy">
+            <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-line bg-surface/80 px-3.5 py-1.5 text-[0.8125rem] font-semibold leading-tight text-navy max-md:mb-3.5 max-md:px-3 max-md:py-1 max-md:text-[0.75rem]">
               <span aria-hidden className="size-2 shrink-0 rounded-full bg-accent" />
               {data.eyebrow}
             </p>
           )}
           {/* Beside the photo the text column is narrower, so the size follows a gentler curve there and the heading keeps to three lines. */}
-          <h1 className="text-[clamp(2.375rem,1.5rem+3.6vw,4.25rem)] font-extrabold leading-[1.02] tracking-[-0.035em] lg:text-[clamp(3.25rem,1.1rem+3.4vw,4.25rem)]">
+          <h1 className="text-[clamp(2.25rem,1.35rem+3.6vw,3.75rem)] max-[22.5rem]:text-[2.125rem] font-extrabold leading-[1.02] tracking-[-0.035em] lg:text-[clamp(3.25rem,1.1rem+3.4vw,4.25rem)]">
             <span className="block">{data.heading}</span>
             {data.headingAccent && (
               <>
@@ -137,9 +137,10 @@ export async function HeroBlock({ data, ctx }: BlockProps<"hero">) {
               </>
             )}
           </h1>
-          {data.subheading && <p className="mt-5 max-w-[31rem] text-lead text-ink md:mt-6">{data.subheading}</p>}
+          {data.subheading && <p className="mt-5 max-w-[31rem] text-lead text-ink max-md:mt-3.5 md:mt-6">{data.subheading}</p>}
           {(primary || secondary) && (
-            <div className="mt-7 flex flex-col gap-3 min-[26rem]:flex-row min-[26rem]:flex-wrap md:mt-8">
+            // On phones the two buttons stack at full width, so they line up however long their labels are.
+            <div className="mt-7 flex flex-col gap-3 min-[26rem]:flex-row min-[26rem]:flex-wrap max-md:mt-6 max-md:!flex-col max-md:gap-2.5 max-[22.5rem]:mt-4 md:mt-8">
               {primary && <ButtonLink href={primary.href}>{primary.label}</ButtonLink>}
               {secondary && (
                 <ButtonLink href={secondary.href} variant="secondary">
@@ -149,15 +150,25 @@ export async function HeroBlock({ data, ctx }: BlockProps<"hero">) {
             </div>
           )}
           {chips.length > 0 && (
-            <ul aria-label="At a glance" className="mt-6 flex flex-wrap gap-2">
+            <ul
+              aria-label="At a glance"
+              className={cn(
+                "mt-6 flex flex-wrap gap-2 max-md:grid max-md:gap-x-0 max-md:gap-y-3 max-md:rounded-2xl max-md:border max-md:border-line max-md:bg-surface max-md:py-3.5",
+                chips.length === 3 ? "max-md:grid-cols-3" : "max-md:grid-cols-2",
+              )}
+            >
               {chips.map((chip) => {
                 const Icon = CHIP_ICONS[chip.icon];
                 return (
                   <li
                     key={chip.label}
-                    className="inline-flex min-h-9 items-center gap-2 rounded-full border border-line bg-surface/80 px-3.5 py-1.5 text-[0.875rem] font-semibold leading-tight text-navy"
+                    className={cn(
+                      "inline-flex min-h-9 items-center gap-2 rounded-full border border-line bg-surface/80 px-3.5 py-1.5 text-[0.875rem] font-semibold leading-tight text-navy",
+                      "max-md:flex max-md:min-h-0 max-md:flex-col max-md:justify-start max-md:gap-1.5 max-md:rounded-none max-md:border-0 max-md:border-l max-md:bg-transparent max-md:px-2 max-md:py-0 max-md:text-center max-md:text-[0.78rem]",
+                      chips.length === 3 ? "max-md:first:border-l-0" : "max-md:[&:nth-child(odd)]:border-l-0",
+                    )}
                   >
-                    {Icon && <Icon aria-hidden weight="bold" className="size-4 shrink-0 text-primary" />}
+                    {Icon && <Icon aria-hidden weight="bold" className="size-4 shrink-0 text-primary max-md:size-5" />}
                     {chip.label}
                   </li>
                 );
@@ -170,18 +181,20 @@ export async function HeroBlock({ data, ctx }: BlockProps<"hero">) {
         {image && (
           // The arch keeps one shape at every desktop width, so the photograph stays level with the heading
           // and the two columns centre on each other rather than the photo sinking towards the panel.
-          <div className="relative mx-auto w-full max-w-[30rem] sm:max-w-[34rem] lg:mx-0 lg:max-w-[33rem] lg:justify-self-end">
-            <div className="relative aspect-[10/9] lg:aspect-[12/13]">
-              <WingMotif className="absolute -inset-x-[5%] top-0 h-full w-[110%]" />
-              <div className="absolute inset-x-[8%] bottom-0 top-[7%] overflow-hidden rounded-b-[var(--radius-card)] rounded-t-[999px] bg-tint-deep shadow-card ring-4 ring-surface/70">
+          // On phones and tablets it comes first, as a wide photograph straight under the header, so the first
+          // screen shows the academy as well as the message; the credential card sits on its lower edge.
+          <div className="relative mx-auto w-full max-lg:order-first max-lg:mb-6 md:max-lg:max-w-[44rem] lg:mx-0 lg:max-w-[33rem] lg:justify-self-end">
+            <div className="relative aspect-[16/11] max-[22.5rem]:aspect-[16/7] sm:aspect-[16/10] lg:aspect-[12/13]">
+              <WingMotif className="absolute -inset-x-[5%] top-0 h-full w-[110%] max-lg:hidden" />
+              <div className="absolute inset-x-[8%] bottom-0 top-[7%] overflow-hidden rounded-b-[var(--radius-card)] rounded-t-[999px] bg-tint-deep shadow-card ring-4 ring-surface/70 max-lg:inset-0 max-lg:rounded-[var(--radius-card)] max-lg:rounded-tl-[5rem] max-lg:ring-0">
                 {tall ? (
                   <ArtDirectedImage wide={image} tall={tall} />
                 ) : (
-                  <MediaImage media={image} fill preload={ctx.index === 0} sizes="(min-width: 64rem) 760px, (min-width: 36rem) 610px, 112vw" position={FOCUS[data.imageFocus]} />
+                  <MediaImage media={image} fill preload={ctx.index === 0} sizes="(min-width: 64rem) 760px, (min-width: 48rem) 44rem, 100vw" position={FOCUS[data.imageFocus]} />
                 )}
               </div>
               {credential && (
-                <div className="absolute left-0 top-[52%] max-w-[13.5rem] rounded-2xl border border-line/70 bg-surface px-4 py-3 shadow-lift sm:top-[55%]">
+                <div className="absolute left-0 top-[52%] max-w-[13.5rem] rounded-2xl border border-line/70 bg-surface px-4 py-3 shadow-lift sm:top-[55%] max-lg:!top-auto max-lg:-bottom-6 max-lg:left-3 max-lg:px-3.5 max-lg:py-2.5">
                   <p className="font-display text-lg font-extrabold leading-tight tracking-tight text-navy">{credential.value}</p>
                   {credential.label && <p className="mt-0.5 text-[0.8125rem] font-medium leading-snug text-muted">{credential.label}</p>}
                 </div>

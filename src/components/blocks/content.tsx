@@ -86,29 +86,29 @@ export function FeatureListBlock({ data, ctx }: BlockProps<"feature_list">) {
           <h2 className="text-h2">{data.heading}</h2>
           {data.intro && <p className="mt-4 max-w-md text-lead text-ink">{data.intro}</p>}
           {image && (
-            <div className="reveal relative mt-9 max-w-md lg:max-w-none">
+            <div className="reveal relative mt-9 max-w-md max-lg:mt-7 lg:max-w-none">
               {/* A yellow echo of the photograph's curved corner. */}
               <span aria-hidden className="absolute -left-3 -top-3 h-2/3 w-2/3 rounded-card rounded-tl-[var(--radius-wing)] bg-accent" />
               <span aria-hidden className="absolute -bottom-4 -right-4 size-20 rounded-full border-2 border-dashed border-accent/70" />
-              <div className="relative aspect-[4/3] overflow-hidden rounded-card rounded-tl-[var(--radius-wing)] shadow-card ring-4 ring-surface">
+              <div className="relative aspect-[4/3] overflow-hidden rounded-card rounded-tl-[var(--radius-wing)] shadow-card ring-4 ring-surface max-lg:aspect-[16/10]">
                 <MediaImage media={image} fill sizes="(min-width: 64rem) 36vw, (min-width: 28rem) 28rem, 100vw" className="transition-transform duration-700 ease-out hover:scale-[1.03]" />
               </div>
             </div>
           )}
         </div>
         <div className="relative lg:col-span-7 lg:row-span-2 lg:self-center">
-          {/* The thread joining the numbers. */}
-          <span aria-hidden className="absolute bottom-10 left-[2.4375rem] top-10 w-px bg-gradient-to-b from-accent via-line to-transparent max-sm:hidden" />
+          {/* The thread joining the numbers: through the card edges on desktop, down the number column on phones and tablets. */}
+          <span aria-hidden className="absolute bottom-10 left-[2.4375rem] top-10 w-px bg-gradient-to-b from-accent via-line to-transparent max-lg:bottom-6 max-lg:left-6 max-lg:top-3" />
           <ol className="relative grid gap-4 md:gap-5">
             {items.map((item, i) => (
-              <li key={`${item.title}-${i}`} className="reveal lift-card group flex flex-col gap-4 p-5 sm:flex-row sm:gap-5 sm:p-6 md:p-7">
+              <li key={`${item.title}-${i}`} className="reveal lift-card why-step group flex flex-col gap-4 p-5 sm:flex-row sm:gap-5 sm:p-6 md:p-7">
                 <span
                   aria-hidden
                   className="relative z-10 grid size-12 shrink-0 place-items-center rounded-2xl bg-accent font-display text-lg font-extrabold text-navy shadow-[0_6px_16px_-6px_rgb(245_186_0/0.7)] transition-transform duration-300 group-hover:-rotate-6"
                 >
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <div className="min-w-0 sm:pt-1">
+                <div className="min-w-0 pt-1.5 sm:pt-1">
                   <h3 className="text-h3">{item.title}</h3>
                   {item.body && <p className="mt-2 max-w-prose text-[0.9688rem] leading-relaxed text-ink">{item.body}</p>}
                 </div>

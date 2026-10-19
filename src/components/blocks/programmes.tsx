@@ -2,7 +2,6 @@ import { ArrowRightIcon } from "@phosphor-icons/react/dist/ssr";
 import Link from "next/link";
 import { ButtonLink, TextLink } from "@/components/ui/button-link";
 import { MediaImage } from "@/components/ui/media-image";
-import { SwipeRail } from "@/components/ui/swipe-rail";
 import { Section, SectionHeading } from "@/components/ui/section";
 import { type ProgrammeView, getProgrammes } from "@/lib/content/public";
 import { cn, formatHours } from "@/lib/utils";
@@ -22,23 +21,24 @@ export function programmeFacts(p: ProgrammeView) {
   return facts;
 }
 
-function CertificationCard({ p, ctx, className }: { p: ProgrammeView; ctx: BlockContext; className?: string }) {
+/** `reveal: false` when the whole row fades in together. */
+function CertificationCard({ p, ctx, reveal = true }: { p: ProgrammeView; ctx: BlockContext; reveal?: boolean }) {
   const badge = p.accreditationStatus === "accredited" ? pickMedia(ctx, p.badgeId) : null;
   const facts = programmeFacts(p).slice(0, 3);
   return (
-    <li className={cn("press reveal group relative isolate flex flex-col rounded-card border border-line bg-surface p-6 hover:shadow-lift md:p-7 lg:p-8", className)}>
+    <li className={cn("press group relative isolate flex flex-col rounded-card border border-line bg-surface p-6 hover:shadow-lift max-md:p-5 md:p-7 lg:p-8", reveal && "reveal")}>
       <div className="flex items-start justify-between gap-4">
         <div>
           {p.levelLabel && <p className="text-sm font-semibold text-primary">{p.levelLabel}</p>}
-          {p.credential && <p className="mt-1 font-display text-5xl font-bold leading-none tracking-tight text-navy">{p.credential}</p>}
+          {p.credential && <p className="mt-1 font-display text-5xl font-bold leading-none tracking-tight text-navy max-md:text-4xl">{p.credential}</p>}
         </div>
         {badge && (
-          <div className="relative size-16 shrink-0 md:size-[4.5rem]">
+          <div className="relative size-16 shrink-0 max-md:size-14 md:size-[4.5rem]">
             <MediaImage media={badge} fill sizes="72px" className="!object-contain" />
           </div>
         )}
       </div>
-      <h3 className="mt-5 text-h3">
+      <h3 className="mt-5 text-h3 max-md:mt-4">
         <Link
           href={p.path}
           data-track="cta_click"
@@ -48,18 +48,23 @@ function CertificationCard({ p, ctx, className }: { p: ProgrammeView; ctx: Block
           {p.name}
         </Link>
       </h3>
-      {p.summary && <p className="mt-2.5">{p.summary}</p>}
+      {p.summary && <p className="mt-2.5 max-md:text-[0.9688rem]">{p.summary}</p>}
       {facts.length > 0 && (
-        <dl className="mt-6 grid gap-2.5 border-t border-line pt-5 text-[0.9375rem]">
+        <dl
+          className={cn(
+            "mt-6 grid gap-2.5 border-t border-line pt-5 text-[0.9375rem] max-md:mt-5 max-md:gap-x-3 max-md:pt-4",
+            facts.length === 3 ? "max-md:grid-cols-3" : facts.length === 2 ? "max-md:grid-cols-2" : "",
+          )}
+        >
           {facts.map((fact) => (
-            <div key={fact.label} className="flex items-baseline justify-between gap-4">
-              <dt className="text-muted">{fact.label}</dt>
-              <dd className="text-right font-semibold text-navy">{fact.value}</dd>
+            <div key={fact.label} className="flex items-baseline justify-between gap-4 max-md:flex-col-reverse max-md:items-start max-md:justify-end max-md:gap-0.5">
+              <dt className="text-muted max-md:text-[0.8125rem] max-md:leading-snug">{fact.label}</dt>
+              <dd className="text-right font-semibold text-navy max-md:text-left max-md:leading-snug">{fact.value}</dd>
             </div>
           ))}
         </dl>
       )}
-      <span aria-hidden className="mt-auto inline-flex items-center gap-1.5 pt-6 font-semibold text-primary group-hover:text-navy">
+      <span aria-hidden className="mt-auto inline-flex items-center gap-1.5 pt-6 font-semibold text-primary group-hover:text-navy max-md:pt-5">
         View the {p.credential ?? "programme"} pathway
         <ArrowRightIcon weight="bold" className="size-4 transition-transform duration-200 group-hover:translate-x-1" />
       </span>
@@ -73,12 +78,12 @@ function ServiceCard({ p, ctx, stacked }: { p: ProgrammeView; ctx: BlockContext;
   return (
     <li
       className={cn(
-        "press reveal group relative isolate grid overflow-hidden rounded-card border border-line bg-surface hover:shadow-lift sm:grid-cols-[minmax(0,0.42fr)_minmax(0,1fr)] md:grid-cols-1",
+        "press reveal group relative isolate grid overflow-hidden rounded-card border border-line bg-surface hover:shadow-lift max-sm:grid-cols-[minmax(0,0.36fr)_minmax(0,1fr)] sm:grid-cols-[minmax(0,0.42fr)_minmax(0,1fr)] md:grid-cols-1",
         !stacked && "xl:grid-cols-[minmax(0,0.42fr)_minmax(0,1fr)]",
       )}
     >
       {image && (
-        <div className={cn("relative aspect-[16/10] overflow-hidden sm:aspect-auto sm:min-h-44 md:aspect-[16/9]", !stacked && "xl:aspect-auto")}>
+        <div className={cn("relative aspect-[16/10] overflow-hidden max-sm:aspect-auto max-sm:min-h-36 sm:aspect-auto sm:min-h-44 md:aspect-[16/9]", !stacked && "xl:aspect-auto")}>
           <MediaImage
             media={image}
             fill
@@ -88,8 +93,8 @@ function ServiceCard({ p, ctx, stacked }: { p: ProgrammeView; ctx: BlockContext;
           />
         </div>
       )}
-      <div className="flex flex-col p-6 md:p-7">
-        <h3 className="text-h3">
+      <div className="flex flex-col p-6 max-sm:p-4 md:p-7">
+        <h3 className="text-h3 max-sm:text-[1.125rem]">
           <Link
             href={p.path}
             data-track="cta_click"
@@ -99,8 +104,8 @@ function ServiceCard({ p, ctx, stacked }: { p: ProgrammeView; ctx: BlockContext;
             {p.name}
           </Link>
         </h3>
-        {p.summary && <p className="mt-2.5">{p.summary}</p>}
-        <span aria-hidden className="mt-auto inline-flex items-center gap-1.5 pt-5 font-semibold text-primary group-hover:text-navy">
+        {p.summary && <p className="mt-2.5 max-sm:mt-1.5 max-sm:text-[0.9375rem] max-sm:leading-snug">{p.summary}</p>}
+        <span aria-hidden className="mt-auto inline-flex items-center gap-1.5 pt-5 font-semibold text-primary group-hover:text-navy max-sm:pt-3">
           Learn more
           <ArrowRightIcon weight="bold" className="size-4 transition-transform duration-200 group-hover:translate-x-1" />
         </span>
@@ -136,17 +141,12 @@ export async function ProgrammeCardsBlock({ data, ctx }: BlockProps<"programme_c
           )}
         </div>
         {certifications.length >= 3 ? (
-          // Three or more pathways swipe sideways on phones and tablets, edge to edge of the screen; a grid from desktop up.
-          <div className="reveal mt-7 md:mt-10">
-            <SwipeRail
-              label="Programme"
-              listClassName="gap-4 py-2 max-lg:-mx-[var(--gutter)] max-lg:scroll-px-[var(--gutter)] max-lg:px-[var(--gutter)] md:gap-5 lg:grid lg:grid-cols-3 lg:gap-6 lg:overflow-visible"
-            >
-              {certifications.map((p) => (
-                <CertificationCard key={p.id} p={p} ctx={ctx} className="max-lg:w-[85%] max-lg:shrink-0 max-lg:snap-start sm:max-lg:w-[58%]" />
-              ))}
-            </SwipeRail>
-          </div>
+          // Phones and tablets: one pathway per row, every fact in view. Desktop: three across, fading in together.
+          <ul className="reveal mt-7 grid gap-4 md:mt-10 md:gap-5 lg:grid-cols-3 lg:gap-6 lg:py-2">
+            {certifications.map((p) => (
+              <CertificationCard key={p.id} p={p} ctx={ctx} reveal={false} />
+            ))}
+          </ul>
         ) : (
           certifications.length > 0 && (
             <ul className="mt-9 grid gap-5 md:mt-12 md:grid-cols-2 md:gap-6">

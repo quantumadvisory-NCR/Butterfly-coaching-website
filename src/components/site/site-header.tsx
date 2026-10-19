@@ -115,13 +115,16 @@ function MobileNav({ nav, pathname, cta, tel, phoneDisplay, whatsapp, siteName }
         <Dialog.Overlay className="fixed inset-0 z-[var(--z-overlay)] bg-navy/50 data-[state=open]:animate-[fade-in_0.2s_ease-out]" />
         <Dialog.Content
           aria-describedby={undefined}
-          className="fixed inset-y-0 right-0 z-[var(--z-overlay)] flex w-[min(24rem,100vw)] flex-col bg-surface shadow-lift outline-none data-[state=open]:animate-[drawer-in_0.28s_var(--ease-out-soft)]"
+          className="fixed inset-y-0 right-0 z-[var(--z-overlay)] flex w-[min(24rem,100vw)] flex-col bg-surface shadow-lift outline-none data-[state=open]:animate-[drawer-in_0.28s_var(--ease-out-soft)] max-sm:w-full"
         >
           <VisuallyHidden.Root>
             <Dialog.Title>{siteName} menu</Dialog.Title>
           </VisuallyHidden.Root>
           <div className="flex h-[var(--header-height)] shrink-0 items-center justify-between border-b border-line pl-5 pr-3">
-            <span className="font-display text-lg font-bold text-navy">Menu</span>
+            <span className="flex items-center gap-2.5 font-display text-lg font-bold text-navy">
+              <Image src="/images/brand/bca-mark.svg" alt="" width={98} height={90} unoptimized className="h-7 w-auto" />
+              Menu
+            </span>
             <Dialog.Close asChild>
               <button type="button" aria-label="Close menu" className="grid size-12 place-items-center rounded-full text-navy hover:bg-tint">
                 <XIcon aria-hidden weight="bold" className="size-6" />
@@ -137,7 +140,10 @@ function MobileNav({ nav, pathname, cta, tel, phoneDisplay, whatsapp, siteName }
                   </li>
                 ) : (
                   <li key={node.id} className="pb-2">
-                    <p className="px-3 pb-1 pt-4 text-[0.8125rem] font-bold uppercase tracking-[0.1em] text-muted">{node.label}</p>
+                    <p className="flex items-center gap-2 px-3 pb-1 pt-4 text-[0.8125rem] font-bold uppercase tracking-[0.1em] text-muted">
+                      <span aria-hidden className="h-0.5 w-4 rounded-full bg-accent" />
+                      {node.label}
+                    </p>
                     <ul className="grid gap-0.5">
                       {node.children.map((child) => (
                         <li key={child.id}>
@@ -182,7 +188,7 @@ function AnnouncementBar({ announcement }: { announcement: NonNullable<Props["an
   const external = announcement.link ? isExternalHref(announcement.link.href) : false;
   return (
     <div className="bg-accent text-navy">
-      <p className="container-site flex flex-wrap items-center justify-center gap-x-3 gap-y-0.5 py-2 text-center text-[0.8125rem] font-semibold leading-snug sm:text-sm">
+      <p className="container-site flex flex-wrap items-center justify-center gap-x-3 gap-y-0.5 py-2 text-center text-[0.8125rem] font-semibold leading-snug max-sm:gap-x-2 max-sm:py-1.5 max-sm:text-[0.78rem] max-sm:leading-tight sm:text-sm">
         <span>{announcement.text}</span>
         {announcement.link && (
           <Link

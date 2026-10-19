@@ -14,6 +14,18 @@ Sign in at `/admin/`.
 | Publish an article | **Blog > New article** |
 | Change the phone number, WhatsApp or email | **Settings > Contact details** |
 
+## The dashboard
+
+The first screen after signing in.
+
+- **The welcome panel** says what is waiting for you, in one sentence, and opens the website in a new tab.
+- **Six figures**: new enquiries, published pages, programmes and articles, approved testimonials and newsletter subscribers. Each is a link; a yellow edge means something needs action.
+- **Quick actions** for the jobs you do most, including **Add a new course** and **Create a page**.
+- **Latest enquiries** and **Recent activity** (the latest changes made in the admin, and who made them).
+- **Needs your attention** lists only what really needs doing, such as testimonials to approve or pages with unpublished changes.
+
+Every figure is read from the website's own records each time you open the dashboard.
+
 ## How saving and publishing work
 
 There are two kinds of content, and they save differently.

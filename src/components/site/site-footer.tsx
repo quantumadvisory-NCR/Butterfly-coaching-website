@@ -83,8 +83,9 @@ export function SiteFooter({
         </div>
       )}
 
-      <div className="container-site grid gap-10 py-12 md:grid-cols-2 md:py-14 lg:grid-cols-[1.15fr_0.95fr_0.75fr_1.45fr] lg:gap-8">
-        <div className="max-w-sm">
+      {/* Phones: the brand and the contact details full width, the two link lists side by side between them. */}
+      <div className="container-site grid gap-10 py-12 max-md:grid-cols-2 max-md:gap-x-6 max-md:gap-y-9 max-md:py-10 md:grid-cols-2 md:py-14 lg:grid-cols-[1.15fr_0.95fr_0.75fr_1.45fr] lg:gap-8">
+        <div className="max-w-sm max-md:col-span-2">
           <Link href="/" aria-label={`${brand.siteName} home`} className="inline-flex rounded-lg">
             <Image src={logo.src} alt={brand.siteName} width={logo.width} height={logo.height} unoptimized={logo.src.endsWith(".svg")} className="h-11 w-auto" />
           </Link>
@@ -113,7 +114,7 @@ export function SiteFooter({
         <Column title="Programmes" items={nav.footer_programmes} />
         <Column title="Academy" items={nav.footer_company} />
 
-        <div>
+        <div className="max-md:col-span-2">
           <h2 className="font-sans text-sm font-bold uppercase tracking-[0.1em] !text-white">Contact</h2>
           <ul className="mt-3 grid">
             {tel && (

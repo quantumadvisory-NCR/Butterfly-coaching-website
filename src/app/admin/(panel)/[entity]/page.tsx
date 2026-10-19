@@ -85,11 +85,11 @@ export default async function EntityListPage({ params }: Props) {
               )}
               <RecordCell label="" primary className="md:text-right">
                 <span className="flex gap-3 max-md:mt-2 md:justify-end">
-                  <Link href={`/admin/${config.route}/${row.id}/`} className="text-sm font-semibold text-primary hover:underline">
+                  <Link href={`/admin/${config.route}/${row.id}/`} className="text-sm font-semibold text-primary hover:underline max-md:inline-flex max-md:min-h-11 max-md:items-center max-md:rounded-full max-md:border max-md:border-line max-md:bg-surface max-md:px-5 max-md:hover:border-primary max-md:hover:no-underline">
                     Edit<span className="sr-only"> {row.title}</span>
                   </Link>
                   {row.href && (
-                    <a href={row.href} target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-primary hover:underline">
+                    <a href={row.href} target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-primary hover:underline max-md:inline-flex max-md:min-h-11 max-md:items-center max-md:rounded-full max-md:border max-md:border-line max-md:bg-surface max-md:px-5 max-md:hover:border-primary max-md:hover:no-underline">
                       View<span className="sr-only"> {row.title} (opens in a new tab)</span>
                     </a>
                   )}

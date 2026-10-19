@@ -630,25 +630,67 @@ export async function entityTitle(key: EntityKey, id: string): Promise<string> {
 }
 
 /** Counts used on the admin dashboard. */
+/** Every figure on the dashboard, in one round trip to the database. */
 export async function contentCounts() {
   const [row] = await db().execute<{
     new_enquiries: number;
     open_enquiries: number;
+    enquiries_week: number;
     pending_testimonials: number;
+    approved_testimonials: number;
     draft_pages: number;
+    published_pages: number;
     unpublished_changes: number;
+    published_programmes: number;
+    draft_programmes: number;
+    published_posts: number;
+    draft_posts: number;
     subscribers: number;
+    subscribers_month: number;
     media_missing_alt: number;
   }>(sql`
     select
       (select count(*)::int from enquiries where status = 'new') as new_enquiries,
       (select count(*)::int from enquiries where status in ('new','in_progress','contacted')) as open_enquiries,
+      (select count(*)::int from enquiries where created_at > now() - interval '7 days') as enquiries_week,
       (select count(*)::int from testimonials where status = 'pending') as pending_testimonials,
+      (select count(*)::int from testimonials where status = 'approved') as approved_testimonials,
       (select count(*)::int from pages where status = 'draft') as draft_pages,
+      (select count(*)::int from pages where status = 'published') as published_pages,
       (select count(*)::int from pages where status = 'published' and has_unpublished_changes) as unpublished_changes,
+      (select count(*)::int from programmes where status = 'published') as published_programmes,
+      (select count(*)::int from programmes where status = 'draft') as draft_programmes,
+      (select count(*)::int from posts where status = 'published') as published_posts,
+      (select count(*)::int from posts where status = 'draft') as draft_posts,
       (select count(*)::int from newsletter_subscribers where status = 'subscribed') as subscribers,
+      (select count(*)::int from newsletter_subscribers where status = 'subscribed' and created_at > now() - interval '30 days') as subscribers_month,
       (select count(*)::int from media where kind = 'image' and alt = '') as media_missing_alt
   `);
   return row!;
+}
+
+/**
+ * The latest content changes from the audit log, for the dashboard. Sign-ins,
+ * account changes and exports are left out: those stay in the owner-only audit log.
+ */
+export async function recentActivity(limit = 8) {
+  return db()
+    .select({
+      id: s.auditLogs.id,
+      action: s.auditLogs.action,
+      entityType: s.auditLogs.entityType,
+      entityId: s.auditLogs.entityId,
+      summary: s.auditLogs.summary,
+      createdAt: s.auditLogs.createdAt,
+      actorEmail: s.auditLogs.actorEmail,
+      actorName: s.profiles.fullName,
+    })
+    .from(s.auditLogs)
+    .leftJoin(s.profiles, eq(s.profiles.id, s.auditLogs.actorId))
+    .where(
+      sql`${s.auditLogs.action} not in ('login', 'logout', 'login.failed', 'password.change', 'setup', 'enquiry.export', 'subscriber.export', 'subscriber.delete') and ${s.auditLogs.action} not like 'user.%'`,
+    )
+    .orderBy(desc(s.auditLogs.createdAt))
+    .limit(limit);
 }
 

@@ -21,9 +21,10 @@ export async function FaqBlock({ data, ctx }: BlockProps<"faq">) {
   const helpCard = Boolean(data.helpHeading);
   return (
     <Section background={data.background} anchor={data.anchor}>
-      <div className="container-site grid gap-9 lg:grid-cols-12 lg:gap-12">
-        <div className="lg:col-span-5 xl:col-span-4">
-          <div className="lg:sticky lg:top-[calc(var(--header-height)+2rem)]">
+      {/* Phones and tablets read heading, questions, then the help card; desktop keeps the help card beside the questions. */}
+      <div className="container-site grid gap-9 max-lg:gap-8 lg:grid-cols-12 lg:gap-12">
+        <div className="max-lg:contents lg:col-span-5 xl:col-span-4">
+          <div className="max-lg:contents lg:sticky lg:top-[calc(var(--header-height)+2rem)]">
             <div>
               {/* A thin yellow wing-stroke above the heading: the butterfly, at a whisper. */}
               <svg aria-hidden viewBox="0 0 120 60" className="pointer-events-none mb-3 h-9 w-[4.5rem] text-accent">
@@ -33,7 +34,7 @@ export async function FaqBlock({ data, ctx }: BlockProps<"faq">) {
               <SectionHeading heading={data.heading} intro={data.intro} />
             </div>
             {helpCard ? (
-              <div className="mt-8 rounded-card border border-line bg-surface p-6">
+              <div className="mt-8 rounded-card border border-line bg-surface p-6 max-lg:order-last max-lg:mt-0 max-sm:p-5">
                 <p className="font-display text-lg font-bold text-navy">{data.helpHeading}</p>
                 {data.helpText && <p className="mt-1.5 text-[0.9688rem] text-ink">{data.helpText}</p>}
                 {(cta || whatsapp) && (
@@ -53,7 +54,7 @@ export async function FaqBlock({ data, ctx }: BlockProps<"faq">) {
               </div>
             ) : (
               cta && (
-                <div className="mt-7">
+                <div className="mt-7 max-lg:order-last max-lg:mt-0">
                   <ButtonLink href={cta.href} variant="secondary">
                     {cta.label}
                   </ButtonLink>

@@ -12,8 +12,8 @@ import {
 } from "@phosphor-icons/react";
 import Link from "next/link";
 import { Popover } from "radix-ui";
-import { type ComponentType, useState } from "react";
-import { isExternalHref } from "@/lib/utils";
+import { type ComponentType, useEffect, useState } from "react";
+import { cn, isExternalHref } from "@/lib/utils";
 
 export type SupportLink = { label: string; description: string; href: string; kind: string };
 export type SupportPanel = { heading: string; body: string; links: SupportLink[] };
@@ -36,12 +36,50 @@ function iconFor(link: SupportLink): { Icon: IconType; tone: string; track: stri
  * both stay clear of the cookie banner on smaller screens. The panel is a Radix
  * popover: it takes focus when opened, closes with Escape or a click outside,
  * and returns focus to the button.
+ *
+ * On phones and tablets the pair waits until the visitor has scrolled past
+ * most of the first screen, so it never sits over the hero's message and
+ * buttons; on phones "Need help?" is a round icon button the size of the
+ * WhatsApp one. Desktop is unchanged: both are always there.
  */
 export function SupportDock({ panel, whatsapp }: { panel: SupportPanel | null; whatsapp: string | null }) {
   const [open, setOpen] = useState(false);
+  const [revealed, setRevealed] = useState(false);
+  const [narrow, setNarrow] = useState(false);
+
+  useEffect(() => {
+    const query = window.matchMedia("(max-width: 63.999rem)");
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      setNarrow(query.matches);
+      setRevealed(!query.matches || window.scrollY > window.innerHeight * 0.6);
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    query.addEventListener("change", update);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      query.removeEventListener("change", update);
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, []);
+
   if (!panel && !whatsapp) return null;
+  const waiting = !revealed && !open;
   return (
-    <div data-support-dock className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-[max(1rem,env(safe-area-inset-right))] z-[var(--z-floating)] flex flex-col items-end gap-2.5 max-lg:[html[data-consent-open]_&]:hidden print:hidden">
+    <div
+      data-support-dock
+      inert={narrow && waiting ? true : undefined}
+      className={cn(
+        "fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-[max(1rem,env(safe-area-inset-right))] z-[var(--z-floating)] flex flex-col items-end gap-2.5 max-lg:[html[data-consent-open]_&]:hidden print:hidden",
+        "max-lg:transition-[opacity,translate] max-lg:duration-300 motion-reduce:transition-none",
+        waiting && "max-lg:pointer-events-none max-lg:translate-y-3 max-lg:opacity-0",
+      )}
+    >
       {whatsapp && (
         <a
           href={whatsapp}
@@ -62,12 +100,12 @@ export function SupportDock({ panel, whatsapp }: { panel: SupportPanel | null; w
               type="button"
               data-track="cta_click"
               data-track-label="Need help: open"
-              className="inline-flex h-12 items-center gap-2 rounded-full bg-navy pl-3.5 pr-4 font-display text-[0.9375rem] font-semibold text-white shadow-lift ring-2 ring-white transition-[transform,background-color,scale] duration-200 hover:-translate-y-0.5 hover:bg-navy-soft active:scale-95 data-[state=open]:bg-navy-soft sm:h-14 sm:pl-4 sm:pr-5"
+              className="inline-flex h-12 items-center gap-2 rounded-full bg-navy pl-3.5 pr-4 font-display text-[0.9375rem] font-semibold text-white shadow-lift ring-2 ring-white transition-[transform,background-color,scale] duration-200 hover:-translate-y-0.5 hover:bg-navy-soft active:scale-95 data-[state=open]:bg-navy-soft max-sm:w-12 max-sm:justify-center max-sm:px-0 sm:h-14 sm:pl-4 sm:pr-5"
             >
-              <span aria-hidden className="grid size-7 place-items-center rounded-full bg-accent text-navy">
+              <span aria-hidden className="grid size-7 place-items-center rounded-full bg-accent text-navy max-sm:size-8">
                 {open ? <XIcon weight="bold" className="size-4" /> : <ChatCircleDotsIcon weight="fill" className="size-4" />}
               </span>
-              Need help?
+              <span className="max-sm:sr-only">Need help?</span>
             </button>
           </Popover.Trigger>
           <Popover.Portal>
