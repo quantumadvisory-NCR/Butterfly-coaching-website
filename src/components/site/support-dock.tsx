@@ -37,10 +37,11 @@ function iconFor(link: SupportLink): { Icon: IconType; tone: string; track: stri
  * popover: it takes focus when opened, closes with Escape or a click outside,
  * and returns focus to the button.
  *
- * On phones and tablets the pair waits until the visitor has scrolled past
- * most of the first screen, so it never sits over the hero's message and
- * buttons; on phones "Need help?" is a round icon button the size of the
- * WhatsApp one. Desktop is unchanged: both are always there.
+ * On phones and tablets they look as they do on desktop, but wait until the
+ * visitor has scrolled past most of the first screen, so they never sit over
+ * the hero's message and buttons, and step aside again at the foot of the
+ * footer, so the last links stay clear without extra empty space below them.
+ * Desktop is unchanged: both are always there.
  */
 export function SupportDock({ panel, whatsapp }: { panel: SupportPanel | null; whatsapp: string | null }) {
   const [open, setOpen] = useState(false);
@@ -53,7 +54,9 @@ export function SupportDock({ panel, whatsapp }: { panel: SupportPanel | null; w
     const update = () => {
       frame = 0;
       setNarrow(query.matches);
-      setRevealed(!query.matches || window.scrollY > window.innerHeight * 0.6);
+      const footerEnd = document.querySelector("[data-footer-end]");
+      const atFooterEnd = footerEnd ? footerEnd.getBoundingClientRect().top < window.innerHeight : false;
+      setRevealed(!query.matches || (window.scrollY > window.innerHeight * 0.6 && !atFooterEnd));
     };
     const onScroll = () => {
       if (!frame) frame = requestAnimationFrame(update);
@@ -100,12 +103,12 @@ export function SupportDock({ panel, whatsapp }: { panel: SupportPanel | null; w
               type="button"
               data-track="cta_click"
               data-track-label="Need help: open"
-              className="inline-flex h-12 items-center gap-2 rounded-full bg-navy pl-3.5 pr-4 font-display text-[0.9375rem] font-semibold text-white shadow-lift ring-2 ring-white transition-[transform,background-color,scale] duration-200 hover:-translate-y-0.5 hover:bg-navy-soft active:scale-95 data-[state=open]:bg-navy-soft max-sm:w-12 max-sm:justify-center max-sm:px-0 sm:h-14 sm:pl-4 sm:pr-5"
+              className="inline-flex h-12 items-center gap-2 rounded-full bg-navy pl-3.5 pr-4 font-display text-[0.9375rem] font-semibold text-white shadow-lift ring-2 ring-white transition-[transform,background-color,scale] duration-200 hover:-translate-y-0.5 hover:bg-navy-soft active:scale-95 data-[state=open]:bg-navy-soft sm:h-14 sm:pl-4 sm:pr-5"
             >
-              <span aria-hidden className="grid size-7 place-items-center rounded-full bg-accent text-navy max-sm:size-8">
+              <span aria-hidden className="grid size-7 place-items-center rounded-full bg-accent text-navy">
                 {open ? <XIcon weight="bold" className="size-4" /> : <ChatCircleDotsIcon weight="fill" className="size-4" />}
               </span>
-              <span className="max-sm:sr-only">Need help?</span>
+              Need help?
             </button>
           </Popover.Trigger>
           <Popover.Portal>

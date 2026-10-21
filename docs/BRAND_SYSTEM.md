@@ -164,10 +164,24 @@ Restrained and purposeful:
 ## 7. Logo
 
 - **On dark backgrounds** (footer, admin): the official logo, unmodified. Yellow butterfly, white wordmark.
-- **On light backgrounds** (header): the same artwork with the white lettering recoloured to navy `#0F256A`. The butterfly is untouched. The official file has no light-background version, so this variant **needs owner approval** before launch.
-- **Mark only**: the butterfly, extracted from the official SVG, used as the favicon and as a quiet watermark on call-to-action sections.
+- **On light backgrounds** (header, admin sign-in): the same artwork with the white lettering and antennae in mid gray `#5F5F5F` (6.2 to 1 on the page background). The owner chose mid gray over navy in October 2026; the butterfly is untouched.
+- **Mark only**: the butterfly, extracted from the official SVG. `bca-mark.svg` (mid gray antennae) for light backgrounds such as the phone menu; `bca-mark-on-dark.svg` (white antennae) for the call to action, the stories panel and the admin.
 
 The logo files are produced by `npm run images:optimise` from the official SVG. Nothing was redrawn.
+
+## 7a. The Level 1 ACC page palette
+
+The ACC page follows the October 2026 design refresh proposal: gray, yellow and white, no blue. It is scoped to that page's content (`data-palette="charcoal"` in `globals.css`); the header and footer stay site-wide.
+
+| Role | Value |
+|---|---|
+| Headings, icons, buttons' text | Charcoal `#2B2B2B` |
+| Body text | Mid gray `#5F5F5F` (5.7 to 1 on the panels) |
+| Panels | Light gray `#F2F2F0` |
+| Cards | White |
+| Highlights, the Certify card, hover | Butterfly yellow `#F5BA00` (text on yellow is charcoal: 8.0 to 1) |
+| Small uppercase labels | `#8A6800`. The proposal's deep yellow `#B88A00` is too light for small text (2.8 to 1 on the panels); `#8A6800` keeps the hue and passes AA (4.6 to 1) |
+| "Need help?" on this page | Charcoal |
 
 ## 8. Image direction
 

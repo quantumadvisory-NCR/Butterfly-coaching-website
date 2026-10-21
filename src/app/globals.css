@@ -16,6 +16,8 @@
   --bca-accent: #f5ba00;
   --bca-background: #fcfcfc;
   --bca-ink: #444746;
+  /* Small yellow labels on the Level 1 ACC page (see [data-palette="charcoal"]). */
+  --bca-label: #8a6800;
 
   --font-heading: var(--font-jakarta);
   --font-body: var(--font-jakarta);
@@ -69,6 +71,7 @@
   --color-accent-strong: color-mix(in srgb, var(--bca-accent) 86%, #5a3d00);
   /* Pale yellow for soft highlights and the hover edge on pathway cards. */
   --color-accent-soft: color-mix(in srgb, var(--bca-accent) 22%, #fff);
+  --color-label: var(--bca-label);
 
   /* Backgrounds. The page colour sits behind every section. */
   --color-background: var(--bca-background);
@@ -649,6 +652,33 @@
   }
 }
 
+/* The Level 1 ACC page uses the October 2026 design refresh palette: charcoal
+   headings and icons, mid gray text, light gray panels, white cards and yellow
+   highlights; no blue. The proposal's deep yellow #B88A00 is too light for small
+   labels (2.8 to 1 on the panels), so labels use #8A6800: the same hue, 4.6 to 1.
+   Scoped to the page's content; the header and footer stay site-wide. */
+[data-palette="charcoal"] {
+  --bca-navy: #2b2b2b;
+  --color-navy: #2b2b2b;
+  --bca-primary: #2b2b2b;
+  --color-primary: #2b2b2b;
+  --bca-ink: #5f5f5f;
+  --color-ink: #5f5f5f;
+  --color-text: #5f5f5f;
+  --color-tint: #f2f2f0;
+  color: var(--color-ink);
+}
+[data-palette="charcoal"] .eyebrow {
+  color: var(--color-label);
+}
+/* "Need help?" matches the page, as the proposal asks. */
+html:has([data-palette="charcoal"]) [data-support-dock] button {
+  background-color: #2b2b2b;
+}
+html:has([data-palette="charcoal"]) [data-support-dock] button:is(:hover, [data-state="open"]) {
+  background-color: #444444;
+}
+
 /* Art-directed <picture>: each crop keeps its own focal point. */
 .art-directed {
   object-position: var(--focal-wide, 50% 50%);
@@ -692,8 +722,20 @@
   .orbit-spin {
     animation: orbit-spin 48s linear infinite;
   }
+  /* The butterfly at the centre of "Your coaching wings" flaps its wings slowly. */
+  .wing-flap {
+    transform-box: view-box;
+    transform-origin: 60px 50px;
+    animation: wing-flap 3.2s ease-in-out infinite;
+  }
   .mark-float {
     animation: mark-float 7s ease-in-out infinite;
+  }
+}
+
+@keyframes wing-flap {
+  50% {
+    scale: 0.8 1;
   }
 }
 

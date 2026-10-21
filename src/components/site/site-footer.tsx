@@ -73,7 +73,7 @@ export function SiteFooter({
     <footer className="on-dark border-t border-white/10 bg-navy text-white">
       {newsletter.enabled && (
         <div className="border-b border-white/10">
-          <div className="container-site grid items-center gap-6 py-10 md:py-12 lg:grid-cols-2 lg:gap-14">
+          <div className="container-site grid items-center gap-6 py-10 max-md:py-8 md:py-12 lg:grid-cols-2 lg:gap-14">
             <div>
               <h2 className="text-h3 !text-white">{newsletter.heading}</h2>
               {newsletter.body && <p className="mt-2 max-w-md text-white/80">{newsletter.body}</p>}
@@ -83,9 +83,10 @@ export function SiteFooter({
         </div>
       )}
 
-      {/* Phones: the brand and the contact details full width, the two link lists side by side between them. */}
-      <div className="container-site grid gap-10 py-12 max-md:grid-cols-2 max-md:gap-x-6 max-md:gap-y-9 max-md:py-10 md:grid-cols-2 md:py-14 lg:grid-cols-[1.15fr_0.95fr_0.75fr_1.45fr] lg:gap-8">
-        <div className="max-w-sm max-md:col-span-2">
+      {/* Phones and tablets: the brand full width, the two link lists side by side; the contact column is desktop only
+          (phone and WhatsApp are one tap away in the menu and the floating buttons). */}
+      <div className="container-site grid gap-10 py-9 max-lg:grid-cols-2 max-lg:gap-x-6 max-lg:gap-y-8 lg:grid-cols-[1.15fr_0.95fr_0.75fr_1.45fr] lg:gap-8 lg:py-14">
+        <div className="max-w-sm max-lg:col-span-2">
           <Link href="/" aria-label={`${brand.siteName} home`} className="inline-flex rounded-lg">
             <Image src={logo.src} alt={brand.siteName} width={logo.width} height={logo.height} unoptimized={logo.src.endsWith(".svg")} className="h-11 w-auto" />
           </Link>
@@ -114,7 +115,7 @@ export function SiteFooter({
         <Column title="Programmes" items={nav.footer_programmes} />
         <Column title="Academy" items={nav.footer_company} />
 
-        <div className="max-md:col-span-2">
+        <div className="max-lg:hidden">
           <h2 className="font-sans text-sm font-bold uppercase tracking-[0.1em] !text-white">Contact</h2>
           <ul className="mt-3 grid">
             {tel && (
@@ -152,9 +153,13 @@ export function SiteFooter({
       </div>
 
       <div className="border-t border-white/10">
-        {/* Keeps clear of the floating WhatsApp and "Need help?" buttons, stacked in the corner: room
-            below the last line for their full height, except where the page margin is wide enough to hold them. */}
-        <div className="container-site flex flex-col gap-3 pb-[calc(9.5rem+env(safe-area-inset-bottom))] pt-6 text-sm text-white/70 md:flex-row md:items-center md:justify-between min-[108rem]:pb-6">
+        {/* On desktop this keeps clear of the floating WhatsApp and "Need help?" buttons with room below the last line,
+            except where the page margin is wide enough to hold them. On phones and tablets the buttons step aside
+            when this line comes into view (data-footer-end), so the footer ends without the extra space. */}
+        <div
+          data-footer-end
+          className="container-site flex flex-col gap-3 pb-[calc(9.5rem+env(safe-area-inset-bottom))] pt-6 text-sm text-white/70 max-lg:pb-[calc(1.5rem+env(safe-area-inset-bottom))] md:flex-row md:items-center md:justify-between min-[108rem]:pb-6"
+        >
           <p>
             © {new Date().getFullYear()} {footer.copyrightName || brand.siteName}. All rights reserved.
           </p>

@@ -2,6 +2,7 @@ import { CheckIcon, DownloadSimpleIcon } from "@phosphor-icons/react/dist/ssr";
 import { FaqJsonLd } from "@/components/blocks/closing";
 import { ProfilesBlock, TestimonialGrid } from "@/components/blocks/people";
 import { programmeFacts } from "@/components/blocks/programmes";
+import { ACC_OUTCOME_COUNT, ACC_STEP_COUNT, AccJourney, AccWings } from "@/components/site/acc-programme";
 import type { BlockContext, Crumb } from "@/components/blocks/types";
 import { Breadcrumbs } from "@/components/site/breadcrumbs";
 import { EnquiryForm } from "@/components/site/enquiry-form";
@@ -31,10 +32,62 @@ function CheckList({ items, columns = false }: { items: string[]; columns?: bool
   );
 }
 
+/** The journey as a numbered vertical list. */
+function Journey({ modules }: { modules: ProgrammeView["modules"] }) {
+  return (
+    <section id="journey" className="section-space bg-page">
+      <div className="container-site grid gap-9 lg:grid-cols-12 lg:gap-12">
+        <div className="lg:col-span-4">
+          <h2 className="text-h2">The journey, step by step</h2>
+          <p className="mt-4 text-lead">Education, practice, mentoring and evaluation, in the order you will experience them.</p>
+        </div>
+        <ol className="lg:col-span-8">
+          {modules.map((module, i) => (
+            <li key={module.id} className="reveal relative flex gap-5 pb-8 last:pb-0">
+              {i < modules.length - 1 && <span aria-hidden className="absolute left-6 top-12 h-[calc(100%-3rem)] w-px bg-line" />}
+              <span
+                className={cn(
+                  "relative z-[1] grid size-12 shrink-0 place-items-center rounded-full font-display text-lg font-bold",
+                  i === modules.length - 1 ? "bg-accent text-navy" : "bg-navy text-white",
+                )}
+              >
+                {i + 1}
+              </span>
+              <div className="min-w-0 pt-1.5">
+                <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                  <h3 className="text-h3">{module.title}</h3>
+                  {module.hoursLabel && <span className="rounded-full bg-tint px-3 py-0.5 text-sm font-semibold text-navy">{module.hoursLabel}</span>}
+                </div>
+                {module.description && <p className="mt-2 max-w-prose">{module.description}</p>}
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  );
+}
+
+/** The outcomes as a two-column checklist. */
+function Outcomes({ outcomes }: { outcomes: string[] }) {
+  return (
+    <section className="section-space bg-page">
+      <div className="container-site">
+        <h2 className="text-h2">What you will build</h2>
+        <div className="reveal mt-8 rounded-card bg-surface p-6 md:p-9">
+          <CheckList items={outcomes} columns />
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /**
  * Detail page for a programme or course. Every section is driven by the
  * programme record, and sections with no data (fees, dates, brochure) are
- * left out rather than padded with placeholder copy.
+ * left out rather than padded with placeholder copy. The ACC pathway uses the
+ * October 2026 design refresh: its own palette (charcoal, gray, yellow and
+ * white) and redesigned journey and outcomes sections.
  */
 export async function ProgrammeTemplate({
   programme: p,
@@ -57,8 +110,9 @@ export async function ProgrammeTemplate({
   const cohorts = p.cohorts.filter((c) => c.startDate >= today);
   const bookingHref = resolveHref("booking", ctx.settings);
   const blockCtx: BlockContext = { ...ctx, breadcrumbs, index: 1 };
+  const refreshed = p.credential === "ACC";
 
-  return (
+  const page = (
     <>
       {/* Hero */}
       <section className="bg-page">
@@ -160,50 +214,12 @@ export async function ProgrammeTemplate({
       )}
 
       {/* Journey */}
-      {p.modules.length > 0 && (
-        <section id="journey" className="section-space bg-page">
-          <div className="container-site grid gap-9 lg:grid-cols-12 lg:gap-12">
-            <div className="lg:col-span-4">
-              <h2 className="text-h2">The journey, step by step</h2>
-              <p className="mt-4 text-lead">Education, practice, mentoring and evaluation, in the order you will experience them.</p>
-            </div>
-            <ol className="lg:col-span-8">
-              {p.modules.map((module, i) => (
-                <li key={module.id} className="reveal relative flex gap-5 pb-8 last:pb-0">
-                  {i < p.modules.length - 1 && <span aria-hidden className="absolute left-6 top-12 h-[calc(100%-3rem)] w-px bg-line" />}
-                  <span
-                    className={cn(
-                      "relative z-[1] grid size-12 shrink-0 place-items-center rounded-full font-display text-lg font-bold",
-                      i === p.modules.length - 1 ? "bg-accent text-navy" : "bg-navy text-white",
-                    )}
-                  >
-                    {i + 1}
-                  </span>
-                  <div className="min-w-0 pt-1.5">
-                    <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                      <h3 className="text-h3">{module.title}</h3>
-                      {module.hoursLabel && <span className="rounded-full bg-tint px-3 py-0.5 text-sm font-semibold text-navy">{module.hoursLabel}</span>}
-                    </div>
-                    {module.description && <p className="mt-2 max-w-prose">{module.description}</p>}
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </section>
-      )}
+      {p.modules.length > 0 &&
+        (refreshed && p.modules.length === ACC_STEP_COUNT ? <AccJourney modules={p.modules} /> : <Journey modules={p.modules} />)}
 
       {/* Outcomes */}
-      {p.outcomes.length > 0 && (
-        <section className="section-space bg-page">
-          <div className="container-site">
-            <h2 className="text-h2">What you will build</h2>
-            <div className="reveal mt-8 rounded-card bg-surface p-6 md:p-9">
-              <CheckList items={p.outcomes} columns />
-            </div>
-          </div>
-        </section>
-      )}
+      {p.outcomes.length > 0 &&
+        (refreshed && p.outcomes.length === ACC_OUTCOME_COUNT ? <AccWings outcomes={p.outcomes} /> : <Outcomes outcomes={p.outcomes} />)}
 
       {/* Dates and fees: shown only when real data exists */}
       {(cohorts.length > 0 || p.feeText) && (
@@ -323,6 +339,8 @@ export async function ProgrammeTemplate({
       />
     </>
   );
+
+  return refreshed ? <div data-palette="charcoal">{page}</div> : page;
 }
 
 /** When a programme has no linked faculty or stories yet, show the founder so the page still has a human face. */

@@ -89,17 +89,20 @@ export function FaqJsonLd({ items }: { items: { question: string; answerHtml: st
 }
 
 /** Closing call to action. Always the navy band, so it reads as the page's one dark moment before the footer. */
+/**
+ * The closing call to action. Desktop only: on phones and tablets the floating
+ * WhatsApp and "Need help?" buttons and the menu already carry the next step.
+ */
 export function CtaBlock({ data, ctx }: BlockProps<"cta">) {
   const primary = usableLink(data.primaryCta, ctx.settings);
   const secondary = usableLink(data.secondaryCta, ctx.settings);
   return (
-    <section id={data.anchor || undefined} className="on-dark relative isolate overflow-clip bg-navy text-white">
+    <section id={data.anchor || undefined} className="on-dark relative isolate overflow-clip bg-navy text-white max-lg:hidden">
       {/* Soft light from two corners, so the navy has depth rather than a flat fill. */}
       <div aria-hidden className="pointer-events-none absolute -bottom-48 -left-40 -z-10 size-[32rem] rounded-full bg-primary/45 blur-3xl" />
       <div aria-hidden className="pointer-events-none absolute -right-24 -top-40 -z-10 size-[26rem] rounded-full bg-primary/25 blur-3xl" />
       <div className="container-site section-space grid items-center gap-10 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)] lg:gap-16">
         <div className="reveal max-w-2xl">
-          <Image src="/images/brand/bca-mark-on-dark.svg" alt="" width={98} height={90} unoptimized aria-hidden className="mb-6 h-12 w-auto lg:hidden" />
           <h2 className="text-h1 !text-white">{data.heading}</h2>
           {data.body && <p className="mt-4 max-w-xl text-lead text-white/85">{data.body}</p>}
           {(primary || secondary) && (
@@ -118,7 +121,7 @@ export function CtaBlock({ data, ctx }: BlockProps<"cta">) {
           )}
         </div>
         {/* The full BCA butterfly, whole and centred in a quiet emblem: rings, a slow orbit and a warm glow. */}
-        <div aria-hidden className="relative mx-auto hidden aspect-square w-full max-w-[24rem] lg:block">
+        <div aria-hidden className="relative mx-auto aspect-square w-full max-w-[24rem]">
           <div className="absolute inset-[16%] rounded-full bg-primary/50 blur-3xl" />
           <div className="absolute inset-0 rounded-full border border-white/10" />
           <div className="orbit-spin absolute inset-[9%] rounded-full border-2 border-dashed border-accent/45">

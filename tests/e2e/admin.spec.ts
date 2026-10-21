@@ -125,9 +125,11 @@ test.describe("page builder", () => {
     await expect(visitor).toHaveURL(/\/admin\/login\/$/);
 
     // ---- staff can preview the draft at phone and desktop sizes ----
+    // The call to action is a desktop-only section, so at phone size the rich text is what shows.
     await page.goto(`/admin/preview/${id}/`);
     const frame = page.frameLocator("iframe");
-    await expect(frame.getByRole("heading", { name: "First draft heading" })).toBeVisible();
+    await expect(frame.getByText("Body text for the test page.")).toBeVisible();
+    await expect(frame.getByRole("heading", { name: "First draft heading" })).toBeHidden();
     const phoneWidth = await page.locator("iframe").evaluate((el) => (el as HTMLIFrameElement).contentWindow!.innerWidth);
     expect(phoneWidth).toBe(390);
     await page.getByRole("button", { name: "Desktop" }).click();

@@ -89,6 +89,12 @@ All figures come from the database in one query (`contentCounts` in [`src/lib/ad
 
 The existing navigation, list screens, editors, permissions and saving were kept. On phones the dashboard stacks (the quick actions become a two-column grid of tiles) and the Edit and View links on list screens become 44 px buttons.
 
+## 4a. Follow-up, 21 October 2026
+
+- **Logo**: on light backgrounds the wordmark and antennae are mid gray `#5F5F5F` instead of navy, on every page and the phone menu (desktop included, as asked).
+- **Level 1 ACC page** (desktop, tablet and phone): redesigned from the owner's design refresh proposal. "The journey, step by step" becomes "From curious to credentialed": the total hours, milestones and credential as headline figures (162 = 77 + 10 + 75, added up from the steps' own hours), then Learn, Practise and Certify, each with its steps word for word; Certify in solid yellow. "What you will build" becomes "Your coaching wings": three core skills and three foundations either side of a slowly flapping butterfly, each with an icon, a number and the proposal's one-line description. The page uses the proposal's palette (see BRAND_SYSTEM.md, 7a). Step and outcome text still comes from the admin; if the number of steps or outcomes changes there, the page falls back to the plain list rather than mis-grouping them. Other programme pages are unchanged.
+- **Phones and tablets**: "Need help?" is the same pill as on desktop; the closing "Ready to find your next step?" section is hidden; the footer drops the Contact column and the empty space at the bottom (the floating buttons step aside at the foot of the page instead).
+
 ## 5. Results (20 October 2026, local production builds)
 
 **Desktop unchanged.** Eight public pages (home, student stories, Level 1, about, programmes, corporate, contact, blog) were captured full-page at 1024, 1280, 1366, 1440 and 1920 px from a clean build of the code before this round, and again after. 35 of the 40 captures are pixel-identical. The other five are the blog page, where every difference sits inside one photograph; that photograph also differed between two captures of the unchanged build (image-decoding noise), so the page is unchanged. A first attempt was invalid because the build reused a stale data cache from an earlier test run; both captures were redone with the cache cleared.

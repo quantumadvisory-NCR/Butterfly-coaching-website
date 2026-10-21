@@ -81,11 +81,16 @@ for (const viewport of VIEWPORTS) {
         });
         expect(overlap, "hero heading overlaps the hero image").toBe(false);
 
-        // 8. The floating support controls (Need help and WhatsApp) never cover footer links.
+        // 8. The floating support controls (Need help and WhatsApp) never cover footer links: on desktop the footer
+        //    leaves room for them; on phones and tablets they step aside (inert, hidden) at the foot of the page.
         await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+        await page.waitForTimeout(400);
+        if (viewport.width < 1024 && (await page.locator("[data-support-dock]").count()) > 0) {
+          expect(await page.locator("[data-support-dock]").getAttribute("inert"), "floating controls step aside at the foot of the page").not.toBeNull();
+        }
         const covered = await page.evaluate(() => {
           const fab = document.querySelector("[data-support-dock]");
-          if (!fab) return [];
+          if (!fab || fab.hasAttribute("inert")) return [];
           const f = fab.getBoundingClientRect();
           return Array.from(document.querySelectorAll<HTMLElement>("footer a, footer button, footer input"))
             .filter((el) => {
