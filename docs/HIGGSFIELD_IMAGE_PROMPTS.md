@@ -83,7 +83,7 @@ Rules followed:
 
 **`reflection-journal.jpg`** (4:5; Individual coaching, blog): Documentary editorial photograph of a professional writing in a journal by a window in soft morning light. An Indian man in his thirties in a pale blue shirt sits at a small table, pen in hand, pausing to reflect; hands and notebook in sharp focus, face in soft three-quarter profile, a cup of tea on the windowsill. Vertical composition, quiet and reflective. Shot at f/2.2. *Shared style sentence.* No readable handwriting.
 
-**`butterfly-on-leaf.jpg`** (16:9; About, 404 page, blog, admin sign-in screen): Macro photograph of a butterfly resting on a green leaf beside a sunlit window, wings partly open showing deep blue with a fine warm yellow edge, extremely shallow depth of field, large smooth out-of-focus background in pale blue and soft white, calm premium natural-history editorial style, the butterfly placed in the right third of the frame with generous clean negative space on the left. No text, no logos, no watermarks.
+**`butterfly-on-leaf.jpg`** (16:9; About, 404 page, blog, admin sign-in screen; published as `butterfly-on-leaf-charcoal.jpg`, its blue wings turned charcoal by `npm run images:optimise`): Macro photograph of a butterfly resting on a green leaf beside a sunlit window, wings partly open showing deep blue with a fine warm yellow edge, extremely shallow depth of field, large smooth out-of-focus background in pale blue and soft white, calm premium natural-history editorial style, the butterfly placed in the right third of the frame with generous clean negative space on the left. No text, no logos, no watermarks.
 
 ### Blog featured images (3:2)
 
