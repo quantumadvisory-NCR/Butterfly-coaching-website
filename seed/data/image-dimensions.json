@@ -279,14 +279,19 @@
     "height": 89,
     "bytes": 13559
   },
-  "/images/brand/bca-logo-on-light.svg": {
+  "/images/brand/bca-logo-mid-gray.svg": {
     "width": 319,
     "height": 89,
     "bytes": 13571
   },
-  "/images/brand/bca-mark.svg": {
-    "width": 82,
-    "height": 89,
-    "bytes": 3554
+  "/images/brand/bca-mark-on-dark.svg": {
+    "width": 98,
+    "height": 90,
+    "bytes": 4643
+  },
+  "/images/brand/bca-mark-mid-gray.svg": {
+    "width": 98,
+    "height": 90,
+    "bytes": 4651
   }
 }

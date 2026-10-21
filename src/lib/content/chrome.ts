@@ -7,7 +7,7 @@ export { resolveAnnouncement } from "@/lib/announcement";
 
 export type LogoAsset = { src: string; width: number; height: number };
 
-const FALLBACK_LIGHT: LogoAsset = { src: "/images/brand/bca-logo-on-light.svg", width: 319, height: 89 };
+const FALLBACK_LIGHT: LogoAsset = { src: "/images/brand/bca-logo-mid-gray.svg", width: 319, height: 89 };
 const FALLBACK_DARK: LogoAsset = { src: "/images/brand/bca-logo-on-dark.svg", width: 319, height: 89 };
 
 function logo(media: MediaMap, id: string | null, fallback: LogoAsset): LogoAsset {

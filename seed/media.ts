@@ -61,10 +61,10 @@ export const MEDIA: MediaSeed[] = [
   /* ---- brand ---- */
   {
     key: "brand.logo-light",
-    url: "/images/brand/bca-logo-on-light.svg",
+    url: "/images/brand/bca-logo-mid-gray.svg",
     source: "bca",
     alt: "Butterfly Coaching Academy",
-    licence: "Official BCA logo. Wordmark recoloured from white to navy for light backgrounds; artwork otherwise unchanged. Owner to approve the variant.",
+    licence: "Official BCA logo. Wordmark and antennae recoloured from white to mid gray #5F5F5F for light backgrounds, as chosen by the owner; artwork otherwise unchanged.",
     sourceUrl: `${BCA_SITE}/wp-content/uploads/2026/01/footer-logo.svg`,
     usedOn: "Site header, admin",
   },
@@ -79,12 +79,12 @@ export const MEDIA: MediaSeed[] = [
   },
   {
     key: "brand.mark",
-    url: "/images/brand/bca-mark.svg",
+    url: "/images/brand/bca-mark-mid-gray.svg",
     source: "bca",
     alt: "Butterfly Coaching Academy butterfly mark",
-    licence: "Butterfly emblem extracted from the official BCA logo, unmodified shapes.",
+    licence: "Butterfly emblem extracted from the official BCA logo, unmodified shapes; antennae in mid gray #5F5F5F.",
     sourceUrl: `${BCA_SITE}/wp-content/uploads/2026/01/footer-logo.svg`,
-    usedOn: "Call-to-action watermark, favicon",
+    usedOn: "Phone menu",
   },
 
   /* ---- ICF accreditation marks ---- */

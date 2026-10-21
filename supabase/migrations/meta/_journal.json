@@ -15,6 +15,13 @@
       "when": 1791575957435,
       "tag": "0001_security",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792558916460,
+      "tag": "0002_brand_logo_mid_gray",
+      "breakpoints": true
     }
   ]
 }

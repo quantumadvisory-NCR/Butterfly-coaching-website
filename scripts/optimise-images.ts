@@ -122,19 +122,23 @@ function buildLogos() {
   const dir = path.join(OUT, "brand");
   mkdirSync(dir, { recursive: true });
 
-  // Original: yellow butterfly, white wordmark. For dark backgrounds.
-  writeFileSync(path.join(dir, "bca-logo-on-dark.svg"), svg);
-  // Same artwork with the white lettering recoloured navy, for light backgrounds.
-  writeFileSync(path.join(dir, "bca-logo-on-light.svg"), svg.replaceAll('fill="white"', 'fill="#0F256A"'));
+  // Files under /images are cached for a year (next.config.ts), so a recoloured
+  // variant gets a new filename rather than replacing an old one.
+  const midGray = (art: string) => art.replaceAll('fill="white"', 'fill="#5F5F5F"');
 
-  // Butterfly mark only: the paths that sit in the left 82px of the artboard.
-  const paths = [...svg.matchAll(/<path d="M\s*([\d.]+)[^>]*\/>/g)].filter((m) => Number(m[1]) < 82).map((m) => m[0]);
+  // Original: yellow butterfly, white wordmark and antennae. For dark backgrounds.
+  writeFileSync(path.join(dir, "bca-logo-on-dark.svg"), svg);
+  // Same artwork with the wordmark and antennae in mid gray, for light backgrounds.
+  writeFileSync(path.join(dir, "bca-logo-mid-gray.svg"), midGray(svg));
+
+  // Butterfly mark only: the wings and antennae, which sit left of the wordmark.
+  const paths = [...svg.matchAll(/<path d="M\s*([\d.]+)[^>]*\/>/g)].filter((m) => Number(m[1]) < 100).map((m) => m[0]);
   const yellowOnly = paths.filter((p) => !p.includes('fill="white"'));
-  const mark = (inner: string, pad: number) =>
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${-pad} ${-pad} ${82 + pad * 2} ${89 + pad * 2}" fill="none">${inner}</svg>\n`;
-  writeFileSync(path.join(dir, "bca-mark.svg"), mark(yellowOnly.join(""), 0));
-  // Favicon: the mark on a navy rounded square so it reads at 16px on any tab colour.
-  const icon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128"><rect width="128" height="128" rx="28" fill="#0F256A"/><g transform="translate(26 22) scale(0.94)">${yellowOnly.join("")}</g></svg>\n`;
+  const mark = `<svg xmlns="http://www.w3.org/2000/svg" width="98" height="90" viewBox="-1 -0.5 98 89.5" fill="none">\n${paths.join("\n")}\n</svg>\n`;
+  writeFileSync(path.join(dir, "bca-mark-on-dark.svg"), mark);
+  writeFileSync(path.join(dir, "bca-mark-mid-gray.svg"), midGray(mark));
+  // Favicon: the wings on a mid gray rounded square so they read at 16px on any tab colour.
+  const icon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128"><rect width="128" height="128" rx="28" fill="#5F5F5F"/><g transform="translate(26 22) scale(0.94)">${yellowOnly.join("")}</g></svg>\n`;
   writeFileSync(path.resolve("src/app/icon.svg"), icon);
   console.log(`logos   brand/* (${paths.length} mark paths, ${yellowOnly.length} yellow)`);
   return icon;
@@ -203,7 +207,7 @@ async function run() {
   }
 
   await buildFavicons(buildLogos());
-  for (const name of ["bca-logo-on-dark.svg", "bca-logo-on-light.svg", "bca-mark.svg"]) {
+  for (const name of ["bca-logo-on-dark.svg", "bca-logo-mid-gray.svg", "bca-mark-on-dark.svg", "bca-mark-mid-gray.svg"]) {
     const file = path.join(OUT, "brand", name);
     if (!existsSync(file)) continue;
     const meta = await sharp(file).metadata();

@@ -23,7 +23,7 @@ export function AuthCard({ title, intro, children, footer }: { title: string; in
       <div className="grid place-items-center px-4 py-10 sm:px-8">
         <div className="w-full max-w-md">
           <Image
-            src="/images/brand/bca-logo-on-light.svg"
+            src="/images/brand/bca-logo-mid-gray.svg"
             alt="Butterfly Coaching Academy"
             width={319}
             height={89}

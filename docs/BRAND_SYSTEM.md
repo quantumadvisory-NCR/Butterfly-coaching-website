@@ -165,9 +165,10 @@ Restrained and purposeful:
 
 - **On dark backgrounds** (footer, admin): the official logo, unmodified. Yellow butterfly, white wordmark.
 - **On light backgrounds** (header, admin sign-in): the same artwork with the white lettering and antennae in mid gray `#5F5F5F` (6.2 to 1 on the page background). The owner chose mid gray over navy in October 2026; the butterfly is untouched.
-- **Mark only**: the butterfly, extracted from the official SVG. `bca-mark.svg` (mid gray antennae) for light backgrounds such as the phone menu; `bca-mark-on-dark.svg` (white antennae) for the call to action, the stories panel and the admin.
+- **Mark only**: the butterfly, extracted from the official SVG. `bca-mark-mid-gray.svg` (mid gray antennae) for light backgrounds such as the phone menu; `bca-mark-on-dark.svg` (white antennae) for the call to action, the stories panel and the admin.
+- **Favicon and home-screen icon**: the yellow butterfly on a mid gray `#5F5F5F` rounded square (navy before October 2026).
 
-The logo files are produced by `npm run images:optimise` from the official SVG. Nothing was redrawn.
+The logo files are produced by `npm run images:optimise` from the official SVG. Nothing was redrawn. Browsers keep files under `/images` for a year, so a recoloured logo gets a new filename (`bca-logo-mid-gray.svg` replaced `bca-logo-on-light.svg`); the old addresses redirect to the new ones.
 
 ## 7a. The Level 1 ACC page palette
 

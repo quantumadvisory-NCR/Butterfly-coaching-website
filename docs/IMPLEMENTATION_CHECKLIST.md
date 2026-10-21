@@ -21,7 +21,7 @@ Key: **Done** = built and verified. **Done, unverified** = built, but could not 
 | Design tokens: colour, type, spacing, containers, borders, radii | Done | `src/app/globals.css` |
 | Palette documented, verified values separated from estimates | Done | BRAND_SYSTEM.md |
 | Contrast calculated for every text pairing | Done | BRAND_SYSTEM.md section 2 |
-| BCA logo and butterfly identity preserved | Done | Official SVG; navy-wordmark variant needs approval (Owner) |
+| BCA logo and butterfly identity preserved | Done | Official SVG; mid gray wordmark variant for light backgrounds, chosen by the owner |
 | Mobile-first, fluid type and spacing (`clamp`, Grid, Flexbox) | Done | globals.css, all components |
 
 ## Phase 3: Image assets

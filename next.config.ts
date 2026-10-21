@@ -49,6 +49,14 @@ const nextConfig: NextConfig = {
       ? [{ protocol: "https", hostname: supabaseHost, pathname: "/storage/v1/object/public/**" }]
       : [],
   },
+  // Brand files renamed when they were recoloured (files under /images are cached for a year);
+  // the old addresses keep working for anything that still points at them.
+  async redirects() {
+    return [
+      { source: "/images/brand/bca-logo-on-light.svg", destination: "/images/brand/bca-logo-mid-gray.svg", permanent: true },
+      { source: "/images/brand/bca-mark.svg", destination: "/images/brand/bca-mark-mid-gray.svg", permanent: true },
+    ];
+  },
   async headers() {
     return [
       { source: "/:path*", headers: securityHeaders },

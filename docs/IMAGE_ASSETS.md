@@ -22,7 +22,7 @@ Every image the site ships with, where it came from, how it may be used and wher
 - [ ] Owner confirms BCA holds the rights to each authentic photograph and that the people pictured have consented.
 - [ ] Owner confirms permission to display each client logo.
 - [ ] Owner confirms current ICF accreditation for each level before its mark is shown (see CONTENT_APPROVAL_CHECKLIST.md).
-- [ ] Owner approves the navy-wordmark logo variant used on light backgrounds.
+- [x] Owner approves the logo variant used on light backgrounds: mid gray wordmark and antennae (October 2026).
 - [ ] Owner reviews the AI-generated photography and is comfortable with its use. Consider adding a short note to the site footer or privacy policy if your audience would expect disclosure.
 
 ## Brand
@@ -31,9 +31,9 @@ The official BCA logo and the butterfly mark taken from it.
 
 | File (under `public/images/`) | Type | Size | Alt text | Used on | Licence or usage status | Source |
 |---|---|---|---|---|---|---|
-| `brand/bca-logo-on-light.svg` | Original (BCA) | 319 x 89, 13 KB | Butterfly Coaching Academy | Site header, admin sign-in | Official BCA logo. Wordmark and antennae recoloured from white to mid gray #5F5F5F for light backgrounds (October 2026; navy before); artwork otherwise unchanged. Owner to approve the variant. | [source](https://butterflycoachingacademy.com/wp-content/uploads/2026/01/footer-logo.svg) |
+| `brand/bca-logo-mid-gray.svg` | Original (BCA) | 319 x 89, 13 KB | Butterfly Coaching Academy | Site header, admin sign-in | Official BCA logo. Wordmark and antennae recoloured from white to mid gray #5F5F5F for light backgrounds, as chosen by the owner (October 2026; navy before, as `bca-logo-on-light.svg`); artwork otherwise unchanged. | [source](https://butterflycoachingacademy.com/wp-content/uploads/2026/01/footer-logo.svg) |
 | `brand/bca-logo-on-dark.svg` | Original (BCA) | 319 x 89, 13 KB | Butterfly Coaching Academy | Site footer | Official BCA logo, unmodified. | [source](https://butterflycoachingacademy.com/wp-content/uploads/2026/01/footer-logo.svg) |
-| `brand/bca-mark.svg` | Original (BCA) | 98 x 90, 5 KB | Butterfly Coaching Academy butterfly mark | Light backgrounds (phone menu) | The complete butterfly (both wings and the mid gray antennae) from the official logo, unmodified shapes. An earlier copy used an 82-wide frame that cut off the right wing and left out the antennae. | [source](https://butterflycoachingacademy.com/wp-content/uploads/2026/01/footer-logo.svg) |
+| `brand/bca-mark-mid-gray.svg` | Original (BCA) | 98 x 90, 5 KB | Butterfly Coaching Academy butterfly mark | Light backgrounds (phone menu) | The complete butterfly (both wings and the mid gray antennae) from the official logo, unmodified shapes. An earlier copy used an 82-wide frame that cut off the right wing and left out the antennae. | [source](https://butterflycoachingacademy.com/wp-content/uploads/2026/01/footer-logo.svg) |
 | `brand/bca-mark-on-dark.svg` | Original (BCA) | 98 x 90, 5 KB | Butterfly Coaching Academy butterfly mark | Call-to-action emblem, student story showcase, admin sidebar | As above, with the white antennae of the on-dark logo. | [source](https://butterflycoachingacademy.com/wp-content/uploads/2026/01/footer-logo.svg) |
 
 ## ICF accreditation marks

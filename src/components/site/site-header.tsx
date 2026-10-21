@@ -122,7 +122,7 @@ function MobileNav({ nav, pathname, cta, tel, phoneDisplay, whatsapp, siteName }
           </VisuallyHidden.Root>
           <div className="flex h-[var(--header-height)] shrink-0 items-center justify-between border-b border-line pl-5 pr-3">
             <span className="flex items-center gap-2.5 font-display text-lg font-bold text-navy">
-              <Image src="/images/brand/bca-mark.svg" alt="" width={98} height={90} unoptimized className="h-7 w-auto" />
+              <Image src="/images/brand/bca-mark-mid-gray.svg" alt="" width={98} height={90} unoptimized className="h-7 w-auto" />
               Menu
             </span>
             <Dialog.Close asChild>
