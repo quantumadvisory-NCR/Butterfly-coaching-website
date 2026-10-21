@@ -167,7 +167,11 @@ export const MEDIA: MediaSeed[] = [
   ai("reflection-journal", "A professional pauses while writing in a journal by a window in morning light", "Individual coaching page, blog", [0.55, 0.45]),
   ai("practice-feedback", "A peer shares feedback with a coach after a practice session in a bright learning studio", "Home: Why BCA; Mentoring page", [0.5, 0.45]),
   ai("cohort-community", "A group of adult learners sharing a laugh over tea during a break", "Programmes overview: how we build capability", [0.5, 0.45]),
-  ai("butterfly-on-leaf", "A blue butterfly resting on a green leaf beside a sunlit window", "About: our story; 404 page; blog; admin sign-in and setup screens (fixed file, not changed from the media library)", [0.7, 0.5]),
+  {
+    ...ai("butterfly-on-leaf", "A dark butterfly with yellow-edged wings resting on a green leaf beside a sunlit window", "About: our story; 404 page; blog; admin sign-in and setup screens (fixed file, not changed from the media library)", [0.7, 0.5]),
+    // Blue wings turned charcoal for the gray and yellow palette, under a new name so no browser keeps the blue copy.
+    url: "/images/photography/butterfly-on-leaf-charcoal.jpg",
+  },
   ai("blog-planning-desk", "A hand about to write in an open planner on a wooden desk beside a plant and a cup of tea", "Blog featured image", [0.5, 0.5]),
   ai("blog-conversation-table", "Two colleagues in conversation over coffee at a small table by a window", "Blog featured image", [0.5, 0.5]),
   ai("blog-steps-forward", "A professional climbing a wide stone staircase in early morning light, seen from behind", "Blog featured image", [0.5, 0.5]),

@@ -69,7 +69,7 @@ export async function BlogListing({ heading, intro, basePath, filter, query = ""
               </label>
               <div className="flex gap-2">
                 <input id="blog-search" name="q" type="search" defaultValue={query} className="field-input min-w-0 flex-1" />
-                <button type="submit" className="btn btn-blue shrink-0 px-4" aria-label="Search">
+                <button type="submit" className="btn btn-dark shrink-0 px-4" aria-label="Search">
                   <MagnifyingGlassIcon aria-hidden weight="bold" className="size-5" />
                 </button>
               </div>

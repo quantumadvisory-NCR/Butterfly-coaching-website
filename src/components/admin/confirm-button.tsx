@@ -70,7 +70,7 @@ export function ConfirmButton({
             <button
               type="button"
               disabled={pending}
-              className={cn("btn btn-sm", tone === "danger" ? "btn-danger" : "btn-blue")}
+              className={cn("btn btn-sm", tone === "danger" ? "btn-danger" : "btn-dark")}
               onClick={() =>
                 startTransition(async () => {
                   const result = await action();

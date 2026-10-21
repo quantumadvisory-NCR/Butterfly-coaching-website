@@ -11,7 +11,7 @@
  */
 import { copyFileSync, existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import path from "node:path";
-import sharp from "sharp";
+import sharp, { type Sharp } from "sharp";
 
 const RAW = path.resolve(".local/raw");
 const OUT = path.resolve("public/images");
@@ -23,6 +23,8 @@ type Job = {
   max: number;
   format: "jpg" | "webp" | "png" | "copy";
   quality?: number;
+  /** Turn blue tones neutral grey, for the gray and yellow palette (October 2026). */
+  neutralBlues?: boolean;
 };
 
 const photo = (name: string, max = 2000): Job => ({
@@ -63,7 +65,8 @@ const jobs: Job[] = [
   photo("reflection-journal", 1500),
   photo("practice-feedback"),
   photo("cohort-community"),
-  photo("butterfly-on-leaf", 2200),
+  // The butterfly's blue wings turned charcoal, so its yellow edges match the palette.
+  { ...photo("butterfly-on-leaf", 2200), dest: "photography/butterfly-on-leaf-charcoal.jpg", neutralBlues: true },
   photo("blog-planning-desk", 1600),
   photo("blog-conversation-table", 1600),
   photo("blog-steps-forward", 1600),
@@ -113,6 +116,26 @@ const jobs: Job[] = [
   { src: "img/vi11.png", dest: "logos/vi.png", max: 200, format: "copy" },
   { src: "img/axisbank11.png", dest: "logos/axis-bank.png", max: 200, format: "copy" },
 ];
+
+/** Turns blue tones neutral grey (hues 195 to 255 degrees, fading out over 25 degrees either side); other colours are untouched. */
+async function neutraliseBlues(image: Sharp): Promise<Sharp> {
+  const { data, info } = await image.removeAlpha().raw().toBuffer({ resolveWithObject: true });
+  for (let i = 0; i < data.length; i += 3) {
+    const r = data.readUInt8(i) / 255;
+    const g = data.readUInt8(i + 1) / 255;
+    const b = data.readUInt8(i + 2) / 255;
+    const spread = b - Math.min(r, g);
+    if (spread < 0.02 || b < r || b < g) continue;
+    const hue = 60 * ((r - g) / spread + 4);
+    const weight = hue >= 195 && hue <= 255 ? 1 : hue > 170 && hue < 195 ? (hue - 170) / 25 : hue > 255 && hue < 280 ? (280 - hue) / 25 : 0;
+    if (weight === 0) continue;
+    const grey = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    data[i] = Math.round(255 * (r + (grey - r) * weight));
+    data[i + 1] = Math.round(255 * (g + (grey - g) * weight));
+    data[i + 2] = Math.round(255 * (b + (grey - b) * weight));
+  }
+  return sharp(data, { raw: { width: info.width, height: info.height, channels: 3 } });
+}
 
 /** Derives the logo variants from the official SVG without redrawing anything. */
 function buildLogos() {
@@ -189,12 +212,13 @@ async function run() {
       if (job.format === "copy") {
         copyFileSync(src, dest);
       } else {
-        const pipeline = sharp(src).rotate().resize({
+        const resized = sharp(src).rotate().resize({
           width: job.max,
           height: job.max,
           fit: "inside",
           withoutEnlargement: true,
         });
+        const pipeline = job.neutralBlues ? await neutraliseBlues(resized.flatten({ background: "#ffffff" })) : resized;
         if (job.format === "jpg") await pipeline.flatten({ background: "#ffffff" }).jpeg({ quality: job.quality, mozjpeg: true }).toFile(dest);
         if (job.format === "webp") await pipeline.webp({ quality: job.quality, alphaQuality: 90 }).toFile(dest);
         if (job.format === "png") await pipeline.png({ compressionLevel: 9 }).toFile(dest);

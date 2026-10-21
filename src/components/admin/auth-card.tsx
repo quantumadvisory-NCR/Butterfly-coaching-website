@@ -2,7 +2,7 @@ import Image from "next/image";
 import type { ReactNode } from "react";
 
 /** The butterfly photograph from the brand library. Decorative here, so it carries no alt text. */
-const PHOTO = "/images/photography/butterfly-on-leaf.jpg";
+const PHOTO = "/images/photography/butterfly-on-leaf-charcoal.jpg";
 /** Keeps the butterfly in frame however the photograph is cropped. */
 const PHOTO_FOCUS = { objectPosition: "72% 45%" };
 

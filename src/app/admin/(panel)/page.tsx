@@ -88,7 +88,7 @@ function Action({ href, icon: Icon, label, hint }: { href: string; icon: IconTyp
         href={href}
         className="group flex h-full min-h-16 items-center gap-3 rounded-xl border border-line bg-surface px-3 py-2.5 transition-colors hover:border-primary hover:bg-mist max-sm:flex-col max-sm:items-start max-sm:gap-2 max-sm:py-3"
       >
-        <span aria-hidden className="grid size-9 shrink-0 place-items-center rounded-lg bg-navy text-white transition-colors group-hover:bg-primary">
+        <span aria-hidden className="grid size-9 shrink-0 place-items-center rounded-lg bg-navy text-white transition-colors group-hover:bg-accent group-hover:text-navy">
           <Icon weight="bold" className="size-[1.125rem]" />
         </span>
         <span className="min-w-0">
@@ -182,7 +182,6 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
       )}
 
       <section aria-labelledby="dashboard-title" className="on-dark relative isolate overflow-hidden rounded-3xl bg-navy px-5 py-6 text-white sm:px-8 sm:py-8">
-        <div aria-hidden className="pointer-events-none absolute -right-20 -top-28 -z-10 size-80 rounded-full bg-primary/40 blur-3xl" />
         <Image
           src="/images/brand/bca-mark-on-dark.svg"
           alt=""

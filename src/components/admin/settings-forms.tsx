@@ -38,11 +38,11 @@ function contrast(a: string, b: string) {
 function ContrastChecks({ theme }: { theme: Record<string, unknown> }) {
   const value = (key: string) => String(theme[key] ?? "");
   const checks = [
-    { label: "Button and announcement text (navy on accent)", ratio: contrast(value("navy"), value("accent")) },
-    { label: "Links (primary on the page background)", ratio: contrast(value("primary"), value("background")) },
+    { label: "Button and announcement text (charcoal on yellow)", ratio: contrast(value("navy"), value("accent")) },
+    { label: "Links on the page background", ratio: contrast(value("primary"), value("background")) },
     { label: "Body text on the page background", ratio: contrast(value("ink"), value("background")) },
-    { label: "Headings (navy on the page background)", ratio: contrast(value("navy"), value("background")) },
-    { label: "White text on navy", ratio: contrast("#ffffff", value("navy")) },
+    { label: "Headings on the page background", ratio: contrast(value("navy"), value("background")) },
+    { label: "White text on dark sections", ratio: contrast("#ffffff", value("navy")) },
   ];
   return (
     <div className="rounded-xl bg-mist p-4">

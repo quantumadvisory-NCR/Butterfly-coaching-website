@@ -67,7 +67,7 @@ Each section has five small buttons:
 | Hero | The opening of a page: heading, a sentence, one or two buttons, an image. The homepage layout also takes a second heading line (shown in blue), up to four short proof points, a trust line with learner photos, a photo crop setting and an optional credential card on the photo |
 | Rich text | Paragraphs, headings and lists, such as a policy |
 | Image and text | A picture beside some text, with optional bullet points |
-| Pathway cards | Up to four cards that send visitors to the right place. **Navy panel** (icon cards; straight after a homepage hero it overlaps the hero) or **Image cards** |
+| Pathway cards | Up to four cards that send visitors to the right place. **Charcoal panel** (icon cards; straight after a homepage hero it overlaps the hero) or **Image cards** |
 | Feature list | A short list of points with an optional image |
 | Programme cards | Cards created automatically from your programmes |
 | Comparison table | The ACC, PCC and MCC comparison (automatic), or a table you build |

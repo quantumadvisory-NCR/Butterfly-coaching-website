@@ -4,6 +4,8 @@ The visual system for the Butterfly Coaching Academy (BCA) website: where the pa
 
 The design tokens live in one place, [`src/app/globals.css`](../src/app/globals.css). The five core colours and the typefaces can be changed without code in **Admin > Settings > Colours and typography**.
 
+> **October 2026, later: gray and yellow, no blue.** At the owner's request the whole site and the admin use the palette of the October 2026 design refresh: charcoal `#2B2B2B` for headings, links and dark sections (the "Choose your path" panel, featured stories, the closing call to action, the footer and the admin sidebar), mid gray `#5F5F5F` for body text, light gray `#F2F2F0` for panels, white cards, butterfly yellow `#F5BA00` for buttons and highlights, and deep yellow for small labels. The page background stays the logo's grey-white `#FCFCFC`. Section 2 lists the current tokens; the notes below about blue and navy are history.
+>
 > **October 2026: the logo's grey-white replaces cream.** The principal background of the public site *and* the admin is **`#FCFCFC`** (rgb 252, 252, 252), the grey-white behind the official BCA logo artwork, set by `--bca-background` / `--color-background` / `--color-page`. It replaced the cream `#F7EFE2` of the first redesign, which had itself replaced the pale-blue page and section backgrounds (`#eff7ff`, `#d2e9fc`, `#c3dcf3`). The neutrals (tints, borders) now derive from the logo's grey `#4B4B4D` rather than a warm brown, and cards are pure white. Blue survives only as a restrained text accent (links, the second line of the homepage headline). Sections do not alternate colours: every standard section sits on the page background, cards and forms are white, and navy is kept for the "Choose your path" panel, featured stories, the closing call to action and the footer. Section 2 below lists the current tokens; sections 1 and 2's iPEC evidence is kept for the history of the palette.
 
 ## 1. Where the palette comes from
@@ -57,43 +59,39 @@ iPEC's stylesheets define **no CSS custom properties**, so there are no variable
 
 ## 2. BCA design tokens
 
-BCA uses iPEC's blue, navy and yellow family as its base. This suits BCA unusually well: the butterfly in BCA's own logo is `#FEC902`, almost the same yellow.
+BCA first used iPEC's blue, navy and yellow family. Since October 2026 the blue and navy are replaced by charcoal and grays; the yellow stays, and it is almost the butterfly's own `#FEC902`.
 
-| Token | Value | Status | Used for |
-|---|---|---|---|
-| `--bca-primary` | `#0068bf` | Verified (iPEC primary blue) | Links, eyebrows, secondary highlights |
-| `--bca-navy` | `#0f256a` | Verified (iPEC navy) | Headings, dark sections, footer, button text |
-| `--bca-accent` | `#f5ba00` | Verified (iPEC CTA yellow) | Primary buttons, accent shapes, focus ring on dark |
-| `--bca-background` / `--color-background` / `--color-page` | **`#FCFCFC`** | Owner-specified (October 2026): the grey-white of the BCA logo artwork | The page background everywhere, public site and admin |
-| `--bca-ink` / `--color-text` | `#444746` | Verified (iPEC body text) | Body copy |
-| `--color-surface` | `#ffffff` | Derived (white) | Cards, forms, menus, dialogs, the help panel |
-| `--color-tint` | page mixed 6% with the logo grey `#4b4b4d` (about `#f1f1f2`) | Derived | Hover fills, chips, quiet panels |
-| `--color-tint-deep` | page mixed 12% with `#4b4b4d` (about `#e7e7e7`) | Derived | Panels behind portrait photographs |
-| `--color-border` / `--color-line` | `#e4e4e7` | Derived (neutral) | Borders and dividers, public and admin |
-| `--color-mist` | page mixed 3% with `#4b4b4d` (about `#f7f7f7`) | Derived | Table headers and quiet fills in the admin |
-| `--color-accent-soft` | accent mixed 22% with white | Derived | The pale end of the yellow hover edge on pathway cards |
-| `--color-muted` | `#5b5f5d` | Derived | Secondary text: 6.3 to 1 on the page, 5.7 to 1 on the tint |
-| `--color-primary-strong` | 82% primary + black | Derived | Text on tinted badges in the admin |
-| `--color-accent-strong` | 86% accent + brown | Derived | Reserved |
-| `--color-danger` / `--color-success` | `#b3261e` / `#1c6b3f` | Original | Form errors and confirmations |
-| WhatsApp button | `#0f7a5f` | Original | Darker than WhatsApp green so the white icon reaches 5.29 to 1 |
+| Token | Value | Used for |
+|---|---|---|
+| `--bca-navy` (Admin: "Headings and dark sections") | Charcoal `#2b2b2b` | Headings, dark sections, the footer, the admin sidebar, button text on yellow |
+| `--bca-primary` (Admin: "Links and secondary buttons") | Charcoal `#2b2b2b` | Links, secondary buttons, icons |
+| `--bca-accent` | Butterfly yellow `#f5ba00` | Primary buttons, highlights, the announcement bar, focus ring on dark |
+| `--bca-background` / `--color-page` | `#FCFCFC` | The page background everywhere, public site and admin (the grey-white of the BCA logo artwork) |
+| `--bca-ink` / `--color-text` / `--color-muted` | Mid gray `#5f5f5f` | Body copy and secondary text; the second line of the homepage headline |
+| `--bca-label` / `--color-label` | Deep yellow `#8a6800` | Small uppercase labels (eyebrows). The palette's `#B88A00` fails AA as small text (3.1 to 1 on the page, 2.8 on light gray); `#8A6800` keeps the hue and passes |
+| `--color-tint` | Light gray `#f2f2f0` | Panels, hover fills, chips, the active menu item |
+| `--color-tint-deep` | page mixed 12% with `#4b4b4d` (about `#e7e7e7`) | Panels behind portrait photographs |
+| `--color-surface` | White `#ffffff` | Cards, forms, menus, dialogs, the help panel |
+| `--color-border` / `--color-line` | `#e4e4e7` | Borders and dividers, public and admin |
+| `--color-mist` | page mixed 3% with `#4b4b4d` (about `#f7f7f7`) | Table headers and quiet fills in the admin |
+| `--color-accent-soft` | yellow mixed 22% with white | The pale end of the yellow hover edge on pathway cards |
+| `--color-danger` / `--color-success` | `#b3261e` / `#1c6b3f` | Form errors and confirmations |
+| WhatsApp button | `#0f7a5f` | Darker than WhatsApp green so the white icon reaches 5.29 to 1 |
 
-**Headings are navy, not black.** iPEC sets headings in `#000000`; BCA uses the verified navy instead so that headings carry the brand. This is a deliberate departure.
+Shadows are charcoal at low opacity. The `navy` and `primary` names are kept in the code and in saved settings and page content (renaming them would change stored values); they now hold charcoal. Admin > Settings > Colours and typography labels them by role.
 
 ### Contrast (WCAG 2.2 AA)
 
 | Pair | Ratio | Result |
 |---|---|---|
-| Navy text on accent yellow (primary button, announcement bar) | 7.97 to 1 | Pass |
-| White on navy (pathway panel, featured story, footer) | 14.07 to 1 | Pass |
-| Navy headings on the page background | 13.71 to 1 | Pass |
-| Body ink on the page background | 9.16 to 1 | Pass |
-| Body ink on white (cards) | 9.39 to 1 | Pass |
-| Primary blue on the page background (links, second headline line) | 5.48 to 1 | Pass |
-| Primary blue on white | 5.63 to 1 | Pass |
-| Muted text on the page background / tint | 6.32 / 5.74 to 1 | Pass |
-| Accent yellow on navy (quote marks, eyebrows on dark) | 7.97 to 1 | Pass |
-| Form field border on warm white (non-text, needs 3 to 1) | 3.2 to 1 or more | Pass |
+| Charcoal text on butterfly yellow (primary button, announcement bar) | 8.03 to 1 | Pass |
+| White on charcoal (pathway panel, featured story, footer, admin sidebar) | 14.16 to 1 | Pass |
+| Charcoal headings and links on the page background | 13.80 to 1 | Pass |
+| Charcoal on light gray panels | 12.63 to 1 | Pass |
+| Mid gray body text on the page / white / light gray | 6.22 / 6.39 / 5.70 to 1 | Pass |
+| Deep yellow labels `#8A6800` on the page / white / light gray | 5.04 / 5.17 / 4.61 to 1 | Pass |
+| Butterfly yellow on charcoal (quote marks, eyebrows on dark) | 8.03 to 1 | Pass |
+| Form field border on the page (non-text, needs 3 to 1) | 3.2 to 1 or more | Pass |
 
 Decorative dividers (`--color-line` on the page background, 1.24 to 1) are not the only way to identify any control, so they are exempt from the 3 to 1 non-text rule.
 
@@ -124,7 +122,7 @@ Body text never drops below 16px. Paragraphs are capped at about 68 characters p
 | Token | Value |
 |---|---|
 | `--gutter` | `clamp(1.25rem, 0.5rem + 3.4vw, 2.5rem)` page margin |
-| `--section-space` | `clamp(3.75rem, 2.25rem + 5.6vw, 7rem)` vertical padding per section |
+| `--section-space` | `clamp(1.75rem, 1.25rem + 2.2vw, 3.25rem)` vertical padding per section, so sections sit about 57px apart on phones and 105px on desktop (halved in October 2026: the earlier 224px gaps on desktop felt empty) |
 | `container-site` | 75rem (1200px) maximum, close to iPEC's 1164px |
 | `container-prose` | 44rem for long-form text |
 | `--header-height` | 4.25rem on phones, 4.75rem from 1024px |
@@ -170,19 +168,9 @@ Restrained and purposeful:
 
 The logo files are produced by `npm run images:optimise` from the official SVG. Nothing was redrawn. Browsers keep files under `/images` for a year, so a recoloured logo gets a new filename (`bca-logo-mid-gray.svg` replaced `bca-logo-on-light.svg`); the old addresses redirect to the new ones.
 
-## 7a. The Level 1 ACC page palette
+## 7a. The Level 1 ACC page
 
-The ACC page follows the October 2026 design refresh proposal: gray, yellow and white, no blue. It is scoped to that page's content (`data-palette="charcoal"` in `globals.css`); the header and footer stay site-wide.
-
-| Role | Value |
-|---|---|
-| Headings, icons, buttons' text | Charcoal `#2B2B2B` |
-| Body text | Mid gray `#5F5F5F` (5.7 to 1 on the panels) |
-| Panels | Light gray `#F2F2F0` |
-| Cards | White |
-| Highlights, the Certify card, hover | Butterfly yellow `#F5BA00` (text on yellow is charcoal: 8.0 to 1) |
-| Small uppercase labels | `#8A6800`. The proposal's deep yellow `#B88A00` is too light for small text (2.8 to 1 on the panels); `#8A6800` keeps the hue and passes AA (4.6 to 1) |
-| "Need help?" on this page | Charcoal |
+The ACC page's redesigned journey and "coaching wings" sections introduced the gray and yellow palette in October 2026; it now applies to the whole site (section 2). On that page the Certify card is solid butterfly yellow with charcoal text (8.0 to 1).
 
 ## 8. Image direction
 

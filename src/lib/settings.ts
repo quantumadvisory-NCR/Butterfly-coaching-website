@@ -126,16 +126,16 @@ export const BODY_FONTS = [
 ] as const;
 
 const theme = [
-  { type: "color", name: "primary", label: "Primary blue", help: "Links, secondary buttons and highlights." },
-  { type: "color", name: "navy", label: "Navy", help: "Headings and dark sections." },
-  { type: "color", name: "accent", label: "Accent yellow", help: "Primary buttons and the announcement bar." },
+  { type: "color", name: "primary", label: "Links and secondary buttons", help: "The brand value is charcoal #2B2B2B." },
+  { type: "color", name: "navy", label: "Headings and dark sections", help: "The brand value is charcoal #2B2B2B." },
+  { type: "color", name: "accent", label: "Butterfly yellow", help: "Primary buttons, highlights and the announcement bar." },
   {
     type: "color",
     name: "background",
     label: "Page background",
     help: "Behind every page of the website and the admin. The brand value is #FCFCFC, the grey-white of the logo artwork.",
   },
-  { type: "color", name: "ink", label: "Body text" },
+  { type: "color", name: "ink", label: "Body text", help: "The brand value is mid gray #5F5F5F." },
   { type: "select", name: "headingFont", label: "Heading typeface", options: HEADING_FONTS },
   { type: "select", name: "bodyFont", label: "Body typeface", options: BODY_FONTS },
 ] as const satisfies readonly Field[];
@@ -177,11 +177,11 @@ export type SiteSettings = {
 
 /** Design tokens: see docs/BRAND_SYSTEM.md. The page background #FCFCFC is the grey-white of the BCA logo artwork. */
 export const DEFAULT_THEME: SiteSettings["theme"] = {
-  primary: "#0068bf",
-  navy: "#0f256a",
+  primary: "#2b2b2b",
+  navy: "#2b2b2b",
   accent: "#f5ba00",
   background: "#fcfcfc",
-  ink: "#444746",
+  ink: "#5f5f5f",
   headingFont: "jakarta",
   bodyFont: "jakarta",
 };

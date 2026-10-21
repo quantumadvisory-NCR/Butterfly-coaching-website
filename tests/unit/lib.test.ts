@@ -90,8 +90,8 @@ describe("settings", () => {
     expect(theme.primary).toBe(DEFAULT_THEME.primary);
     expect(theme.navy).toBe("#123456");
   });
-  it("uses the documented palette, with the logo's grey-white #FCFCFC page background, by default", () => {
-    expect(DEFAULT_THEME).toMatchObject({ primary: "#0068bf", navy: "#0f256a", accent: "#f5ba00", background: "#fcfcfc", ink: "#444746" });
+  it("uses the documented gray and yellow palette, with the logo's grey-white #FCFCFC page background, by default", () => {
+    expect(DEFAULT_THEME).toMatchObject({ primary: "#2b2b2b", navy: "#2b2b2b", accent: "#f5ba00", background: "#fcfcfc", ink: "#5f5f5f" });
   });
   it("gives a theme saved under the old pale-blue scheme the current page background", () => {
     // Saved before the redesign: it has "sky" and no "background".

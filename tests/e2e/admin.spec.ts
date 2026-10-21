@@ -274,13 +274,13 @@ test.describe("content flows to the public site", () => {
     await page.goto("/admin/settings/");
     await page.getByRole("tab", { name: "Colours and typography" }).click();
     const panel = page.getByRole("tabpanel");
-    await panel.getByLabel("Primary blue", { exact: true }).fill("red;}body{display:none");
+    await panel.getByLabel("Links and secondary buttons", { exact: true }).fill("red;}body{display:none");
     await save(page, panel.getByRole("button", { name: "Save" }));
     await expect(panel.getByText("Use a 6-digit hex colour")).toBeVisible();
     await expect(panel.getByText("Readability check")).toBeVisible();
     await page.goto("/");
     const primary = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--bca-primary").trim());
-    expect(primary).toBe("#0068bf");
+    expect(primary).toBe("#2b2b2b");
   });
 });
 

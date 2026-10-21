@@ -91,7 +91,7 @@ export function EnquiryControls({ id, status, notes, canDelete }: { id: string; 
             Add a note
           </label>
           <textarea id="enquiry-note" value={note} onChange={(event) => setNote(event.target.value)} rows={3} maxLength={4000} className="field-input" style={{ minHeight: "5.5rem" }} />
-          <button type="button" className="btn btn-blue btn-sm mt-3" disabled={pending || !note.trim()} onClick={addNote}>
+          <button type="button" className="btn btn-dark btn-sm mt-3" disabled={pending || !note.trim()} onClick={addNote}>
             {pending ? "Saving" : "Add note"}
           </button>
         </div>

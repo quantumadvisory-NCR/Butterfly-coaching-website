@@ -40,8 +40,8 @@ export default function NotFound() {
         </div>
         <div className="relative aspect-[16/10] overflow-hidden rounded-card lg:rounded-tl-[var(--radius-wing)]">
           <Image
-            src="/images/photography/butterfly-on-leaf.jpg"
-            alt="A blue butterfly resting on a green leaf beside a sunlit window"
+            src="/images/photography/butterfly-on-leaf-charcoal.jpg"
+            alt="A dark butterfly with yellow-edged wings resting on a green leaf beside a sunlit window"
             fill
             sizes="(min-width: 64rem) 46vw, 100vw"
             className="object-cover"

@@ -37,26 +37,24 @@ function iconFor(link: SupportLink): { Icon: IconType; tone: string; track: stri
  * popover: it takes focus when opened, closes with Escape or a click outside,
  * and returns focus to the button.
  *
- * On phones and tablets they look as they do on desktop, but wait until the
- * visitor has scrolled past most of the first screen, so they never sit over
- * the hero's message and buttons, and step aside again at the foot of the
- * footer, so the last links stay clear without extra empty space below them.
- * Desktop is unchanged: both are always there.
+ * They step aside at the foot of the footer, so the last links stay clear
+ * without empty space kept free below them. On phones and tablets they also
+ * wait until the visitor has scrolled past most of the first screen, so they
+ * never sit over the hero's message and buttons.
  */
 export function SupportDock({ panel, whatsapp }: { panel: SupportPanel | null; whatsapp: string | null }) {
   const [open, setOpen] = useState(false);
   const [revealed, setRevealed] = useState(false);
-  const [narrow, setNarrow] = useState(false);
 
   useEffect(() => {
     const query = window.matchMedia("(max-width: 63.999rem)");
     let frame = 0;
     const update = () => {
       frame = 0;
-      setNarrow(query.matches);
       const footerEnd = document.querySelector("[data-footer-end]");
       const atFooterEnd = footerEnd ? footerEnd.getBoundingClientRect().top < window.innerHeight : false;
-      setRevealed(!query.matches || (window.scrollY > window.innerHeight * 0.6 && !atFooterEnd));
+      const pastHero = !query.matches || window.scrollY > window.innerHeight * 0.6;
+      setRevealed(pastHero && !atFooterEnd);
     };
     const onScroll = () => {
       if (!frame) frame = requestAnimationFrame(update);
@@ -76,11 +74,11 @@ export function SupportDock({ panel, whatsapp }: { panel: SupportPanel | null; w
   return (
     <div
       data-support-dock
-      inert={narrow && waiting ? true : undefined}
+      inert={waiting ? true : undefined}
       className={cn(
         "fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-[max(1rem,env(safe-area-inset-right))] z-[var(--z-floating)] flex flex-col items-end gap-2.5 max-lg:[html[data-consent-open]_&]:hidden print:hidden",
-        "max-lg:transition-[opacity,translate] max-lg:duration-300 motion-reduce:transition-none",
-        waiting && "max-lg:pointer-events-none max-lg:translate-y-3 max-lg:opacity-0",
+        "transition-[opacity,translate] duration-300 motion-reduce:transition-none",
+        waiting && "pointer-events-none translate-y-3 opacity-0",
       )}
     >
       {whatsapp && (

@@ -4,19 +4,22 @@
    Butterfly Coaching Academy design tokens: the single source of truth for
    the public website and the admin. Documented in docs/BRAND_SYSTEM.md.
 
-   The principal background is the grey-white of the BCA logo artwork,
-   #FCFCFC (rgb 252 252 252); neutrals derive from the logo's grey #4B4B4D. The five
-   --bca-* tokens and the two typefaces can be changed in Admin > Settings >
+   The palette (October 2026): charcoal #2B2B2B for headings, dark sections and
+   links, mid gray #5F5F5F for body text, light gray #F2F2F0 for panels, white
+   cards, butterfly yellow #F5BA00 for highlights and deep yellow for small labels.
+   No blue. The page background is the grey-white of the BCA logo artwork, #FCFCFC.
+   The five --bca-* tokens and the two typefaces can be changed in Admin > Settings >
    Colours and typography; everything else derives from them.
    ========================================================================== */
 
 :root {
-  --bca-primary: #0068bf;
-  --bca-navy: #0f256a;
+  --bca-primary: #2b2b2b;
+  --bca-navy: #2b2b2b;
   --bca-accent: #f5ba00;
   --bca-background: #fcfcfc;
-  --bca-ink: #444746;
-  /* Small yellow labels on the Level 1 ACC page (see [data-palette="charcoal"]). */
+  --bca-ink: #5f5f5f;
+  /* Small uppercase labels. The palette's deep yellow #B88A00 is too light for small
+     text (2.8 to 1 on light gray); #8A6800 keeps the hue and passes AA (4.6 to 1). */
   --bca-label: #8a6800;
 
   --font-heading: var(--font-jakarta);
@@ -24,7 +27,8 @@
 
   /* Layout */
   --gutter: clamp(1rem, 0.25rem + 3.4vw, 2.5rem);
-  --section-space: clamp(3.75rem, 2.25rem + 5.6vw, 7rem);
+  /* Above and below each section, so two sections sit twice this apart: about 57px on phones, 105px on desktop. */
+  --section-space: clamp(1.75rem, 1.25rem + 2.2vw, 3.25rem);
   --header-height: 4rem;
   --container-max: 75rem;
 
@@ -76,8 +80,8 @@
   /* Backgrounds. The page colour sits behind every section. */
   --color-background: var(--bca-background);
   --color-page: var(--bca-background);
-  /* A step deeper than the page, toward the logo's grey: hover fills, chips, quiet panels. */
-  --color-tint: color-mix(in srgb, var(--bca-background) 94%, #4b4b4d);
+  /* Light gray: panels, hover fills and chips. */
+  --color-tint: #f2f2f0;
   /* Two steps deeper: the panel behind portrait photographs. */
   --color-tint-deep: color-mix(in srgb, var(--bca-background) 88%, #4b4b4d);
   /* Pure white for cards, forms, menus and dialogs, lifted off the page by borders and shadow. */
@@ -86,7 +90,7 @@
   /* Neutrals */
   --color-text: var(--bca-ink);
   --color-ink: var(--bca-ink);
-  --color-muted: #5b5f5d;
+  --color-muted: var(--bca-ink);
   --color-border: #e4e4e7;
   --color-line: #e4e4e7;
   --color-mist: color-mix(in srgb, var(--bca-background) 97%, #4b4b4d);
@@ -123,9 +127,9 @@
   --radius-panel: var(--radius-xl);
   --radius-wing: 7.5rem;
 
-  --shadow-card: 0 1px 2px rgb(15 37 106 / 0.05), 0 12px 32px -12px rgb(15 37 106 / 0.16);
-  --shadow-lift: 0 2px 4px rgb(15 37 106 / 0.06), 0 24px 48px -16px rgb(15 37 106 / 0.24);
-  --shadow-panel: 0 30px 60px -28px rgb(15 37 106 / 0.45), 0 12px 24px -16px rgb(15 37 106 / 0.2);
+  --shadow-card: 0 1px 2px rgb(43 43 43 / 0.05), 0 12px 32px -12px rgb(43 43 43 / 0.16);
+  --shadow-lift: 0 2px 4px rgb(43 43 43 / 0.06), 0 24px 48px -16px rgb(43 43 43 / 0.24);
+  --shadow-panel: 0 30px 60px -28px rgb(43 43 43 / 0.45), 0 12px 24px -16px rgb(43 43 43 / 0.2);
 
   --container-site: var(--container-max);
   --container-prose: 44rem;
@@ -234,7 +238,7 @@
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--color-primary);
+    color: var(--color-label);
   }
 
   .on-dark .eyebrow {
@@ -281,7 +285,7 @@
     font-size: 0.9375rem;
   }
 
-  /* Primary: accent yellow with navy text, 8.3:1 contrast. */
+  /* Primary: butterfly yellow with charcoal text, 8.0:1 contrast. */
   .btn-primary {
     background: var(--color-accent);
     color: var(--color-navy);
@@ -297,7 +301,7 @@
     color: #fff;
   }
 
-  .btn-blue {
+  .btn-dark {
     background: var(--color-primary);
     color: #fff;
   }
@@ -314,7 +318,7 @@
   }
 
   /* Hover colours only where a pointer can hover: on a phone a tap would otherwise
-     leave a yellow button navy until the next tap somewhere else. */
+     leave a yellow button charcoal until the next tap somewhere else. */
   @media (hover: hover) {
     .btn-primary:hover {
       background: var(--color-navy);
@@ -333,8 +337,8 @@
       border-color: #fff;
       color: var(--color-navy);
     }
-    .btn-blue:hover {
-      background: var(--color-navy);
+    .btn-dark:hover {
+      background: var(--color-navy-soft);
     }
     .btn-quiet:hover {
       border-color: var(--color-navy);
@@ -554,7 +558,7 @@
   border: 1px solid var(--color-line);
   border-radius: var(--radius-card);
   background: var(--color-surface);
-  box-shadow: 0 1px 2px rgb(15 37 106 / 0.04);
+  box-shadow: 0 1px 2px rgb(43 43 43 / 0.04);
   transition:
     translate 0.3s var(--ease-out-soft),
     box-shadow 0.3s var(--ease-out-soft),
@@ -650,33 +654,6 @@
   .path-card {
     transition: scale 0.15s var(--ease-out-soft);
   }
-}
-
-/* The Level 1 ACC page uses the October 2026 design refresh palette: charcoal
-   headings and icons, mid gray text, light gray panels, white cards and yellow
-   highlights; no blue. The proposal's deep yellow #B88A00 is too light for small
-   labels (2.8 to 1 on the panels), so labels use #8A6800: the same hue, 4.6 to 1.
-   Scoped to the page's content; the header and footer stay site-wide. */
-[data-palette="charcoal"] {
-  --bca-navy: #2b2b2b;
-  --color-navy: #2b2b2b;
-  --bca-primary: #2b2b2b;
-  --color-primary: #2b2b2b;
-  --bca-ink: #5f5f5f;
-  --color-ink: #5f5f5f;
-  --color-text: #5f5f5f;
-  --color-tint: #f2f2f0;
-  color: var(--color-ink);
-}
-[data-palette="charcoal"] .eyebrow {
-  color: var(--color-label);
-}
-/* "Need help?" matches the page, as the proposal asks. */
-html:has([data-palette="charcoal"]) [data-support-dock] button {
-  background-color: #2b2b2b;
-}
-html:has([data-palette="charcoal"]) [data-support-dock] button:is(:hover, [data-state="open"]) {
-  background-color: #444444;
 }
 
 /* Art-directed <picture>: each crop keeps its own focal point. */

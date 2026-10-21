@@ -191,7 +191,7 @@ export function MediaPicker({
                       id={`${id}-upload`}
                       onChange={(event) => onUpload(event.target.files?.[0])}
                     />
-                    <label htmlFor={`${id}-upload`} className={cn("btn btn-blue btn-sm cursor-pointer", busy && "pointer-events-none opacity-60")}>
+                    <label htmlFor={`${id}-upload`} className={cn("btn btn-dark btn-sm cursor-pointer", busy && "pointer-events-none opacity-60")}>
                       <UploadSimpleIcon weight="bold" className="size-4" />
                       {busy ? "Uploading" : `Upload new ${noun}`}
                     </label>

@@ -54,14 +54,14 @@ function DesktopNav({ nav, pathname }: { nav: NavNode[]; pathname: string }) {
             return (
               <NavigationMenu.Item key={node.id}>
                 <NavigationMenu.Link asChild active={active}>
-                  <NavAnchor node={node} className={cn(itemClass, active && "text-primary")} />
+                  <NavAnchor node={node} className={cn(itemClass, active && "bg-tint")} />
                 </NavigationMenu.Link>
               </NavigationMenu.Item>
             );
           }
           return (
             <NavigationMenu.Item key={node.id} className="relative">
-              <NavigationMenu.Trigger className={cn(itemClass, "group", active && "text-primary")}>
+              <NavigationMenu.Trigger className={cn(itemClass, "group", active && "bg-tint")}>
                 {node.label}
                 <CaretDownIcon aria-hidden weight="bold" className="size-3.5 transition-transform duration-200 group-data-[state=open]:rotate-180" />
               </NavigationMenu.Trigger>
@@ -136,7 +136,7 @@ function MobileNav({ nav, pathname, cta, tel, phoneDisplay, whatsapp, siteName }
               {nav.map((node) =>
                 node.children.length === 0 ? (
                   <li key={node.id}>
-                    <NavAnchor node={node} onClick={close} className={cn(linkClass, isActive(pathname, node) && "text-primary")} />
+                    <NavAnchor node={node} onClick={close} className={cn(linkClass, isActive(pathname, node) && "bg-tint")} />
                   </li>
                 ) : (
                   <li key={node.id} className="pb-2">
@@ -147,7 +147,7 @@ function MobileNav({ nav, pathname, cta, tel, phoneDisplay, whatsapp, siteName }
                     <ul className="grid gap-0.5">
                       {node.children.map((child) => (
                         <li key={child.id}>
-                          <NavAnchor node={child} onClick={close} className={cn(linkClass, pathname === child.href && "bg-tint text-primary")} />
+                          <NavAnchor node={child} onClick={close} className={cn(linkClass, pathname === child.href && "bg-tint")} />
                         </li>
                       ))}
                     </ul>

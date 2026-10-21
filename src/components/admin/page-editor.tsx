@@ -188,7 +188,7 @@ export function PageEditor({ id, initial, meta, revisions, refOptions, media, ca
 
           <div className="flex items-center justify-between gap-3 pt-2">
             <h2 className="text-lg">Sections</h2>
-            <button type="button" className="btn btn-blue btn-sm" onClick={() => setAdding(true)}>
+            <button type="button" className="btn btn-dark btn-sm" onClick={() => setAdding(true)}>
               <PlusIcon weight="bold" className="size-4" />
               Add section
             </button>

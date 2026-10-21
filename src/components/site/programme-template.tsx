@@ -86,8 +86,7 @@ function Outcomes({ outcomes }: { outcomes: string[] }) {
  * Detail page for a programme or course. Every section is driven by the
  * programme record, and sections with no data (fees, dates, brochure) are
  * left out rather than padded with placeholder copy. The ACC pathway uses the
- * October 2026 design refresh: its own palette (charcoal, gray, yellow and
- * white) and redesigned journey and outcomes sections.
+ * October 2026 design refresh's journey and outcomes sections.
  */
 export async function ProgrammeTemplate({
   programme: p,
@@ -112,7 +111,7 @@ export async function ProgrammeTemplate({
   const blockCtx: BlockContext = { ...ctx, breadcrumbs, index: 1 };
   const refreshed = p.credential === "ACC";
 
-  const page = (
+  return (
     <>
       {/* Hero */}
       <section className="bg-page">
@@ -339,8 +338,6 @@ export async function ProgrammeTemplate({
       />
     </>
   );
-
-  return refreshed ? <div data-palette="charcoal">{page}</div> : page;
 }
 
 /** When a programme has no linked faculty or stories yet, show the founder so the page still has a human face. */

@@ -103,7 +103,7 @@ export default async function EnquiriesPage({ searchParams }: { searchParams: Pr
             ))}
           </select>
         </div>
-        <button type="submit" className="btn btn-blue btn-sm">
+        <button type="submit" className="btn btn-dark btn-sm">
           Apply
         </button>
       </form>

@@ -22,7 +22,7 @@ export function PathCardsBlock(props: BlockProps<"path_cards">) {
 }
 
 /**
- * "Choose your path" as a navy panel of three icon cards. Straight after a
+ * "Choose your path" as a charcoal panel of three icon cards. Straight after a
  * homepage hero it rises over the hero's lower edge (the hero leaves room for
  * it); on phones the overlap is small so nothing is ever covered.
  */

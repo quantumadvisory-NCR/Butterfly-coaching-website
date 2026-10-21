@@ -133,7 +133,7 @@ export async function HeroBlock({ data, ctx }: BlockProps<"hero">) {
             {data.headingAccent && (
               <>
                 {" "}
-                <span className="block text-primary">{data.headingAccent}</span>
+                <span className="block text-ink">{data.headingAccent}</span>
               </>
             )}
           </h1>

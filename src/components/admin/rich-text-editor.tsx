@@ -167,7 +167,7 @@ export function RichTextEditor({
             className="field-input min-h-10 flex-1 py-1.5"
             autoFocus
           />
-          <button type="button" className="btn btn-blue btn-sm" onClick={applyLink}>
+          <button type="button" className="btn btn-dark btn-sm" onClick={applyLink}>
             Apply link
           </button>
         </div>

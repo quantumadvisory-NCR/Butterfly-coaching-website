@@ -153,12 +153,11 @@ export function SiteFooter({
       </div>
 
       <div className="border-t border-white/10">
-        {/* On desktop this keeps clear of the floating WhatsApp and "Need help?" buttons with room below the last line,
-            except where the page margin is wide enough to hold them. On phones and tablets the buttons step aside
-            when this line comes into view (data-footer-end), so the footer ends without the extra space. */}
+        {/* The floating WhatsApp and "Need help?" buttons step aside when this line comes into view
+            (data-footer-end), so the footer ends without empty space kept free for them. */}
         <div
           data-footer-end
-          className="container-site flex flex-col gap-3 pb-[calc(9.5rem+env(safe-area-inset-bottom))] pt-6 text-sm text-white/70 max-lg:pb-[calc(1.5rem+env(safe-area-inset-bottom))] md:flex-row md:items-center md:justify-between min-[108rem]:pb-6"
+          className="container-site flex flex-col gap-3 pb-[calc(1.5rem+env(safe-area-inset-bottom))] pt-6 text-sm text-white/70 md:flex-row md:items-center md:justify-between"
         >
           <p>
             © {new Date().getFullYear()} {footer.copyrightName || brand.siteName}. All rights reserved.

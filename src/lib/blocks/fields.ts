@@ -127,7 +127,7 @@ function schemaFor(field: Field): z.ZodType {
       return z
         .string()
         .trim()
-        .regex(/^#[0-9a-fA-F]{6}$/, "Use a 6-digit hex colour such as #0068bf.");
+        .regex(/^#[0-9a-fA-F]{6}$/, "Use a 6-digit hex colour such as #2B2B2B.");
     case "image":
     case "file":
       return uuidOrNull;

@@ -140,9 +140,9 @@ const pathCards = [
     type: "select",
     name: "layout",
     label: "Layout",
-    help: "The navy panel overlaps the bottom of a homepage hero placed directly above it.",
+    help: "The charcoal panel overlaps the bottom of a homepage hero placed directly above it.",
     options: [
-      { value: "panel", label: "Navy panel with icon cards" },
+      { value: "panel", label: "Charcoal panel with icon cards" },
       { value: "images", label: "Image cards" },
     ],
   },
@@ -162,7 +162,7 @@ const pathCards = [
       {
         type: "select",
         name: "icon",
-        label: "Icon (navy panel)",
+        label: "Icon (charcoal panel)",
         options: [
           { value: "cap", label: "Graduation cap" },
           { value: "trend", label: "Rising line" },

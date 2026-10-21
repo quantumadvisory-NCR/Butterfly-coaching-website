@@ -87,7 +87,7 @@ export function UsersManager({ users, roles, currentUserId }: { users: User[]; r
                     </label>
                     <div className="flex flex-col gap-2 sm:flex-row">
                       <input id={`reset-${user.id}`} type="text" autoComplete="off" value={newPassword} onChange={(event) => setNewPassword(event.target.value)} className="field-input flex-1 font-mono" />
-                      <button type="button" className="btn btn-blue btn-sm" disabled={pending || newPassword.length < 12} onClick={() => run(() => resetUserPasswordAction(user.id, newPassword), () => setResetFor(null))}>
+                      <button type="button" className="btn btn-dark btn-sm" disabled={pending || newPassword.length < 12} onClick={() => run(() => resetUserPasswordAction(user.id, newPassword), () => setResetFor(null))}>
                         Set password
                       </button>
                     </div>
