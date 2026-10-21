@@ -1,8 +1,8 @@
 import { CheckIcon, DownloadSimpleIcon } from "@phosphor-icons/react/dist/ssr";
 import { FaqJsonLd } from "@/components/blocks/closing";
-import { ProfilesBlock, TestimonialGrid } from "@/components/blocks/people";
+import { ProfilesBlock, ProgrammeStories } from "@/components/blocks/people";
 import { programmeFacts } from "@/components/blocks/programmes";
-import { ACC_OUTCOME_COUNT, ACC_STEP_COUNT, AccJourney, AccWings } from "@/components/site/acc-programme";
+import { ACC_OUTCOME_COUNT, AccWings, CredentialJourney, JOURNEY_STEP_COUNT, hasJourney } from "@/components/site/credential-programme";
 import type { BlockContext, Crumb } from "@/components/blocks/types";
 import { Breadcrumbs } from "@/components/site/breadcrumbs";
 import { EnquiryForm } from "@/components/site/enquiry-form";
@@ -85,8 +85,9 @@ function Outcomes({ outcomes }: { outcomes: string[] }) {
 /**
  * Detail page for a programme or course. Every section is driven by the
  * programme record, and sections with no data (fees, dates, brochure) are
- * left out rather than padded with placeholder copy. The ACC pathway uses the
- * October 2026 design refresh's journey and outcomes sections.
+ * left out rather than padded with placeholder copy. The ACC, PCC and MCC
+ * pathways use the October 2026 design refresh's journey (and, for ACC, its
+ * outcomes) sections.
  */
 export async function ProgrammeTemplate({
   programme: p,
@@ -109,7 +110,6 @@ export async function ProgrammeTemplate({
   const cohorts = p.cohorts.filter((c) => c.startDate >= today);
   const bookingHref = resolveHref("booking", ctx.settings);
   const blockCtx: BlockContext = { ...ctx, breadcrumbs, index: 1 };
-  const refreshed = p.credential === "ACC";
 
   return (
     <>
@@ -214,11 +214,15 @@ export async function ProgrammeTemplate({
 
       {/* Journey */}
       {p.modules.length > 0 &&
-        (refreshed && p.modules.length === ACC_STEP_COUNT ? <AccJourney modules={p.modules} /> : <Journey modules={p.modules} />)}
+        (hasJourney(p.credential) && p.modules.length === JOURNEY_STEP_COUNT ? (
+          <CredentialJourney credential={p.credential} modules={p.modules} />
+        ) : (
+          <Journey modules={p.modules} />
+        ))}
 
       {/* Outcomes */}
       {p.outcomes.length > 0 &&
-        (refreshed && p.outcomes.length === ACC_OUTCOME_COUNT ? <AccWings outcomes={p.outcomes} /> : <Outcomes outcomes={p.outcomes} />)}
+        (p.credential === "ACC" && p.outcomes.length === ACC_OUTCOME_COUNT ? <AccWings outcomes={p.outcomes} /> : <Outcomes outcomes={p.outcomes} />)}
 
       {/* Dates and fees: shown only when real data exists */}
       {(cohorts.length > 0 || p.feeText) && (
@@ -286,7 +290,7 @@ export async function ProgrammeTemplate({
           <div className="container-site">
             <h2 className="text-h2">What {p.credential ?? "programme"} learners say</h2>
             <div className="mt-9">
-              <TestimonialGrid items={stories} ctx={blockCtx} />
+              <ProgrammeStories items={stories} credential={p.credential} ctx={blockCtx} />
             </div>
           </div>
         </section>

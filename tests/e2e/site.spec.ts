@@ -179,6 +179,56 @@ test.describe("navigation", () => {
   });
 });
 
+test.describe("learning journeys", () => {
+  test("the homepage loop works with clicks, Next step and the keyboard", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto("/");
+    const section = page.locator("section", { has: page.getByRole("heading", { name: "How you'll grow, one loop at a time" }) });
+    await section.scrollIntoViewIfNeeded();
+    const panel = section.locator("[aria-live=polite]");
+    await expect(panel.getByText("Step 1 of 4")).toBeVisible();
+
+    await section.getByRole("button", { name: "Step 2, Practise" }).click();
+    await expect(panel.getByRole("heading", { name: "Practise" })).toBeVisible();
+    await expect(panel.getByText("Coach a peer in your first week.")).toBeVisible();
+
+    await section.getByRole("button", { name: "Next step" }).click();
+    await expect(panel.getByRole("heading", { name: "Receive feedback" })).toBeVisible();
+
+    await section.getByRole("button", { name: "Step 4, Reflect and revisit" }).press("Enter");
+    await expect(panel.getByText("Round 1 complete. Each loop goes deeper.")).toBeVisible();
+    await section.getByRole("button", { name: "Next step" }).click();
+    await expect(panel.getByText("Step 1 of 4")).toBeVisible();
+    await expect(section.getByRole("link", { name: "Book a discovery call" })).toBeVisible();
+  });
+
+  test("on phones the loop is a vertical timeline with every step readable", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/");
+    const section = page.locator("section", { has: page.getByRole("heading", { name: "How you'll grow, one loop at a time" }) });
+    for (const title of ["Learn", "Practise", "Receive feedback", "Reflect and revisit"]) {
+      await expect(section.getByRole("heading", { name: title, exact: true })).toBeVisible();
+    }
+    await expect(section.getByText("Build capability").filter({ visible: true })).toBeVisible();
+    await expect(section.getByRole("button", { name: "Step 1, Learn" })).toBeHidden();
+  });
+
+  test("the PCC and MCC pages show their journeys and where the hours go", async ({ page }) => {
+    await page.goto("/level-2-pcc-coach-program/");
+    const pcc = page.locator("#journey");
+    await expect(pcc.getByRole("heading", { name: "From practising to proficient" })).toBeVisible();
+    for (const phase of ["Deepen", "Practise", "Certify"]) await expect(pcc.getByRole("heading", { name: phase, exact: true })).toBeVisible();
+    await expect(pcc.getByText("650 hrs")).toBeVisible();
+
+    await page.goto("/level-3-mcc-program/");
+    const mcc = page.locator("#journey");
+    await expect(mcc.getByRole("heading", { name: "From proficient to masterful" })).toBeVisible();
+    for (const phase of ["Refine", "Embody", "Certify"]) await expect(mcc.getByRole("heading", { name: phase, exact: true })).toBeVisible();
+    await expect(mcc.getByText("Mentor coaching 10h")).toBeVisible();
+    await expect(mcc.getByText("2,605 hrs")).toBeVisible();
+  });
+});
+
 test.describe("content rules", () => {
   test("every call to action leads somewhere real", async ({ page, request }) => {
     const seen = new Set<string>();

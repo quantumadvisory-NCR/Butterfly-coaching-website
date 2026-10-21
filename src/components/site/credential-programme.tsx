@@ -1,29 +1,32 @@
-import { CheckCircleIcon, CompassIcon, EarIcon, HandshakeIcon, LightbulbIcon, QuestionIcon, SealCheckIcon } from "@phosphor-icons/react/dist/ssr";
+import { CaretRightIcon, CheckCircleIcon, CompassIcon, EarIcon, HandshakeIcon, LightbulbIcon, QuestionIcon, SealCheckIcon } from "@phosphor-icons/react/dist/ssr";
 import type { ComponentType } from "react";
 import type { ProgrammeView } from "@/lib/content/public";
 import { cn } from "@/lib/utils";
 
 /*
- * The two redesigned sections of the Level 1 ACC page (design refresh proposal,
- * October 2026): the journey told as a butterfly's life cycle, and the six
- * outcomes as the two wings of a butterfly. Step titles, descriptions, hours
- * and outcomes still come from the programme record; only the arrangement and
- * the one-line outcome descriptions are specific to this page.
+ * The redesigned sections of the ICF credential pages (design refresh,
+ * October 2026). Each credential's journey is told in three phases ending in
+ * a yellow "Certify" card, with the hours behind it; the ACC page also shows
+ * its six outcomes as the two wings of a butterfly. Step titles, descriptions,
+ * hours and outcomes come from the programme record; only the arrangement,
+ * the headings and the one-line outcome descriptions are set here.
  */
 
 type Module = ProgrammeView["modules"][number];
 type IconType = ComponentType<{ className?: string; weight?: "regular" | "bold" | "fill" | "duotone" }>;
 
-/** The ACC journey has seven steps, grouped into three phases. A different count falls back to the plain list. */
-export const ACC_STEP_COUNT = 7;
+/** Each journey has seven steps, grouped into three phases. A different count falls back to the plain list. */
+export const JOURNEY_STEP_COUNT = 7;
 /** Three core skills and three foundations. A different count falls back to the checklist. */
 export const ACC_OUTCOME_COUNT = 6;
 
-/** "77 hours" becomes 77; steps without hours count as 0. */
+/** "2,500 hours" becomes 2500; steps without hours count as 0. */
 function hoursOf(label: string | null) {
-  const value = Number.parseFloat(label ?? "");
+  const value = Number.parseFloat((label ?? "").replace(/,/g, ""));
   return Number.isFinite(value) ? value : 0;
 }
+
+const formatHours = (hours: number) => hours.toLocaleString("en-IN");
 
 function EggIcon({ className }: { className?: string }) {
   return (
@@ -46,6 +49,34 @@ function CaterpillarIcon({ className }: { className?: string }) {
   );
 }
 
+function SproutIcon({ className }: { className?: string }) {
+  return (
+    <svg aria-hidden viewBox="0 0 40 40" className={className}>
+      <path d="M20 35 V19" stroke="var(--color-navy)" strokeWidth="2.5" strokeLinecap="round" />
+      <path d="M20 21 C20 13 14 8 6 8 C6 16 12 21 20 21 Z" fill="var(--color-accent)" />
+      <path d="M20 18 C20 11 25 7 33 7 C33 14 28 18 20 18 Z" fill="var(--color-navy)" />
+    </svg>
+  );
+}
+
+function TargetIcon({ className }: { className?: string }) {
+  return (
+    <svg aria-hidden viewBox="0 0 40 40" className={className}>
+      <circle cx="20" cy="20" r="13" fill="none" stroke="var(--color-navy)" strokeWidth="2.5" />
+      <circle cx="20" cy="20" r="6.5" fill="var(--color-accent)" />
+    </svg>
+  );
+}
+
+function WaveIcon({ className }: { className?: string }) {
+  return (
+    <svg aria-hidden viewBox="0 0 40 40" className={className}>
+      <path d="M4 23 C8 12 13 12 17 20 C21 28 26 28 30 18" fill="none" stroke="var(--color-navy)" strokeWidth="2.75" strokeLinecap="round" />
+      <circle cx="33.5" cy="14.5" r="3.5" fill="var(--color-accent)" />
+    </svg>
+  );
+}
+
 /** The life-cycle butterfly: charcoal upper wings with yellow spots, yellow lower wings. */
 function ButterflyIcon({ className, flap = false }: { className?: string; flap?: boolean }) {
   return (
@@ -64,21 +95,68 @@ function ButterflyIcon({ className, flap = false }: { className?: string; flap?:
   );
 }
 
-const PHASES = [
-  { name: "Learn", subtitle: "Foundations", Icon: EggIcon, steps: [0, 1], finish: false },
-  { name: "Practise", subtitle: "Real conversations", Icon: CaterpillarIcon, steps: [2, 3, 4], finish: false },
-  { name: "Certify", subtitle: "Earn your ACC", Icon: ButterflyIcon, steps: [5, 6], finish: true },
-] as const;
+type Phase = { name: string; subtitle: string; Icon: ComponentType<{ className?: string }>; steps: readonly number[]; finish?: boolean };
 
-/** "Your transformation": headline figures, then Learn, Practise and Certify, each with its steps. */
-export function AccJourney({ modules }: { modules: Module[] }) {
+const ORDER = "Education, practice, mentoring and evaluation, in the order you will experience them";
+
+const JOURNEYS: Record<string, { heading: string; intro: string; phases: readonly Phase[] }> = {
+  ACC: {
+    heading: "From curious to credentialed",
+    intro: `${ORDER}.`,
+    phases: [
+      { name: "Learn", subtitle: "Foundations", Icon: EggIcon, steps: [0, 1] },
+      { name: "Practise", subtitle: "Real conversations", Icon: CaterpillarIcon, steps: [2, 3, 4] },
+      { name: "Certify", subtitle: "Earn your ACC", Icon: ButterflyIcon, steps: [5, 6], finish: true },
+    ],
+  },
+  PCC: {
+    heading: "From practising to proficient",
+    intro: `${ORDER}, building on your ACC foundation.`,
+    phases: [
+      { name: "Deepen", subtitle: "Advanced education", Icon: SproutIcon, steps: [0, 1] },
+      { name: "Practise", subtitle: "Real conversations", Icon: CaterpillarIcon, steps: [2, 3, 4] },
+      { name: "Certify", subtitle: "Earn your PCC", Icon: ButterflyIcon, steps: [5, 6], finish: true },
+    ],
+  },
+  MCC: {
+    heading: "From proficient to masterful",
+    intro: `${ORDER}, building on your PCC foundation.`,
+    phases: [
+      { name: "Refine", subtitle: "Mastery education", Icon: TargetIcon, steps: [0, 1] },
+      { name: "Embody", subtitle: "Practice at depth", Icon: WaveIcon, steps: [2, 3, 4] },
+      { name: "Certify", subtitle: "Earn your MCC", Icon: ButterflyIcon, steps: [5, 6], finish: true },
+    ],
+  },
+};
+
+/** What the hours of steps 2, 4 and 5 are, for the "at a glance" bar. */
+const HOUR_KINDS: Record<number, { label: string; colour: string }> = {
+  1: { label: "Coach education", colour: "bg-navy" },
+  3: { label: "Mentor coaching", colour: "bg-ink/45" },
+  4: { label: "Coaching experience", colour: "bg-accent" },
+};
+
+/** True when a credential has a redesigned journey (ACC, PCC and MCC). */
+export function hasJourney(credential: string | null): credential is string {
+  return Boolean(credential && credential in JOURNEYS);
+}
+
+/**
+ * "Your transformation": headline figures; the three phases with their steps,
+ * joined by arrows on wide screens; and where the hours go.
+ */
+export function CredentialJourney({ credential, modules }: { credential: string; modules: Module[] }) {
+  const journey = JOURNEYS[credential]!;
   const hours = modules.map((step) => hoursOf(step.hoursLabel));
   const total = hours.reduce((sum, value) => sum + value, 0);
   const figures = [
-    total > 0 && { value: total.toLocaleString("en-IN"), label: "hours of learning & practice" },
+    total > 0 && { value: formatHours(total), label: "hours of learning & practice" },
     { value: String(modules.length), label: "guided milestones" },
-    { value: "1", label: "ICF ACC credential" },
+    { value: "1", label: `ICF ${credential} credential` },
   ].filter(Boolean) as { value: string; label: string }[];
+  const segments = hours
+    .map((value, i) => ({ value, kind: HOUR_KINDS[i] ?? { label: modules[i]!.title, colour: "bg-ink/45" } }))
+    .filter((segment) => segment.value > 0);
 
   return (
     <section id="journey" aria-labelledby="journey-heading" className="section-space bg-page">
@@ -87,8 +165,9 @@ export function AccJourney({ modules }: { modules: Module[] }) {
           <div aria-hidden className="pointer-events-none absolute -right-24 -top-28 -z-10 size-80 rounded-full bg-accent/30 blur-3xl" />
           <p className="eyebrow mb-2">Your transformation</p>
           <h2 id="journey-heading" className="text-h2">
-            From curious to credentialed
+            {journey.heading}
           </h2>
+          <p className="mt-3 max-w-xl text-lead text-ink">{journey.intro}</p>
           <dl className="mt-6 flex flex-wrap gap-x-10 gap-y-4 max-sm:grid max-sm:grid-cols-3 max-sm:gap-x-4 md:mt-7">
             {figures.map((figure) => (
               <div key={figure.label} className="flex flex-col-reverse">
@@ -102,22 +181,25 @@ export function AccJourney({ modules }: { modules: Module[] }) {
               </div>
             ))}
           </dl>
-          <ul className="mt-8 grid gap-4 md:mt-9 lg:grid-cols-3 lg:gap-5">
-            {PHASES.map((phase) => {
+          <ul className="mt-8 grid gap-4 md:mt-9 lg:grid-cols-3 lg:gap-6">
+            {journey.phases.map((phase, p) => {
               const phaseHours = phase.steps.reduce<number>((sum, i) => sum + hours[i]!, 0);
               return (
                 <li
                   key={phase.name}
                   className={cn(
-                    "reveal flex flex-col rounded-card p-5 shadow-card transition-[translate,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-lift sm:p-6",
+                    "reveal relative flex flex-col rounded-card p-5 shadow-card transition-[translate,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-lift sm:p-6",
                     phase.finish ? "bg-accent" : "bg-surface",
                   )}
                 >
+                  {p < journey.phases.length - 1 && (
+                    <CaretRightIcon aria-hidden weight="bold" className="absolute -right-[1.0625rem] top-1/2 hidden size-3.5 -translate-y-1/2 text-accent lg:block" />
+                  )}
                   <phase.Icon className="size-10" />
                   <h3 className="mt-3 text-h3">{phase.name}</h3>
                   <p className={cn("mt-0.5 text-sm font-bold", phase.finish ? "text-navy" : "text-label")}>
                     {phase.subtitle}
-                    {phaseHours > 0 && ` · ${phaseHours.toLocaleString("en-IN")} hrs`}
+                    {phaseHours > 0 && ` · ${formatHours(phaseHours)} hrs`}
                   </p>
                   <ol className={cn("mt-4 grid divide-y border-t", phase.finish ? "divide-navy/15 border-navy/15" : "divide-line border-line")}>
                     {phase.steps.map((i) => {
@@ -126,7 +208,9 @@ export function AccJourney({ modules }: { modules: Module[] }) {
                         <li key={step.id} className="py-3.5 last:pb-0">
                           <p className="font-bold leading-snug text-navy">
                             {i + 1}. {step.title}
-                            {hours[i]! > 0 && ` · ${hours[i]}h`}
+                            {hours[i]! > 0 && (
+                              <span className="ml-2 inline-block rounded-full bg-tint px-2 py-0.5 align-[0.125em] text-xs font-bold">{formatHours(hours[i]!)}h</span>
+                            )}
                           </p>
                           {step.description && <p className={cn("mt-1 text-[0.9375rem] leading-relaxed", phase.finish && "text-navy")}>{step.description}</p>}
                         </li>
@@ -137,6 +221,28 @@ export function AccJourney({ modules }: { modules: Module[] }) {
               );
             })}
           </ul>
+          {segments.length > 1 && (
+            <div className="mt-8 md:mt-9">
+              <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:gap-4">
+                <p className="shrink-0 text-sm">
+                  <span className="font-bold text-navy">{formatHours(total)} hrs</span> at a glance
+                </p>
+                <div aria-hidden className="flex h-2 w-full gap-0.5 overflow-hidden rounded-full">
+                  {segments.map((segment) => (
+                    <span key={segment.kind.label} className={cn("min-w-1 rounded-full", segment.kind.colour)} style={{ flexGrow: segment.value }} />
+                  ))}
+                </div>
+              </div>
+              <ul className="mt-2.5 flex flex-wrap gap-x-5 gap-y-1 text-[0.8125rem]">
+                {segments.map((segment) => (
+                  <li key={segment.kind.label} className="flex items-center gap-1.5">
+                    <span aria-hidden className={cn("size-2.5 rounded-sm", segment.kind.colour)} />
+                    {segment.kind.label} {formatHours(segment.value)}h
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       </div>
     </section>

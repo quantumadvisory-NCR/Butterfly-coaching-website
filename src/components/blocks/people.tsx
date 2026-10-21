@@ -179,6 +179,75 @@ export function TestimonialGrid({ items, ctx }: { items: TestimonialView[]; ctx:
 }
 
 /**
+ * "What ACC learners say" on a programme page: the first story large on a
+ * charcoal card, the others in white cards beside it. Only stories linked to
+ * the programme are shown, so there is never placeholder text.
+ */
+export function ProgrammeStories({ items, credential, ctx }: { items: TestimonialView[]; credential: string | null; ctx: BlockContext }) {
+  const [lead, ...rest] = items;
+  if (!lead) return null;
+  return (
+    <div className={cn("grid gap-5", rest.length > 0 && "lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]")}>
+      <StoryCard t={lead} credential={credential} ctx={ctx} lead />
+      {rest.length > 0 && (
+        <div className="grid content-start gap-5">
+          {rest.map((t) => (
+            <StoryCard key={t.id} t={t} credential={credential} ctx={ctx} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function StoryCard({ t, credential, ctx, lead = false }: { t: TestimonialView; credential: string | null; ctx: BlockContext; lead?: boolean }) {
+  const photo = pickMedia(ctx, t.photoId);
+  const quote = t.excerpt || t.quote;
+  const detail = [credential && `${credential} cohort`, [t.roleTitle, t.organisation].filter(Boolean).join(", ")].filter(Boolean).join(" · ");
+  const initials = t.name
+    .replace(/^(dr|mr|mrs|ms)\.?\s+/i, "")
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((word) => word.charAt(0))
+    .join("");
+  return (
+    <figure
+      className={cn(
+        "reveal flex flex-col rounded-[var(--radius-panel)] p-6 transition-[translate,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-lift sm:p-8",
+        lead ? "on-dark bg-navy text-white lg:p-10" : "border border-line bg-surface",
+      )}
+    >
+      {lead && <QuotesIcon aria-hidden weight="fill" className="size-8 text-accent" />}
+      <blockquote
+        className={cn(
+          "max-w-3xl leading-snug",
+          lead ? "mt-4 font-display text-white" : "text-[1.0625rem] text-navy",
+          // Long stories step down a size so the lead card stays readable.
+          lead && (quote.length > 280 ? "text-lg md:text-xl" : "text-xl md:text-2xl"),
+        )}
+      >
+        <p>“{quote}”</p>
+      </blockquote>
+      <figcaption className="mt-auto flex items-center gap-3 pt-6">
+        {photo ? (
+          <span className="relative size-11 shrink-0 overflow-hidden rounded-full bg-tint-deep">
+            <MediaImage media={photo} fill alt="" sizes="44px" className="!object-top" />
+          </span>
+        ) : (
+          <span aria-hidden className={cn("grid size-11 shrink-0 place-items-center rounded-full text-sm font-bold", lead ? "bg-white/10 text-accent" : "bg-accent-soft text-label")}>
+            {initials}
+          </span>
+        )}
+        <span className="min-w-0 text-sm">
+          <span className={cn("block font-bold", lead ? "text-white" : "text-navy")}>{t.name}</span>
+          {detail && <span className={cn("block", lead ? "text-white/70" : "text-muted")}>{detail}</span>}
+        </span>
+      </figcaption>
+    </figure>
+  );
+}
+
+/**
  * One story told large at the top of the stories page: a white card that keeps
  * the yellow gradient edge at all times. Photographs stay small: most are headshots.
  */

@@ -66,6 +66,11 @@ export function ImageTextBlock({ data, ctx }: BlockProps<"image_text">) {
   );
 }
 
+/** Plain text in which **double asterisks** mark bold letters or words, e.g. the iKAN initials. */
+function WithBold({ text }: { text: string }) {
+  return text.split(/\*\*(.+?)\*\*/g).map((part, i) => (i % 2 ? <strong key={i} className="font-bold text-navy">{part}</strong> : part));
+}
+
 /**
  * "Why BCA": heading, introduction and a framed photograph on one side; the
  * points as numbered cards on the other, joined by a thin line. Cards lift and
@@ -85,6 +90,30 @@ export function FeatureListBlock({ data, ctx }: BlockProps<"feature_list">) {
           <span aria-hidden className="mb-5 block h-1 w-12 rounded-full bg-accent" />
           <h2 className="text-h2">{data.heading}</h2>
           {data.intro && <p className="mt-4 max-w-md text-lead text-ink">{data.intro}</p>}
+          {data.sequence.length > 0 && (
+            <ol className="mt-4 flex max-w-md flex-wrap items-center gap-x-2 gap-y-2.5">
+              {data.sequence.map((word, i) => {
+                const last = i === data.sequence.length - 1;
+                return (
+                  <li key={`${word}-${i}`} className="flex items-center gap-2">
+                    <span
+                      className={cn(
+                        "rounded-full border px-3.5 py-1.5 font-display text-[0.9375rem] font-semibold text-navy",
+                        last ? "border-accent bg-accent" : "border-accent/50 bg-accent-soft",
+                      )}
+                    >
+                      {word}
+                    </span>
+                    {!last && (
+                      <span aria-hidden className="font-bold text-accent">
+                        →
+                      </span>
+                    )}
+                  </li>
+                );
+              })}
+            </ol>
+          )}
           {image && (
             <div className="reveal relative mt-9 max-w-md max-lg:mt-7 lg:max-w-none">
               {/* A yellow echo of the photograph's curved corner. */}
@@ -110,7 +139,11 @@ export function FeatureListBlock({ data, ctx }: BlockProps<"feature_list">) {
                 </span>
                 <div className="min-w-0 pt-1.5 sm:pt-1">
                   <h3 className="text-h3">{item.title}</h3>
-                  {item.body && <p className="mt-2 max-w-prose text-[0.9688rem] leading-relaxed text-ink">{item.body}</p>}
+                  {item.body && (
+                    <p className="mt-2 max-w-prose text-[0.9688rem] leading-relaxed text-ink">
+                      <WithBold text={item.body} />
+                    </p>
+                  )}
                 </div>
               </li>
             ))}

@@ -180,6 +180,13 @@ const featureList = [
   { type: "text", name: "heading", label: "Heading", required: true, maxLength: 120 },
   { type: "textarea", name: "intro", label: "Introduction", maxLength: 400, rows: 3 },
   {
+    type: "stringList",
+    name: "sequence",
+    label: "Sequence",
+    itemLabel: "Word",
+    help: "Optional. A few short words shown after the introduction as chips joined by arrows, e.g. Awareness, Choice, Action. The last one is highlighted.",
+  },
+  {
     type: "list",
     name: "items",
     label: "Points",
@@ -188,7 +195,7 @@ const featureList = [
     max: 8,
     fields: [
       { type: "text", name: "title", label: "Title", required: true, maxLength: 80 },
-      { type: "textarea", name: "body", label: "Description", maxLength: 400, rows: 3 },
+      { type: "textarea", name: "body", label: "Description", help: "Put **double asterisks** around letters or words to show them in bold.", maxLength: 400, rows: 3 },
     ],
   },
   { type: "image", name: "image", label: "Image", help: "Optional. Shown beside the list on wide screens." },
@@ -301,6 +308,17 @@ const faq = [
 ] as const satisfies readonly Field[];
 
 const timeline = [
+  {
+    type: "select",
+    name: "layout",
+    label: "Layout",
+    help: "The loop places the steps on a circle around the last step, which becomes the outcome at the centre. On phones it is a vertical timeline.",
+    options: [
+      { value: "row", label: "Steps in a row" },
+      { value: "loop", label: "A loop around an outcome" },
+    ],
+  },
+  { type: "text", name: "eyebrow", label: "Small label above the heading", maxLength: 60 },
   { type: "text", name: "heading", label: "Heading", required: true, maxLength: 120 },
   { type: "textarea", name: "intro", label: "Introduction", maxLength: 400, rows: 3 },
   {
@@ -320,8 +338,12 @@ const timeline = [
       },
       { type: "text", name: "title", label: "Title", required: true, maxLength: 60 },
       { type: "textarea", name: "body", label: "Description", maxLength: 320, rows: 3 },
+      { type: "textarea", name: "quote", label: "Learner quote (loop only)", help: "Word for word, with the learner's permission.", maxLength: 240, rows: 2 },
+      { type: "text", name: "quoteBy", label: "Quote by (loop only)", maxLength: 80 },
     ],
   },
+  { type: "text", name: "ctaLead", label: "Line before the button (loop only)", maxLength: 120 },
+  link("cta", "Button (loop only)"),
 ] as const satisfies readonly Field[];
 
 const gallery = [

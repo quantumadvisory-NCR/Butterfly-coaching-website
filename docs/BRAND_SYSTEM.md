@@ -170,7 +170,7 @@ The logo files are produced by `npm run images:optimise` from the official SVG. 
 
 ## 7a. The Level 1 ACC page
 
-The ACC page's redesigned journey and "coaching wings" sections introduced the gray and yellow palette in October 2026; it now applies to the whole site (section 2). On that page the Certify card is solid butterfly yellow with charcoal text (8.0 to 1).
+The ACC page's redesigned journey and "coaching wings" sections introduced the gray and yellow palette in October 2026; it now applies to the whole site (section 2). The journey is shared with the PCC and MCC pages, each with its own heading and phase names. The Certify card is solid butterfly yellow with charcoal text (8.0 to 1); the hours bar uses charcoal for coach education, gray for mentor coaching and yellow for coaching experience.
 
 ## 8. Image direction
 

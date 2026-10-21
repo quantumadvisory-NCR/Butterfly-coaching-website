@@ -68,13 +68,13 @@ Each section has five small buttons:
 | Rich text | Paragraphs, headings and lists, such as a policy |
 | Image and text | A picture beside some text, with optional bullet points |
 | Pathway cards | Up to four cards that send visitors to the right place. **Charcoal panel** (icon cards; straight after a homepage hero it overlaps the hero) or **Image cards** |
-| Feature list | A short list of points with an optional image |
+| Feature list | A short list of points with an optional image. **Sequence** adds a few words as chips after the introduction, joined by arrows (e.g. Awareness, Choice, Action, Transformation); the last is highlighted. In a point's description, put `**double asterisks**` around letters or words to show them in bold, as in the iKAN initials |
 | Programme cards | Cards created automatically from your programmes |
 | Comparison table | The ACC, PCC and MCC comparison (automatic), or a table you build |
 | Testimonials | Approved student stories |
 | Founder and faculty | Profiles from the Faculty list |
 | FAQ accordion | Questions from one FAQ group |
-| Timeline | A sequence of steps |
+| Timeline | A sequence of steps. **Layout: A loop around an outcome** (the homepage learning journey) puts the steps on a circle around the last step, which becomes the outcome at the centre: visitors click a step, or press Next step or Play the loop, to read it in the panel beside the circle. Each step can carry a learner quote (word for word, with permission). On phones it becomes a vertical timeline. The line and button under the loop are set at the bottom of the section |
 | Gallery | A grid of photographs |
 | Video | YouTube videos |
 | Call to action | A bold closing band with one or two buttons |

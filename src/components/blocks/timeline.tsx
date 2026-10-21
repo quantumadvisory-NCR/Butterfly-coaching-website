@@ -1,18 +1,35 @@
 import { Section, SectionHeading } from "@/components/ui/section";
 import { cn } from "@/lib/utils";
-import type { BlockProps } from "./types";
+import { LearningLoop } from "./learning-loop";
+import { type BlockProps, usableLink } from "./types";
 
 /**
  * A sequence of steps. Horizontal with a connecting rail on large screens,
- * a vertical rail on tablets and phones.
+ * a vertical rail on tablets and phones. The loop layout places the steps on
+ * a circle around the last one, the outcome (see LearningLoop).
  */
-export function TimelineBlock({ data }: BlockProps<"timeline">) {
+export function TimelineBlock({ data, ctx }: BlockProps<"timeline">) {
   const steps = data.steps.filter((step) => step.title);
   if (steps.length === 0) return null;
+  if (data.layout === "loop" && steps.length >= 4) {
+    const outcome = steps[steps.length - 1]!;
+    return (
+      <LearningLoop
+        anchor={data.anchor}
+        eyebrow={data.eyebrow}
+        heading={data.heading}
+        intro={data.intro}
+        steps={steps.slice(0, -1).map((step) => ({ title: step.title, body: step.body, quote: step.quote ?? "", quoteBy: step.quoteBy ?? "" }))}
+        outcome={outcome.title}
+        ctaLead={data.ctaLead}
+        cta={usableLink(data.cta, ctx.settings)}
+      />
+    );
+  }
   return (
     <Section background={data.background} anchor={data.anchor}>
       <div className="container-site">
-        <SectionHeading heading={data.heading} intro={data.intro} />
+        <SectionHeading eyebrow={data.eyebrow} heading={data.heading} intro={data.intro} />
         <ol
           className="relative mt-10 grid gap-0 md:mt-14 lg:grid-cols-[repeat(var(--steps),minmax(0,1fr))] lg:gap-6"
           style={{ "--steps": steps.length } as React.CSSProperties}
