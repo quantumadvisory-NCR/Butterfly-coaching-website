@@ -592,23 +592,22 @@ const FOUNDER_FACTS = [
   { value: "4,100+", label: "hours of one-to-one coaching" },
   { value: "24+", label: "years of professional experience" },
 ];
+// On the homepage the figures row already gives the founder's coaching hours, so the founder section leaves them out.
+const HOME_FOUNDER_FACTS = FOUNDER_FACTS.filter((fact) => fact.value !== "4,100+");
 
 /* The homepage's top half (hero, pathways, figures) and its FAQ. Shared with
    scripts/upgrade-homepage.ts, which brings the live homepage up to this layout. */
 export const HOME_HERO = {
   variant: "home",
-  // The accreditation wording and the proof points are flagged for owner verification in docs/CONTENT_APPROVAL_CHECKLIST.md.
-  eyebrow: "ICF-accredited coach education · India",
+  // Each claim appears once here (owner, October 2026): ICF accreditation in the line under the heading, the
+  // founder on the photograph's tag; the founder's coaching hours are in the figures row below.
+  eyebrow: "",
   heading: "Learning that stays.",
   headingAccent: "Coaching that transforms.",
   subheading: "ICF-accredited coach training built on practice, spaced review and founder mentoring.",
   primaryCta: BOOK,
   secondaryCta: link("Explore programmes", "/coaching-certifications/"),
-  chips: [
-    { label: "ICF-accredited", icon: "seal" },
-    { label: "Founded by Anup Mittal, MCC", icon: "person" },
-    { label: "4,100+ hours of founder coaching", icon: "clock" },
-  ],
+  chips: [],
   trustText: "Join coaches learning through practice, reflection and feedback.",
   trustPhotos: true,
   // Authentic BCA photograph: Anup Mittal with learners around a practice table.
@@ -796,7 +795,7 @@ export const PAGES: PageSeed[] = [
           heading: "Meet the founder",
           intro: "",
           source: "founder",
-          facts: FOUNDER_FACTS,
+          facts: HOME_FOUNDER_FACTS,
           cta: link("About BCA", "/about-us/"),
         },
       },

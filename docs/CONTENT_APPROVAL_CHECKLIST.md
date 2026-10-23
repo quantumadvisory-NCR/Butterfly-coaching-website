@@ -10,7 +10,6 @@ Nothing below was guessed. Where the existing website was unclear or contradicte
 
 The homepage (redesigned October 2026) says, as instructed:
 
-> ICF-accredited coach education · India
 > **Learning that stays. Coaching that transforms.**
 > ICF-accredited coach training built on practice, spaced review and founder mentoring.
 
@@ -22,11 +21,10 @@ Change it in: **Pages > Home > Hero**.
 
 ### 1a. Hero proof points, trust line and photograph (added October 2026)
 
+Each claim appears once on the homepage (owner, October 2026): the "ICF-accredited coach education · India" tag and the "ICF-accredited", "Founded by Anup Mittal, MCC" and "4,100+ hours of founder coaching" proof points were removed from the hero, and the founder section no longer repeats the 4,100+ figure; the statistics strip (1b) gives it.
+
 | Shown | Source | Please check |
 |---|---|---|
-| "ICF-accredited" | Accreditation badges already on the site | Same check as item 1 |
-| "Founded by Anup Mittal, MCC" | Founder profile | None expected |
-| "4,100+ hours of founder coaching" | Founder profile: "more than 4,100 hours of one-to-one coaching" | The figure is Anup's own one-to-one hours, worded so it is not read as BCA's total |
 | Card on the photo: "Anup Mittal, MCC / Master Certified Coach, ICF" | Founder profile | None expected |
 | "Join coaches learning through practice, reflection and feedback." | Written to avoid an unverified number | Replace with a count of coaches trained only once that number is confirmed |
 | Small learner photos beside that line | Photos of people with approved testimonials | Same consent as item 5 |

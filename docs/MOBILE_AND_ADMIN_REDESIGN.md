@@ -95,6 +95,10 @@ The existing navigation, list screens, editors, permissions and saving were kept
 - **Level 1 ACC page** (desktop, tablet and phone): redesigned from the owner's design refresh proposal. "The journey, step by step" becomes "From curious to credentialed": the total hours, milestones and credential as headline figures (162 = 77 + 10 + 75, added up from the steps' own hours), then Learn, Practise and Certify, each with its steps word for word; Certify in solid yellow. "What you will build" becomes "Your coaching wings": three core skills and three foundations either side of a slowly flapping butterfly, each with an icon, a number and the proposal's one-line description. The page uses the proposal's palette (see BRAND_SYSTEM.md, 7a). Step and outcome text still comes from the admin; if the number of steps or outcomes changes there, the page falls back to the plain list rather than mis-grouping them. Other programme pages are unchanged.
 - **Phones and tablets**: "Need help?" is the same pill as on desktop; the closing "Ready to find your next step?" section is hidden; the footer drops the Contact column and the empty space at the bottom (the floating buttons step aside at the foot of the page instead).
 
+## 4d. Homepage repeats, 23 October 2026
+
+At the owner's request each claim appears once on the homepage. The hero keeps "ICF-accredited" in the line under the heading and the founder on the photograph's tag; the tag above the heading and the three proof chips are gone. The founder's 4,100+ coaching hours appear only in the figures row (no longer in the hero or the founder section). Migration `0005_homepage_repeats.sql` removes exactly those items from the live homepage, working and published copies, and nothing else.
+
 ## 4c. Learning journeys, 21 October 2026
 
 From the owner's references (the learning journey brief, the PCC and MCC journey mockups and two screenshots):
