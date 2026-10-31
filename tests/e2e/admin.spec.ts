@@ -5,7 +5,9 @@ import { database, expectNoHorizontalOverflow } from "./helpers";
 
 const sql = database();
 test.afterAll(() => sql.end());
-test.beforeEach(() => sql`delete from rate_limits`);
+// Clear the sign-in, setup and upload counters before each test. The enquiry and newsletter
+// counters belong to forms.spec.ts, which can run at the same time and relies on them.
+test.beforeEach(() => sql`delete from rate_limits where key not like 'enquiry:%' and key not like 'newsletter:%'`);
 test.describe.configure({ mode: "serial" });
 
 // Contexts made with browser.newContext() inherit the project's signed-in state, so anonymous ones must clear it.

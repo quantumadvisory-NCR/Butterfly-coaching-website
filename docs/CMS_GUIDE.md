@@ -202,7 +202,8 @@ Every form submitted on the site arrives in **Enquiries**.
 - Reply by email, phone or WhatsApp from the links on the page.
 - Update the **Status** as you go: New, In progress, Contacted, Qualified, Closed, Spam.
 - Add **Internal notes** for your team.
-- Filter by status or type, or search by name, email, organisation or message.
+- Filter by status or type, or search by name, email, organisation, message or campaign name.
+- Enquiries that came through a tracked link show where from in the list (for example "via LinkedIn") and, on the enquiry itself, in one line under **Where this came from**.
 - **Export CSV** (administrators) downloads the list for a spreadsheet.
 
 If notification emails are switched on you also receive an email for each enquiry. If they are not, the enquiry is still saved here. The dashboard tells you which.
@@ -230,6 +231,7 @@ Send an old address to a new one. Use **Permanent** when a page has moved for go
 | Social links | Footer social icons (only those you fill in are shown) |
 | Header and announcement | The yellow announcement bar and the header button |
 | Need help panel | The "Need help?" button in the bottom corner: on or off, its heading, text and up to five options |
+| Master classes | The classes people can enquire about on the enquiry page, and the text above its form |
 | Footer | The short description and copyright name |
 | Newsletter | Footer signup on or off, and its wording |
 | Booking and analytics | Booking link; Google Analytics or Tag Manager; the consent banner |
@@ -244,6 +246,38 @@ To show a date, write `{date}` where it belongs, for example "Next ACC cohort st
 **Colours:** the page background is `#FCFCFC`, the grey-white of the BCA logo artwork, shared by the website and this admin. The **Readability check** shows whether text will still be easy to read with your chosen colours. Avoid saving a combination marked "Too low".
 
 **Analytics:** nothing is tracked until you add an ID. With the consent banner on (recommended), visitors are asked first and nothing loads unless they accept.
+
+## Links for posts and master classes
+
+Every master class in **Settings > Master classes** has its own enquiry page, with the class already ticked in the form:
+
+```
+/enquire/?class=leaders-communication
+```
+
+Add tracking details to the end of that link when you share it, so each enquiry records where it came from. For a post on Anup's LinkedIn profile about leadership communication:
+
+```
+https://butterfly-coaching-website.vercel.app/enquire/?class=leaders-communication&utm_source=linkedin&utm_medium=social&utm_campaign=anup-communication-practice&utm_content=organic-anup
+```
+
+| Part | What it records | Example |
+|---|---|---|
+| `class` | Which master class is ticked. Use the class's **Short name for links** | `leaders-communication` |
+| `utm_source` | The site the visitor came from | `linkedin` |
+| `utm_medium` | The kind of link: `social` for an ordinary post, `paid` for an advert, `email` for a newsletter | `social` |
+| `utm_campaign` | A name for this post, so its enquiries can be found later | `anup-communication-practice` |
+| `utm_content` | Who posted it, or which version of the link | `organic-anup`, or `repost-company` when the Butterfly page reposts it |
+
+Good habits:
+
+- Use lower case and hyphens, no spaces.
+- Give every post its own `utm_campaign`. To see every enquiry from one post, search **Enquiries** for that name.
+- Where LinkedIn or WhatsApp shows a preview of the link, it shows the class name, its one-line description and its sharing image.
+- Changing a class's **Short name for links** stops links you have already shared from ticking it. Add a new class instead.
+- A link to a class that is hidden or does not exist still opens the enquiry page, with nothing ticked.
+
+Campaign details are saved with an enquiry sent from the page the link opened. If the visitor has accepted analytics, they are also remembered while they look at other pages first. The Privacy Policy describes this under **Campaign information**.
 
 ## Your account
 

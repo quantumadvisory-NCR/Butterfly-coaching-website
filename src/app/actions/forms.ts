@@ -2,6 +2,7 @@
 
 import { eq, sql } from "drizzle-orm";
 import { redirect } from "next/navigation";
+import { describeUtm } from "@/lib/campaign";
 import { getSettings } from "@/lib/content/public";
 import { db } from "@/lib/db";
 import { enquiries, newsletterSubscribers, programmes } from "@/lib/db/schema";
@@ -9,6 +10,7 @@ import { escapeHtml, sendEmail } from "@/lib/email";
 import { siteUrl } from "@/lib/env";
 import { sanitisePlainText } from "@/lib/sanitise";
 import { issueFormToken, rateLimit, verifyFormToken } from "@/lib/security";
+import { openMasterClasses } from "@/lib/settings";
 import { ENQUIRY_LABELS, type FormState, enquirySchema, newsletterSchema } from "@/lib/validation/forms";
 
 const GENERIC_ERROR = "Sorry, something went wrong on our side. Please try again, or contact us by phone or WhatsApp.";
@@ -41,6 +43,9 @@ const ENQUIRY_FIELDS = ["type", "name", "email", "phone", "organisation", "roleT
 
 export async function submitEnquiry(_prev: FormState, formData: FormData): Promise<FormState> {
   const values = echo(formData, ENQUIRY_FIELDS);
+  // Tick boxes share one name, so read every value. Kept so a failed submission keeps the ticks.
+  const tickedClasses = formData.getAll("classes").map(String).slice(0, 20);
+  if (formData.get("type") === "masterclass") values.classes = tickedClasses.join(",");
 
   // Honeypot: real visitors never see or fill this field. Pretend it worked.
   if (formData.get("website")) redirect("/thank-you/");
@@ -68,11 +73,16 @@ export async function submitEnquiry(_prev: FormState, formData: FormData): Promi
     if (!(await rateLimit("enquiry", 5, 15 * 60))) return { status: "error", message: TOO_MANY, values };
 
     const input = parsed.data;
+    const settings = await getSettings();
     let programmeName: string | null = null;
     if (input.programmeId) {
       const [programme] = await db().select({ name: programmes.name }).from(programmes).where(eq(programmes.id, input.programmeId)).limit(1);
       programmeName = programme?.name ?? null;
     }
+    // Master classes are matched against Settings, so only real class names are ever stored.
+    const classNames =
+      input.type === "masterclass" ? openMasterClasses(settings).filter((c) => tickedClasses.includes(c.slug)).map((c) => c.name) : [];
+    const interest = programmeName ?? (classNames.length > 0 ? classNames.join("; ") : null);
 
     let utm: Record<string, string> | null = null;
     try {
@@ -98,7 +108,7 @@ export async function submitEnquiry(_prev: FormState, formData: FormData): Promi
         organisation: input.organisation ? sanitisePlainText(input.organisation) : null,
         roleTitle: input.roleTitle ? sanitisePlainText(input.roleTitle) : null,
         programmeId: programmeName ? input.programmeId : null,
-        programmeInterest: programmeName,
+        programmeInterest: interest,
         teamSize: input.teamSize,
         message: sanitisePlainText(input.message),
         consentMarketing: input.consentMarketing,
@@ -110,7 +120,6 @@ export async function submitEnquiry(_prev: FormState, formData: FormData): Promi
     enquiryId = row!.id;
 
     // Notify the team. Failure to send never loses the enquiry: it is already stored.
-    const settings = await getSettings();
     const to = (process.env.ENQUIRY_NOTIFY_TO || settings.contact.email).split(",").map((s) => s.trim()).filter(Boolean);
     const lines: [string, string | null][] = [
       ["Type", ENQUIRY_LABELS[input.type]],
@@ -119,10 +128,11 @@ export async function submitEnquiry(_prev: FormState, formData: FormData): Promi
       ["Phone", input.phone],
       ["Organisation", input.organisation],
       ["Role", input.roleTitle],
-      ["Interested in", programmeName],
+      ["Interested in", interest],
       ["Team size", input.teamSize],
       ["Message", input.message || null],
       ["Sent from", input.sourcePath],
+      ["Came from", describeUtm(utm)],
     ];
     const present = lines.filter((line): line is [string, string] => Boolean(line[1]));
     const adminLink = `${siteUrl()}/admin/enquiries/${enquiryId}/`;

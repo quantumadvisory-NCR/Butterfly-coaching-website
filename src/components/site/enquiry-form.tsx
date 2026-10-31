@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense, useActionState, useEffect, useId, useRef, useState } from "react";
 import { getFormToken, submitEnquiry } from "@/app/actions/forms";
-import { readUtm, track } from "@/lib/analytics";
+import { readUtm, readUtmFromUrl, track } from "@/lib/analytics";
 import { ENQUIRY_LABELS, IDLE, TEAM_SIZES } from "@/lib/validation/form-constants";
 import { cn } from "@/lib/utils";
 
@@ -16,6 +16,10 @@ type Props = {
   programmes: { id: string; name: string }[];
   /** Pre-selects a programme, e.g. on that programme's own page. */
   defaultProgrammeId?: string;
+  /** Master classes offered as tick boxes (the master class enquiry page). */
+  classes?: { slug: string; name: string }[];
+  /** Short names of the classes ticked when the form first shows. */
+  selectedClasses?: string[];
   submitLabel?: string;
 };
 
@@ -57,7 +61,7 @@ function Field({
   );
 }
 
-function EnquiryFormInner({ type: baseType, programmes, defaultProgrammeId, submitLabel }: Props) {
+function EnquiryFormInner({ type: baseType, programmes, defaultProgrammeId, classes = [], selectedClasses = [], submitLabel }: Props) {
   const uid = useId();
   const pathname = usePathname();
   const search = useSearchParams();
@@ -91,12 +95,19 @@ function EnquiryFormInner({ type: baseType, programmes, defaultProgrammeId, subm
 
   const id = (name: string) => `${uid}-${name}`;
   const corporate = type === "corporate";
-  const showProgramme = !corporate && type !== "general" && programmes.length > 0;
+  const masterclass = type === "masterclass";
+  // Master class enquiries ask about the organisation too, but leave it optional: individuals enquire as well.
+  const aboutOrganisation = corporate || masterclass;
+  const showProgramme = !aboutOrganisation && type !== "general" && programmes.length > 0;
+  // After a failed submission the ticks come back from the server; otherwise from the link.
+  const ticked = new Set(v.classes !== undefined ? v.classes.split(",").filter(Boolean) : selectedClasses);
   const messageLabel = corporate
     ? "What would you like to achieve?"
-    : type === "discovery_call"
-      ? "What would you like to talk about?"
-      : "Your message";
+    : masterclass
+      ? "Anything we should know?"
+      : type === "discovery_call"
+        ? "What would you like to talk about?"
+        : "Your message";
 
   return (
     <form
@@ -129,6 +140,27 @@ function EnquiryFormInner({ type: baseType, programmes, defaultProgrammeId, subm
           <WarningCircleIcon aria-hidden weight="fill" className="mt-0.5 size-5 shrink-0" />
           <p className="font-semibold">{state.message}</p>
         </div>
+      )}
+
+      {masterclass && classes.length > 0 && (
+        <fieldset className="grid gap-3">
+          <legend className="field-label">{classes.length === 1 ? "Master class" : "Which master classes interest you?"}</legend>
+          {classes.map((item) => (
+            <label
+              key={item.slug}
+              className="flex cursor-pointer items-start gap-3 rounded-field border border-line bg-surface px-4 py-3 text-[0.9375rem] font-semibold text-navy has-[:checked]:border-accent has-[:checked]:shadow-[inset_4px_0_0_var(--color-accent)]"
+            >
+              <input
+                type="checkbox"
+                name="classes"
+                value={item.slug}
+                defaultChecked={ticked.has(item.slug)}
+                className="mt-0.5 size-5 shrink-0 rounded border-2 border-[#8a8f8d] accent-[var(--color-primary)]"
+              />
+              <span>{item.name}</span>
+            </label>
+          ))}
+        </fieldset>
       )}
 
       <div className="grid gap-5 sm:grid-cols-2">
@@ -201,14 +233,14 @@ function EnquiryFormInner({ type: baseType, programmes, defaultProgrammeId, subm
             )}
           </Field>
         )}
-        {corporate && (
-          <Field id={id("organisation")} label="Organisation" error={errors.organisation}>
+        {aboutOrganisation && (
+          <Field id={id("organisation")} label="Organisation" error={errors.organisation} optional={!corporate}>
             {(describedBy) => (
               <input
                 id={id("organisation")}
                 name="organisation"
                 type="text"
-                required
+                required={corporate}
                 autoComplete="organization"
                 defaultValue={v.organisation}
                 aria-invalid={Boolean(errors.organisation)}
@@ -220,7 +252,7 @@ function EnquiryFormInner({ type: baseType, programmes, defaultProgrammeId, subm
         )}
       </div>
 
-      {corporate && (
+      {aboutOrganisation && (
         <div className="grid gap-5 sm:grid-cols-2">
           <Field id={id("roleTitle")} label="Your role" error={errors.roleTitle} optional>
             {(describedBy) => (
@@ -295,11 +327,16 @@ function EnquiryFormInner({ type: baseType, programmes, defaultProgrammeId, subm
   );
 }
 
-/** Campaign parameters and referrer, read after hydration so the page itself stays cacheable. */
+/**
+ * Campaign parameters and referrer, read after hydration so the page itself
+ * stays cacheable. Parameters in this page's own address are always sent;
+ * ones remembered from earlier pages in the visit only with analytics consent.
+ */
 function UtmFields() {
   const [fields, setFields] = useState({ utm: "", referrer: "" });
   useEffect(() => {
-    const utm = readUtm();
+    // The current address wins over anything remembered earlier in the visit.
+    const utm = { ...readUtm(), ...readUtmFromUrl() };
     // eslint-disable-next-line react-hooks/set-state-in-effect -- reads browser-only storage once after mount
     setFields({
       utm: Object.keys(utm).length ? JSON.stringify(utm) : "",

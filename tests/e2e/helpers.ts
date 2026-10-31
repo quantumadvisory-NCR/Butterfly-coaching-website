@@ -30,6 +30,7 @@ export const PUBLIC_PAGES = [
   { name: "blog", path: "/blog/" },
   { name: "article", path: "/the-power-of-habits-cultivating-your-path-to-success/" },
   { name: "contact", path: "/contact-us/" },
+  { name: "enquire", path: "/enquire/?class=leaders-communication" },
   { name: "gallery", path: "/image-gallery/" },
   { name: "privacy", path: "/privacy-policy/" },
   { name: "terms", path: "/terms-of-use/" },

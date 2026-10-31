@@ -2,7 +2,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 import { loadWholePage } from "./helpers";
 
-const PAGES = ["/", "/coaching-certifications/", "/level-1-acc-coach-program/", "/services/corporate-programs/", "/about-us/", "/testimonial/", "/blog/", "/contact-us/", "/admin/login/"];
+const PAGES = ["/", "/coaching-certifications/", "/level-1-acc-coach-program/", "/services/corporate-programs/", "/about-us/", "/testimonial/", "/blog/", "/contact-us/", "/enquire/?class=leaders-communication", "/admin/login/"];
 
 for (const viewport of [
   { name: "phone", width: 390, height: 844 },

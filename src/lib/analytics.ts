@@ -4,6 +4,8 @@
  * on) the visitor has agreed.
  */
 
+import { UTM_PARAMS } from "@/lib/campaign";
+
 export type Consent = "granted" | "denied" | "unset";
 
 const CONSENT_KEY = "bca-consent";
@@ -50,18 +52,28 @@ export function track(event: string, params: Record<string, unknown> = {}) {
   else if (Array.isArray(window.dataLayer)) window.dataLayer.push({ event, ...params });
 }
 
-const UTM_PARAMS = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"];
 
-/** Remembers campaign parameters for this browser session, with consent. */
+/**
+ * Campaign parameters in the address of the current page. Nothing is stored,
+ * so this needs no consent: a visitor who opens /enquire/?utm_source=linkedin
+ * and sends the form there is credited to LinkedIn.
+ */
+export function readUtmFromUrl(): Record<string, string> {
+  if (typeof window === "undefined") return {};
+  const params = new URLSearchParams(window.location.search);
+  const found: Record<string, string> = {};
+  for (const key of UTM_PARAMS) {
+    const value = params.get(key)?.trim();
+    if (value) found[key] = value.slice(0, 120);
+  }
+  return found;
+}
+
+/** Remembers campaign parameters for the rest of this browser session, with consent. */
 export function captureUtm() {
   if (!allowed()) return;
   try {
-    const params = new URLSearchParams(window.location.search);
-    const found: Record<string, string> = {};
-    for (const key of UTM_PARAMS) {
-      const value = params.get(key);
-      if (value) found[key] = value.slice(0, 120);
-    }
+    const found = readUtmFromUrl();
     if (Object.keys(found).length > 0) window.sessionStorage.setItem(UTM_KEY, JSON.stringify(found));
   } catch {
     // ignore

@@ -14,6 +14,8 @@ export default defineConfig([
   globalIgnores([
     ".next/**",
     ".local/**",
+    // Other working copies made by Claude Code sessions, each with its own build output.
+    ".claude/**",
     "out/**",
     "build/**",
     "next-env.d.ts",

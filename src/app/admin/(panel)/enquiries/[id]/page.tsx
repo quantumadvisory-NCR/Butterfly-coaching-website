@@ -5,6 +5,7 @@ import { EnquiryControls } from "@/components/admin/enquiry-controls";
 import { Card, Notice, PageHeader, StatusBadge } from "@/components/admin/ui";
 import { UUID_RE } from "@/lib/admin/action-helpers";
 import { hasRole, requireUser } from "@/lib/auth";
+import { UTM_LABELS, UTM_PARAMS, describeUtm, sourceName } from "@/lib/campaign";
 import { db } from "@/lib/db";
 import { enquiries, enquiryNotes, profiles } from "@/lib/db/schema";
 import { formatDateTime } from "@/lib/utils";
@@ -36,7 +37,9 @@ export default async function EnquiryDetailPage({ params }: { params: Promise<{ 
     .orderBy(asc(enquiryNotes.createdAt));
 
   const wa = enquiry.phone ? enquiry.phone.replace(/\D/g, "") : "";
-  const utm = enquiry.utm ? Object.entries(enquiry.utm) : [];
+  // Known campaign fields first, in a fixed order, with readable labels.
+  const utm = UTM_PARAMS.filter((key) => enquiry.utm?.[key]).map((key) => [key, enquiry.utm![key]!] as const);
+  const campaign = describeUtm(enquiry.utm);
 
   return (
     <>
@@ -84,11 +87,12 @@ export default async function EnquiryDetailPage({ params }: { params: Promise<{ 
 
           <Card title="Where this came from">
             <dl className="-my-3 divide-y divide-line">
+              <Row label="In short">{campaign && <span className="font-semibold text-navy">{campaign}</span>}</Row>
               <Row label="Form on page">{enquiry.sourcePath}</Row>
               <Row label="Referred by">{enquiry.referrer}</Row>
               {utm.map(([key, value]) => (
-                <Row key={key} label={key.replace("utm_", "Campaign ")}>
-                  {value}
+                <Row key={key} label={UTM_LABELS[key]}>
+                  {key === "utm_source" ? sourceName(value) : value}
                 </Row>
               ))}
               <Row label="Notification email">

@@ -3,6 +3,7 @@
  * and edited in Admin > Settings. Field declarations double as the form.
  */
 import { type DataOf, type Field, defaultsFor, objectSchema } from "@/lib/blocks/fields";
+import { slugify } from "@/lib/utils";
 
 const contact = [
   { type: "text", name: "legalName", label: "Registered business name", maxLength: 120 },
@@ -84,6 +85,34 @@ const support = [
   },
 ] as const satisfies readonly Field[];
 
+const masterClasses = [
+  {
+    type: "list",
+    name: "classes",
+    label: "Master classes",
+    itemLabel: "Master class",
+    titleField: "name",
+    max: 20,
+    help: "Each class has its own enquiry page at /enquire/?class= followed by its short name, with the class already ticked in the form. Share that link in posts.",
+    fields: [
+      { type: "text", name: "name", label: "Name", required: true, maxLength: 90 },
+      {
+        type: "text",
+        name: "slug",
+        label: "Short name for links",
+        required: true,
+        maxLength: 60,
+        help: 'Lower case words joined by hyphens, for example "leaders-communication". Changing it stops links you have already shared from ticking this class.',
+      },
+      { type: "text", name: "label", label: "Label above the name", maxLength: 40, help: 'For example "8-hour master class".' },
+      { type: "textarea", name: "summary", label: "One-line description", maxLength: 200, rows: 2 },
+      { type: "image", name: "image", label: "Sharing image", help: "Shown when the link is posted on LinkedIn or WhatsApp. Leave empty to use a standard photograph." },
+      { type: "boolean", name: "hidden", label: "Hide this class", help: "Hidden classes cannot be ticked and their links open the general enquiry page." },
+    ],
+  },
+  { type: "textarea", name: "formIntro", label: "Text above the enquiry form", maxLength: 240, rows: 2 },
+] as const satisfies readonly Field[];
+
 const footer = [
   { type: "textarea", name: "tagline", label: "Short description under the logo", maxLength: 240, rows: 3 },
   { type: "text", name: "copyrightName", label: "Name in the copyright line", maxLength: 120 },
@@ -155,6 +184,7 @@ export const SETTINGS_GROUPS = {
   social: { label: "Social links", fields: social },
   header: { label: "Header and announcement", fields: header },
   support: { label: "Need help panel", fields: support },
+  masterClasses: { label: "Master classes", fields: masterClasses },
   footer: { label: "Footer", fields: footer },
   newsletter: { label: "Newsletter", fields: newsletter },
   integrations: { label: "Booking and analytics", fields: integrations },
@@ -169,6 +199,7 @@ export type SiteSettings = {
   social: DataOf<typeof social>;
   header: DataOf<typeof header>;
   support: DataOf<typeof support>;
+  masterClasses: DataOf<typeof masterClasses>;
   footer: DataOf<typeof footer>;
   newsletter: DataOf<typeof newsletter>;
   integrations: DataOf<typeof integrations>;
@@ -225,6 +256,19 @@ export const DEFAULT_SETTINGS: SiteSettings = {
       { label: "WhatsApp us", href: "whatsapp", description: "Quick questions, answered by our team" },
       { label: "Send an enquiry", href: "/contact-us/#enquire", description: "We reply by email or phone" },
     ],
+  },
+  masterClasses: {
+    classes: [
+      {
+        name: "How Leaders Can Develop Communication",
+        slug: "leaders-communication",
+        label: "8-hour master class",
+        summary: "Coaching-style conversations, feedback that lands, clarity under pressure.",
+        image: null,
+        hidden: false,
+      },
+    ],
+    formIntro: "Tell us a little about you and your team, and we will be in touch with the details.",
   },
   footer: {
     tagline: "Coach education, mentoring and leadership development built on practice, reflection and feedback.",
@@ -297,4 +341,23 @@ export function resolveHref(href: string, settings: Pick<SiteSettings, "contact"
   if (key === "whatsapp") return whatsappHref(settings.contact) ?? "/contact-us/";
   if (key === "phone") return telHref(settings.contact) ?? "/contact-us/";
   return href;
+}
+
+export type MasterClass = Omit<SiteSettings["masterClasses"]["classes"][number], "hidden">;
+
+/**
+ * Master classes that can be enquired about, with their short names made safe
+ * for links (an editor may type "Leaders Communication"; the link uses
+ * "leaders-communication"). Hidden and duplicate classes are left out.
+ */
+export function openMasterClasses(settings: Pick<SiteSettings, "masterClasses">): MasterClass[] {
+  const seen = new Set<string>();
+  const open: MasterClass[] = [];
+  for (const { hidden, ...item } of settings.masterClasses.classes) {
+    const slug = slugify(item.slug || item.name);
+    if (hidden || !item.name.trim() || !slug || seen.has(slug)) continue;
+    seen.add(slug);
+    open.push({ ...item, slug });
+  }
+  return open;
 }

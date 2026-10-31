@@ -4,7 +4,8 @@ import { database } from "./helpers";
 const sql = database();
 test.afterAll(() => sql.end());
 // The enquiry endpoint is rate limited per visitor; start each test with a clean slate.
-test.beforeEach(() => sql`delete from rate_limits`);
+// Only the form counters: the sign-in tests in admin.spec.ts can run at the same time and rely on theirs.
+test.beforeEach(() => sql`delete from rate_limits where key like 'enquiry:%' or key like 'newsletter:%'`);
 
 /** Fills a form the way a person does: interact first (which issues the anti-spam token), then wait a moment. */
 async function waitForToken(page: import("@playwright/test").Page, form: import("@playwright/test").Locator) {
@@ -63,6 +64,59 @@ test.describe("enquiry forms", () => {
     await expect(page.getByText("Called back, sending brochure.")).toBeVisible();
     const [updated] = await sql`select status from enquiries where email = ${email}`;
     expect(updated!.status).toBe("contacted");
+  });
+
+  test("a master class link from a LinkedIn post ticks the class and records the post it came from", async ({ page, browser }) => {
+    const email = `kiran.${Date.now()}@e2e.test`;
+    const campaign = `anup-communication-practice-${Date.now()}`;
+    // Opened by a visitor who has not accepted analytics: the source must still be saved.
+    const visitor = await browser.newContext({ storageState: { cookies: [], origins: [] } });
+    const post = await visitor.newPage();
+    await post.goto(
+      `/enquire/?class=leaders-communication&utm_source=linkedin&utm_medium=social&utm_campaign=${campaign}&utm_content=organic-anup`,
+    );
+    await expect(post.getByRole("heading", { level: 1, name: "How Leaders Can Develop Communication" })).toBeVisible();
+    await expect(post.getByText("8-hour master class")).toBeVisible();
+    await expect(post.getByText("Coaching-style conversations, feedback that lands, clarity under pressure.")).toBeVisible();
+
+    const form = post.locator("form").filter({ has: post.getByLabel("Full name") });
+    const tick = form.getByRole("checkbox", { name: "How Leaders Can Develop Communication" });
+    await expect(tick).toBeChecked();
+
+    // The link preview on LinkedIn uses the class, not the campaign details.
+    const html = await (await post.request.get(`/enquire/?class=leaders-communication&utm_source=linkedin`)).text();
+    expect(html).toContain('property="og:title" content="How Leaders Can Develop Communication"');
+    expect(html).toMatch(/<link rel="canonical" href="[^"]*\/enquire\/\?class=leaders-communication"/);
+
+    await form.getByLabel("Full name").click();
+    await waitForToken(post, form);
+    await form.getByLabel("Full name").fill("Kiran Mehta");
+    await form.getByLabel("Email", { exact: true }).fill(email);
+    await form.getByLabel("Organisation").fill("Northwind Logistics");
+    await form.getByRole("button", { name: "Send enquiry" }).click();
+    await expect(post).toHaveURL(/\/thank-you\/\?type=masterclass$/);
+    await visitor.close();
+
+    const [row] = await sql`select * from enquiries where email = ${email}`;
+    expect(row!.type).toBe("masterclass");
+    expect(row!.programme_interest).toBe("How Leaders Can Develop Communication");
+    expect(row!.organisation).toBe("Northwind Logistics");
+    expect(row!.source_path).toBe("/enquire/");
+    expect(row!.utm).toEqual({ utm_source: "linkedin", utm_medium: "social", utm_campaign: campaign, utm_content: "organic-anup" });
+
+    // Staff see where it came from, and can find every enquiry from that post by its campaign name.
+    await page.goto(`/admin/enquiries/?q=${campaign}`);
+    await expect(page.getByRole("link", { name: "Kiran Mehta" })).toBeVisible();
+    await expect(page.getByText("via LinkedIn").first()).toBeVisible();
+    await page.getByRole("link", { name: "Kiran Mehta" }).click();
+    await expect(page.getByText(`LinkedIn (social), campaign ${campaign}, organic-anup`)).toBeVisible();
+    await expect(page.getByText("How Leaders Can Develop Communication")).toBeVisible();
+  });
+
+  test("an unknown or missing class opens the page with nothing ticked", async ({ page }) => {
+    await page.goto("/enquire/?class=not-a-real-class");
+    await expect(page.getByRole("heading", { level: 1, name: "Enquire about a master class" })).toBeVisible();
+    await expect(page.getByRole("checkbox", { name: "How Leaders Can Develop Communication" })).not.toBeChecked();
   });
 
   test("programme pages pre-select their programme, and corporate enquiries need an organisation", async ({ page }) => {

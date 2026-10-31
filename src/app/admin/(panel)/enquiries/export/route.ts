@@ -22,7 +22,7 @@ export async function GET(request: Request) {
   await logAudit({ user, action: "enquiry.export", entityType: "enquiry", summary: `Exported ${rows.length} enquiries to CSV` });
 
   const csv = toCsv(
-    ["Received (UTC)", "Status", "Type", "Name", "Email", "Phone", "Organisation", "Role", "Interested in", "Team size", "Message", "Newsletter opt-in", "Source page", "Referrer", "UTM source", "UTM medium", "UTM campaign"],
+    ["Received (UTC)", "Status", "Type", "Name", "Email", "Phone", "Organisation", "Role", "Interested in", "Team size", "Message", "Newsletter opt-in", "Source page", "Referrer", "UTM source", "UTM medium", "UTM campaign", "UTM content"],
     rows.map((r) => [
       r.createdAt.toISOString(),
       r.status,
@@ -41,6 +41,7 @@ export async function GET(request: Request) {
       r.utm?.utm_source,
       r.utm?.utm_medium,
       r.utm?.utm_campaign,
+      r.utm?.utm_content,
     ]),
   );
   return csvResponse(`bca-enquiries-${new Date().toISOString().slice(0, 10)}.csv`, csv);

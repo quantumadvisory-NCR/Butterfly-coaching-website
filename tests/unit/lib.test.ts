@@ -1,10 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { toCsv } from "@/lib/admin/csv";
 import { announcementState } from "@/lib/announcement";
+import { describeUtm, sourceName } from "@/lib/campaign";
 import { resolveAnnouncement } from "@/lib/content/chrome";
 import { hashPassword, verifyPassword } from "@/lib/auth/password";
 import { sanitisePlainText, sanitiseRichText } from "@/lib/sanitise";
-import { DEFAULT_SETTINGS, DEFAULT_THEME, parseSettingsGroup, resolveHref, telHref, whatsappHref } from "@/lib/settings";
+import { DEFAULT_SETTINGS, DEFAULT_THEME, openMasterClasses, parseSettingsGroup, resolveHref, telHref, whatsappHref } from "@/lib/settings";
 import { formatHours, isReservedPath, normalisePath, readingMinutes, slugify, truncate, youtubeId } from "@/lib/utils";
 import { enquirySchema, newsletterSchema } from "@/lib/validation/forms";
 
@@ -21,7 +22,53 @@ describe("paths and slugs", () => {
   it("protects reserved prefixes", () => {
     expect(isReservedPath("/admin/pages/")).toBe(true);
     expect(isReservedPath("/blog/")).toBe(true);
+    expect(isReservedPath("/enquire/")).toBe(true);
     expect(isReservedPath("/about-us/")).toBe(false);
+  });
+});
+
+describe("master classes and campaign links", () => {
+  it("offers the launch master class under the short name used in shared links", () => {
+    const classes = openMasterClasses(DEFAULT_SETTINGS);
+    expect(classes.map((c) => c.slug)).toContain("leaders-communication");
+    expect(classes.find((c) => c.slug === "leaders-communication")?.name).toBe("How Leaders Can Develop Communication");
+  });
+
+  it("makes short names safe for links and leaves out hidden or repeated classes", () => {
+    const base = { label: "", summary: "", image: null };
+    const classes = openMasterClasses({
+      masterClasses: {
+        formIntro: "",
+        classes: [
+          { ...base, name: "Power of Presence", slug: " Power of Presence ", hidden: false },
+          { ...base, name: "Hidden class", slug: "hidden-class", hidden: true },
+          { ...base, name: "Duplicate", slug: "power-of-presence", hidden: false },
+          { ...base, name: "No short name", slug: "", hidden: false },
+        ],
+      },
+    });
+    expect(classes.map((c) => c.slug)).toEqual(["power-of-presence", "no-short-name"]);
+  });
+
+  it("keeps the master class settings valid after a round trip", () => {
+    expect(parseSettingsGroup("masterClasses", DEFAULT_SETTINGS.masterClasses)).toEqual(DEFAULT_SETTINGS.masterClasses);
+    // A group that was never saved falls back to the launch class.
+    expect(parseSettingsGroup("masterClasses", undefined).classes[0]?.slug).toBe("leaders-communication");
+  });
+
+  it("describes where an enquiry came from in plain words", () => {
+    expect(sourceName("linkedin")).toBe("LinkedIn");
+    expect(sourceName("partner-site")).toBe("partner-site");
+    expect(
+      describeUtm({ utm_source: "linkedin", utm_medium: "social", utm_campaign: "anup-communication-practice", utm_content: "organic-anup" }),
+    ).toBe("LinkedIn (social), campaign anup-communication-practice, organic-anup");
+    expect(describeUtm({})).toBeNull();
+    expect(describeUtm(null)).toBeNull();
+  });
+
+  it("accepts master class enquiries without an organisation or message", () => {
+    const result = enquirySchema.safeParse({ type: "masterclass", name: "Asha Rao", email: "asha@example.com" });
+    expect(result.success).toBe(true);
   });
 });
 

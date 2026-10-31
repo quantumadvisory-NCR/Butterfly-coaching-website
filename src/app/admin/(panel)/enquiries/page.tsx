@@ -1,9 +1,10 @@
 import { DownloadSimpleIcon } from "@phosphor-icons/react/dist/ssr";
-import { and, count, desc, eq, ilike, or, type SQL } from "drizzle-orm";
+import { and, count, desc, eq, ilike, or, type SQL, sql } from "drizzle-orm";
 import type { Metadata } from "next";
 import { AdminLink as Link } from "@/components/admin/admin-link";
 import { EmptyState, PageHeader, RecordCell, RecordRow, RecordTable, StatusBadge } from "@/components/admin/ui";
 import { hasRole, requireUser } from "@/lib/auth";
+import { sourceName } from "@/lib/campaign";
 import { db } from "@/lib/db";
 import { ENQUIRY_STATUS, ENQUIRY_TYPES, enquiries } from "@/lib/db/schema";
 import { cn, formatDateTime } from "@/lib/utils";
@@ -29,7 +30,17 @@ export default async function EnquiriesPage({ searchParams }: { searchParams: Pr
   if (type) filters.push(eq(enquiries.type, type));
   if (q) {
     const like = `%${q.replace(/[%_\\]/g, "\\$&")}%`;
-    filters.push(or(ilike(enquiries.name, like), ilike(enquiries.email, like), ilike(enquiries.organisation, like), ilike(enquiries.message, like))!);
+    // Campaign details are searchable too, so every enquiry from one post can be found by its campaign name.
+    filters.push(
+      or(
+        ilike(enquiries.name, like),
+        ilike(enquiries.email, like),
+        ilike(enquiries.organisation, like),
+        ilike(enquiries.message, like),
+        ilike(enquiries.programmeInterest, like),
+        sql`${enquiries.utm}::text ilike ${like}`,
+      )!,
+    );
   }
   const where = filters.length ? and(...filters) : undefined;
 
@@ -88,7 +99,7 @@ export default async function EnquiriesPage({ searchParams }: { searchParams: Pr
           <label htmlFor="enquiry-q" className="field-label">
             Search
           </label>
-          <input id="enquiry-q" name="q" type="search" defaultValue={q} placeholder="Name, email, organisation or message" className="field-input" />
+          <input id="enquiry-q" name="q" type="search" defaultValue={q} placeholder="Name, email, organisation, message or campaign" className="field-input" />
         </div>
         <div>
           <label htmlFor="enquiry-type" className="field-label">
@@ -129,6 +140,7 @@ export default async function EnquiriesPage({ searchParams }: { searchParams: Pr
                 <span className="text-sm">
                   {ENQUIRY_LABELS[row.type]}
                   {row.programmeInterest && <span className="block text-muted">{row.programmeInterest}</span>}
+                  {row.utm?.utm_source && <span className="block text-muted">via {sourceName(row.utm.utm_source)}</span>}
                 </span>
               </RecordCell>
               <RecordCell label="Received">

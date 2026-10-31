@@ -37,7 +37,7 @@ function decodeURIComponentSafe(value: string) {
 }
 
 /** Paths owned by fixed routes; CMS pages, posts and programmes may not use them. */
-export const RESERVED_PREFIXES = ["/admin/", "/api/", "/blog/", "/preview/", "/media/", "/images/", "/_next/"];
+export const RESERVED_PREFIXES = ["/admin/", "/api/", "/blog/", "/enquire/", "/preview/", "/media/", "/images/", "/_next/"];
 
 export function isReservedPath(path: string) {
   return RESERVED_PREFIXES.some((prefix) => path === prefix || path.startsWith(prefix));
