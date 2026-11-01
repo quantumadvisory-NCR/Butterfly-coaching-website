@@ -42,7 +42,7 @@ export async function FaqBlock({ data, ctx }: BlockProps<"faq">) {
               ) : (
                 <>
                   {/* The design's butterfly above the heading, its wings beating gently. */}
-                  <Butterfly flap="slow" className="pointer-events-none mb-3 h-8 w-10" />
+                  <Butterfly flap="slow" className="pointer-events-none mb-3 w-12" />
                   <SectionHeading heading={data.heading} intro={data.intro} />
                 </>
               )}
@@ -78,7 +78,8 @@ export async function FaqBlock({ data, ctx }: BlockProps<"faq">) {
           </div>
         </div>
         <div className={cn("lg:col-span-7", !design && "xl:col-span-8")}>
-          <Accordion numbered items={items.map((f) => ({ id: f.id, question: f.question, answerHtml: f.answerHtml }))} />
+          {/* The homepage design lists the questions without numbers. */}
+          <Accordion numbered={!design} items={items.map((f) => ({ id: f.id, question: f.question, answerHtml: f.answerHtml }))} />
         </div>
       </div>
       <FaqJsonLd items={items} />
@@ -118,7 +119,7 @@ export function CtaBlock({ data, ctx }: BlockProps<"cta">) {
         className="fx-glow pointer-events-none absolute -bottom-64 -left-40 -z-10 size-[38.75rem] rounded-full bg-[radial-gradient(circle,color-mix(in_srgb,var(--lav)_35%,transparent)_0%,rgb(22_19_29/0)_65%)]"
       />
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-[18%] h-0">
-        <Flyer path="wave" body="#fff" />
+        <Flyer path="wave" />
       </div>
       <div className="container-site section-space grid items-center gap-10 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)] lg:gap-16">
         <div className="reveal max-w-2xl">
@@ -169,7 +170,7 @@ function GuidePanel({ data }: BlockProps<"newsletter">) {
     <section id={data.anchor || "guide"} className={cn(sectionBackground(data.background), "py-[clamp(3.5rem,7vw,6rem)] font-text")}>
       <div className="container-site">
         <div className="reveal relative flex flex-wrap items-center gap-x-12 gap-y-7 overflow-hidden rounded-[2rem] bg-lav-100 p-[clamp(1.75rem,4vw,3.5rem)]">
-          <Butterfly flap="slow" lower="var(--color-lav-deep)" body="none" className="pointer-events-none absolute -right-[1.875rem] -top-[1.625rem] h-auto w-[11.25rem] rotate-[18deg] opacity-35" />
+          <Butterfly flap="slow" sizes="180px" className="pointer-events-none absolute -right-[1.875rem] -top-[1.625rem] w-[11.25rem] rotate-[18deg] opacity-60" />
           <div className="relative flex min-w-0 flex-[1_1_21.25rem] flex-col gap-2.5">
             {data.note && <span className="fx-note inline-block -rotate-3 self-start text-[1.625rem]">{data.note}</span>}
             <h2 className="m-0 font-grotesk text-[clamp(1.75rem,3vw,2.625rem)] font-extrabold leading-[1.1] tracking-[-0.025em] text-ink-deep">

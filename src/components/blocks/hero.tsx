@@ -63,13 +63,42 @@ function TurningSticker({ text }: { text: string }) {
           </textPath>
         </text>
       </svg>
-      <span aria-hidden className="absolute inset-[26.5%] flex items-center justify-center rounded-full bg-lav">
-        <svg viewBox="0 0 24 24" className="size-[1.875rem] fill-none stroke-ink-deep max-sm:size-6" style={{ strokeWidth: 1.8, strokeLinecap: "round" }}>
-          <circle cx="12" cy="12" r="9" />
-          <path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18" />
-        </svg>
+      <span aria-hidden className="absolute inset-[24%] flex items-center justify-center rounded-full bg-lav shadow-[inset_0_0_0_3px_rgb(255_255_255/0.25)]">
+        <OnlineGlobe className="size-[3.6rem] max-sm:size-[2.9rem]" />
       </span>
     </div>
+  );
+}
+
+/**
+ * "Live online, from anywhere": a solid ink globe with lavender meridians, a
+ * tilted yellow orbit passing behind and in front of it, and a pulsing "live"
+ * dot riding the orbit.
+ */
+function OnlineGlobe({ className }: { className?: string }) {
+  return (
+    <svg aria-hidden viewBox="0 0 48 48" className={className}>
+      <defs>
+        <clipPath id="hero-globe-clip">
+          <circle cx="24" cy="24" r="12.5" />
+        </clipPath>
+      </defs>
+      {/* The far half of the orbit, behind the globe. */}
+      <path d="M3 24 A21 7.5 0 0 1 45 24" transform="rotate(-24 24 24)" style={{ fill: "none", stroke: "var(--color-ink-deep)", strokeOpacity: 0.3, strokeWidth: 1.6, strokeLinecap: "round" }} />
+      <circle cx="24" cy="24" r="12.5" style={{ fill: "var(--color-ink-deep)" }} />
+      <g clipPath="url(#hero-globe-clip)" style={{ fill: "none", stroke: "var(--color-lav-200)", strokeWidth: 1.3, strokeLinecap: "round" }}>
+        <ellipse cx="24" cy="24" rx="5.5" ry="12.5" />
+        <path d="M11.5 24h25" />
+        <path d="M12.6 18.2 Q24 15.6 35.4 18.2" />
+        <path d="M12.6 29.8 Q24 32.4 35.4 29.8" />
+      </g>
+      <circle cx="19.5" cy="18.5" r="3.2" style={{ fill: "#fff", opacity: 0.14 }} />
+      {/* The near half of the orbit and the live dot, in front of the globe. */}
+      <g transform="rotate(-24 24 24)">
+        <path d="M45 24 A21 7.5 0 0 1 3 24" style={{ fill: "none", stroke: "var(--color-accent)", strokeWidth: 2.2, strokeLinecap: "round" }} />
+        <circle className="fx-glow" cx="36.05" cy="30.14" r="2.8" style={{ fill: "var(--color-accent)", stroke: "var(--color-ink-deep)", strokeWidth: 1.1 }} />
+      </g>
+    </svg>
   );
 }
 
@@ -184,7 +213,7 @@ function HomeHero({ data, ctx }: BlockProps<"hero">) {
                       <circle cx="200" cy="210" r="220" />
                     </g>
                   </svg>
-                  <Butterfly flap="slow" detailed className="relative -mt-14 h-auto w-[58%] drop-shadow-[0_18px_24px_rgb(70_45_160/0.25)]" />
+                  <Butterfly flap="slow" sizes="240px" className="relative -mt-14 w-[58%] drop-shadow-[0_18px_24px_rgb(70_45_160/0.25)]" />
                 </>
               )}
             </div>

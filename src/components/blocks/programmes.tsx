@@ -211,8 +211,11 @@ function Hours({ value }: { value: string | number | null }) {
   );
 }
 
-/** The rows of the fees table. A row appears only when at least one programme has that fact in the admin. */
-function feeRows(programmes: ProgrammeView[]): FeeRow[] {
+/**
+ * The rows of the fees table, in the design's order. A row appears only when at least one programme has
+ * that fact in the admin. `format` is the block's own "Format" text, for programmes that have none.
+ */
+function feeRows(programmes: ProgrammeView[], format: string): FeeRow[] {
   const today = todayInIndia();
   const cohorts = programmes.map((p) => p.cohorts.find((c) => c.isOpen && c.startDate >= today) ?? null);
   const rows: FeeRow[] = [];
@@ -228,24 +231,25 @@ function feeRows(programmes: ProgrammeView[]): FeeRow[] {
       cells: cohorts.map((c, i) => (c ? <span key={i} className="font-semibold">{formatDate(c.startDate)}</span> : <span key={i} className="text-mauve">To be announced</span>)),
     });
   }
-  if (programmes.some((p) => p.format)) {
+  const formats = programmes.map((p) => p.format || format.trim() || null);
+  if (formats.some(Boolean)) {
+    // The design's "Format" row, with a pulsing live dot. It covers the language, so no separate row.
     rows.push({
       label: "Format",
-      cells: programmes.map((p) =>
-        p.format ? (
-          <span key={p.id} className="inline-flex items-center gap-2 font-medium">
+      cells: formats.map((f, i) =>
+        f ? (
+          <span key={i} className="inline-flex items-center gap-2 font-medium">
             <LiveDot className="size-[7px]" />
-            {p.format}
+            {f}
           </span>
         ) : (
-          <span key={p.id} className="text-mauve">
+          <span key={i} className="text-mauve">
             Ask us
           </span>
         ),
       ),
     });
-  }
-  if (programmes.some((p) => p.languages)) {
+  } else if (programmes.some((p) => p.languages)) {
     rows.push({ label: "Language", cells: programmes.map((p) => <span key={p.id}>{p.languages ?? ""}</span>) });
   }
   if (cohorts.some((c) => c?.schedule)) {
@@ -280,7 +284,7 @@ function feeRows(programmes: ProgrammeView[]): FeeRow[] {
 async function FeesTable({ data, ctx }: BlockProps<"comparison_table">) {
   const programmes = (await getProgrammes()).filter((p) => p.kind === "certification");
   if (programmes.length === 0) return null;
-  const rows = feeRows(programmes);
+  const rows = feeRows(programmes, data.format);
   const headingId = `fees-${data.anchor || "programmes"}`;
   const button = data.buttonLabel.trim();
   const badge = (p: ProgrammeView) => (p.accreditationStatus === "accredited" ? pickMedia(ctx, p.badgeId) : null);

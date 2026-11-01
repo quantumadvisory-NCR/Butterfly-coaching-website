@@ -369,35 +369,26 @@ function shortLabel(name: string) {
 
 /**
  * The accreditation spotlight from the November 2026 design: a deep plum
- * section under a tilted yellow ribbon of moving phrases, the heading beside
- * three medals that climb like steps, sun rays turning behind each, and a
- * butterfly flying up the dotted path between them.
+ * section, the heading beside three medals that climb like steps, sun rays
+ * turning behind each, and a butterfly flying up the dotted path between them.
+ * (The design's yellow ribbon of moving phrases was taken out at the owner's
+ * request on 1 November 2026.)
  */
 function AccreditationSpotlight({ data, ctx }: BlockProps<"trust_strip">) {
   const logos = data.logos.map((logo) => ({ ...logo, media: pickMedia(ctx, logo.image) })).filter((logo) => logo.media);
-  const ticker = data.ticker.filter(Boolean);
-  const run = [...ticker, ...ticker].map((phrase) => `${phrase} ✦`).join(" ");
   const headingId = `accreditation-${data.anchor || "title"}`;
   const steps = logos.length === 3;
   return (
     <section
       id={data.anchor || "accreditation"}
       aria-labelledby={data.heading ? headingId : undefined}
-      className="on-dark relative isolate overflow-hidden bg-plum pb-[clamp(3.5rem,7vw,5.5rem)] font-text text-[#f4f1fd]"
+      className="on-dark relative isolate overflow-hidden bg-plum py-[clamp(3.5rem,7vw,5.5rem)] font-text text-[#f4f1fd]"
     >
-      {ticker.length > 0 && (
-        <div aria-hidden className="mt-[1.625rem] -rotate-[1.2deg] scale-[1.03] overflow-hidden whitespace-nowrap bg-accent py-3.5 text-ink-deep shadow-[0_10px_30px_-10px_rgb(0_0_0/0.4)]">
-          <div className="fx-marquee inline-flex font-grotesk text-lg font-extrabold uppercase tracking-[0.08em]">
-            <span className="pr-7">{run}</span>
-            <span className="pr-7">{run}</span>
-          </div>
-        </div>
-      )}
       <div
         aria-hidden
-        className="fx-glow pointer-events-none absolute -right-36 top-20 h-[35rem] w-[51.25rem] max-w-[120vw] rounded-full bg-[radial-gradient(ellipse,color-mix(in_srgb,var(--lav)_38%,transparent)_0%,rgb(28_22_49/0)_65%)]"
+        className="fx-glow pointer-events-none absolute -right-36 top-0 h-[35rem] w-[51.25rem] max-w-[120vw] rounded-full bg-[radial-gradient(ellipse,color-mix(in_srgb,var(--lav)_38%,transparent)_0%,rgb(28_22_49/0)_65%)]"
       />
-      <div className="container-site relative flex flex-wrap items-center gap-x-14 gap-y-10 pt-[clamp(3rem,6vw,4.5rem)]">
+      <div className="container-site relative flex flex-wrap items-center gap-x-14 gap-y-10">
         <div className="reveal flex min-w-0 flex-[1_1_25rem] flex-col gap-5">
           {data.eyebrow && (
             <span className="inline-flex items-center gap-3 self-start text-[0.8125rem] font-bold uppercase tracking-[0.14em] text-lav-200">
@@ -421,7 +412,7 @@ function AccreditationSpotlight({ data, ctx }: BlockProps<"trust_strip">) {
                   <svg viewBox="0 0 500 200" className="absolute left-0 top-0 z-0 h-[12.5rem] w-[31.25rem] overflow-visible">
                     <path d="M 70 126 C 140 126, 180 98, 250 98 S 360 70, 430 70" style={{ fill: "none", stroke: "color-mix(in srgb, var(--lav) 60%, transparent)", strokeWidth: 2, strokeDasharray: "5 9" }} />
                   </svg>
-                  <Flyer path="climb" body="#fff" />
+                  <Flyer path="climb" />
                 </li>
               )}
               {logos.map((logo, i) => {

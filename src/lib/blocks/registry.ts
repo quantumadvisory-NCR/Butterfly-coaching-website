@@ -305,6 +305,13 @@ const comparisonTable = [
   },
   {
     type: "text",
+    name: "format",
+    label: "Format (programmes and fees)",
+    help: 'Shown with a pulsing dot for every programme that has no format of its own in Programmes, e.g. "Live online · English". Leave empty to show each programme\'s language instead.',
+    maxLength: 60,
+  },
+  {
+    type: "text",
     name: "note",
     label: "Handwritten note (programmes and fees)",
     help: 'Shown under the table, e.g. "instalments available". Leave empty for none.',
@@ -548,19 +555,12 @@ const trustStrip = [
     label: "Layout",
     options: [
       { value: "card", label: "Badges in a white card" },
-      { value: "spotlight", label: "Dark spotlight with a moving ribbon and medals (homepage design)" },
+      { value: "spotlight", label: "Dark spotlight with medals (homepage design)" },
     ],
   },
   { type: "text", name: "eyebrow", label: "Small label above the heading (spotlight)", help: 'e.g. "A rare distinction".', maxLength: 60 },
   { type: "text", name: "heading", label: "Heading", help: `${EFFECTS} Only claims you can evidence.`, maxLength: 160 },
   { type: "textarea", name: "intro", label: "Short text under the heading", help: "Optional. One sentence, and only verified claims.", maxLength: 200, rows: 2 },
-  {
-    type: "stringList",
-    name: "ticker",
-    label: "Moving ribbon (spotlight)",
-    itemLabel: "Phrase",
-    help: 'Short phrases that scroll across the yellow ribbon, e.g. "ICF Level 1". Leave empty for no ribbon.',
-  },
   { type: "text", name: "note", label: "Handwritten note over the last badge (spotlight)", help: 'Optional, e.g. "all three!".', maxLength: 30 },
   {
     type: "list",

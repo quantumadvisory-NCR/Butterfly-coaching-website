@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { CSSProperties } from "react";
 import { cn } from "@/lib/utils";
 
@@ -7,55 +8,30 @@ import { cn } from "@/lib/utils";
  * src/app/effects.css and stops for anyone who prefers reduced motion.
  */
 
-const UPPER_WINGS = "M31 24C24 8 9 2 5 9c-4 8 6 17 26 16zM33 24C40 8 55 2 59 9c4 8-6 17-26 16z";
-const LOWER_WINGS = "M31 27c-9 1-19 8-16 15 3 6 12 2 16-12zM33 27c9 1 19 8 16 15-3 6-12 2-16-12z";
+/**
+ * The site's butterfly: a monarch, supplied by the owner on 1 November 2026
+ * (public/images/brand/butterfly-monarch.webp, background removed). Its wings
+ * beat by squeezing the picture in and out around the body.
+ */
+const BUTTERFLY = { src: "/images/brand/butterfly-monarch.webp", width: 320, height: 226 };
 
-/** The design's butterfly: yellow upper wings, lavender lower wings. */
 export function Butterfly({
   className,
   style,
   flap,
-  lower = "var(--lav)",
-  body = "var(--color-ink-deep)",
-  detailed = false,
+  sizes = "48px",
 }: {
   className?: string;
   style?: CSSProperties;
   /** Wings beat quickly ("fast") or gently ("slow"). */
   flap?: "fast" | "slow";
-  lower?: string;
-  /** Colour of the body; "none" leaves it out. */
-  body?: string;
-  /** Adds wing spots and antennae, for large sizes. */
-  detailed?: boolean;
+  /** How wide it shows, so the browser downloads a small enough file. */
+  sizes?: string;
 }) {
   return (
-    <svg
-      aria-hidden
-      viewBox="0 0 64 52"
-      className={cn(flap === "fast" && "fx-flap", flap === "slow" && "fx-flap-slow", className)}
-      style={style}
-    >
-      <g className="fx-wings">
-        <path style={{ fill: "var(--color-accent)" }} d={UPPER_WINGS} />
-        <path style={{ fill: lower }} d={LOWER_WINGS} />
-        {detailed && (
-          <>
-            <circle cx="13" cy="11" r="2.2" style={{ fill: "var(--color-ink-deep)" }} />
-            <circle cx="51" cy="11" r="2.2" style={{ fill: "var(--color-ink-deep)" }} />
-            <circle cx="19" cy="38" r="1.6" style={{ fill: "#fff" }} />
-            <circle cx="45" cy="38" r="1.6" style={{ fill: "#fff" }} />
-          </>
-        )}
-      </g>
-      {body !== "none" && <rect x="30.5" y={detailed ? 13 : 15} width="3" height={detailed ? 27 : 24} rx="1.5" style={{ fill: body }} />}
-      {detailed && (
-        <path
-          d="M31 14 C 28 8, 24 6, 22 6 M33 14 C 36 8, 40 6, 42 6"
-          style={{ fill: "none", stroke: "var(--color-ink-deep)", strokeWidth: 1, strokeLinecap: "round" }}
-        />
-      )}
-    </svg>
+    <span aria-hidden className={cn("inline-block", flap === "fast" && "fx-flap", flap === "slow" && "fx-flap-slow", className)} style={style}>
+      <Image src={BUTTERFLY.src} alt="" width={BUTTERFLY.width} height={BUTTERFLY.height} sizes={sizes} className="fx-wing-img block size-full object-contain" />
+    </span>
   );
 }
 
@@ -63,10 +39,10 @@ export function Butterfly({
  * A butterfly that flies along a path across its section, wings beating. Place
  * it inside a positioned section that clips overflow.
  */
-export function Flyer({ path = "hero", body, className }: { path?: "hero" | "wave" | "climb"; body?: string; className?: string }) {
+export function Flyer({ path = "hero", className }: { path?: "hero" | "wave" | "climb"; className?: string }) {
   return (
     <span aria-hidden className={cn("fx-flyer fx-flap", `fx-flyer-${path}`, className)}>
-      <Butterfly body={body} className="block size-full" />
+      <Butterfly sizes="40px" className="block size-full" />
     </span>
   );
 }

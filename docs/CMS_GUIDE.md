@@ -70,7 +70,7 @@ Each section has five small buttons:
 | Pathway cards | Up to four cards that send visitors to the right place. **Numbered cards** ("Choose your path": a big outlined number, a small label, a button and an optional second link; **Colour this card** makes one lavender), **Dark section of choices** ("Where are you today?": coloured card in yellow, the small label as a handwritten note), **Charcoal panel** or **Image cards** |
 | Feature list | A short list of points. **Numbered points beside a photograph**, or **Picture cards side by side** ("Why learners choose BCA"): each card can show a **Loop** (the Sequence words around a circle, the handwritten note in the middle), **Letter tiles** (one per line, as `K: Explore the known and unknown`) or a **Big figure on a dark card** with small labels. `**Double asterisks**` show letters or words in bold |
 | Programme cards | Cards created automatically from your programmes |
-| Comparison table | The ACC, PCC and MCC comparison (automatic), **Programmes and fees** (the homepage design: badges, hours, next start, format, language, session times and fee from **Programmes**, a button under each level and an optional handwritten note; rows with no information are left out), or a table you build |
+| Comparison table | The ACC, PCC and MCC comparison (automatic), **Programmes and fees** (the homepage design: badges, hours, next start, format, session times and fee from **Programmes**, a button under each level and an optional handwritten note; rows with no information are left out. The section's **Format** text, e.g. "Live online · English", is shown for any programme without a format of its own), or a table you build |
 | Testimonials | Approved student stories. Featured stories can be **one story told large, with the others to choose from**, or **two stories side by side** (the homepage design) |
 | Founder and faculty | Profiles from the Faculty list |
 | FAQ accordion | Questions from one FAQ group |
@@ -81,7 +81,7 @@ Each section has five small buttons:
 | Contact form | An enquiry form, with contact details beside it if you wish |
 | Newsletter signup | An email signup form, or **Programme guide request** on a lavender panel: visitors leave an email address and the request arrives in Enquiries |
 | Resource downloads | Your published downloads |
-| Trust strip | Accreditation badges, logos and key facts, in a white card or as the **dark spotlight** of the homepage design (a moving yellow ribbon of phrases, medals that turn on hover, a handwritten note over the last one) |
+| Trust strip | Accreditation badges, logos and key facts, in a white card or as the **dark spotlight** of the homepage design (medals that turn on hover, a butterfly flying between them, a handwritten note over the last one) |
 | Statistics strip | Up to four verified figures that count up once as they scroll into view. A figure left empty is hidden, so you can prepare one before it is confirmed |
 | Latest articles | Your most recent blog articles |
 | Global community | Where learners join from, as chips under a dotted path a butterfly flies along. One place per line, optionally with a code first (`IN India`); the first chip is yellow |
