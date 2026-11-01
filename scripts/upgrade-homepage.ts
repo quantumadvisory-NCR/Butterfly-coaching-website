@@ -44,14 +44,22 @@ function mediaRef(value: unknown, existing: Set<string>): unknown {
   return value;
 }
 
-/** Which current section, if any, each new section takes the place of (so its id and history carry over). */
+/**
+ * Which current section, if any, each new section takes the place of (so its id and history carry over).
+ * The design's own sections match too, so running the script again updates them instead of adding copies.
+ */
 const REPLACES: Record<string, (section: Section) => boolean> = {
   hero: (section) => section.type === "hero",
   trust_strip: (section) => section.type === "trust_strip",
-  "path_cards:numbered": (section) => section.type === "path_cards",
+  // Taken before the choices, so it gets the first pathway section: the old charcoal panel, or the numbered cards on a re-run.
+  "path_cards:numbered": (section) => section.type === "path_cards" && section.data.layout !== "choices",
   feature_list: (section) => section.type === "feature_list",
+  comparison_table: (section) => section.type === "comparison_table" && section.data.source === "fees",
+  community: (section) => section.type === "community",
   testimonials: (section) => section.type === "testimonials" && (section.data.source ?? "featured") === "featured",
   faq: (section) => section.type === "faq" && (section.data.group ?? "home") === "home",
+  "path_cards:choices": (section) => section.type === "path_cards" && section.data.layout === "choices",
+  newsletter: (section) => section.type === "newsletter" && section.data.layout === "guide",
 };
 
 async function main() {
