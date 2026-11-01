@@ -188,9 +188,9 @@ function FeatureBento({ data, ctx }: BlockProps<"feature_list">) {
       background={data.background}
       anchor={data.anchor}
       flush
-      className={cn("pt-[clamp(4.5rem,9vw,8rem)] font-text", tableFollows ? "pb-[clamp(3rem,6vw,5rem)]" : "pb-[clamp(4.5rem,9vw,8rem)]")}
+      className={cn("pt-[var(--design-space)] font-text", tableFollows ? "pb-[calc(var(--design-space)*0.6)]" : "pb-[var(--design-space)]")}
     >
-      <div className="container-site flex flex-col gap-10">
+      <div className="container-site flex flex-col gap-8">
         <div className="reveal flex flex-col gap-3">
           <h2 className={DESIGN_H2}>
             <Emphasis text={data.heading} auto />
@@ -382,7 +382,7 @@ function AccreditationSpotlight({ data, ctx }: BlockProps<"trust_strip">) {
     <section
       id={data.anchor || "accreditation"}
       aria-labelledby={data.heading ? headingId : undefined}
-      className="on-dark relative isolate overflow-hidden bg-plum py-[clamp(3.5rem,7vw,5.5rem)] font-text text-[#f4f1fd]"
+      className="on-dark relative isolate overflow-hidden bg-plum py-[var(--design-space)] font-text text-[#f4f1fd]"
     >
       <div
         aria-hidden

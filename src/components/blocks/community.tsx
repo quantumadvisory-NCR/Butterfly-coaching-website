@@ -26,7 +26,7 @@ export function CommunityBlock({ data, ctx }: BlockProps<"community">) {
       anchor={data.anchor}
       labelledBy={headingId}
       flush
-      className={cn("relative overflow-hidden pt-[clamp(4.5rem,9vw,8rem)] font-text", storiesFollow ? "pb-12" : "pb-[clamp(4.5rem,9vw,8rem)]")}
+      className={cn("relative overflow-hidden pt-[var(--design-space)] font-text", storiesFollow ? "pb-8" : "pb-[var(--design-space)]")}
     >
       <div className="container-site flex flex-col gap-9">
         <div className="reveal flex flex-col gap-3">

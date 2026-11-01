@@ -304,7 +304,7 @@ async function FeesTable({ data, ctx }: BlockProps<"comparison_table">) {
       anchor={data.anchor}
       labelledBy={headingId}
       flush
-      className={cn("pb-[clamp(4.5rem,9vw,8rem)] font-text", continues ? "pt-[clamp(0.5rem,2vw,1.5rem)]" : "pt-[clamp(4.5rem,9vw,8rem)]")}
+      className={cn("pb-[var(--design-space)] font-text", continues ? "pt-[clamp(0.5rem,2vw,1.5rem)]" : "pt-[var(--design-space)]")}
     >
       <div className="container-site flex flex-col gap-8">
         <div className="reveal flex flex-col gap-3">

@@ -26,7 +26,7 @@ export async function FaqBlock({ data, ctx }: BlockProps<"faq">) {
   // On the lavender band of the homepage design the section takes the design's spacing and display heading.
   const design = data.background === "lavender";
   return (
-    <Section background={data.background} anchor={data.anchor} flush={design} className={cn(design && "py-[clamp(4.5rem,9vw,8rem)]")}>
+    <Section background={data.background} anchor={data.anchor} flush={design} className={cn(design && "py-[var(--design-space)]")}>
       {/* Phones and tablets read heading, questions, then the help card; desktop keeps the help card beside the questions. */}
       <div className="container-site grid gap-9 max-lg:gap-8 lg:grid-cols-12 lg:gap-12">
         <div className={cn("max-lg:contents lg:col-span-5", !design && "xl:col-span-4")}>
@@ -167,7 +167,7 @@ export function CtaBlock({ data, ctx }: BlockProps<"cta">) {
  */
 function GuidePanel({ data }: BlockProps<"newsletter">) {
   return (
-    <section id={data.anchor || "guide"} className={cn(sectionBackground(data.background), "py-[clamp(3.5rem,7vw,6rem)] font-text")}>
+    <section id={data.anchor || "guide"} className={cn(sectionBackground(data.background), "py-[var(--design-space)] font-text")}>
       <div className="container-site">
         <div className="reveal relative flex flex-wrap items-center gap-x-12 gap-y-7 overflow-hidden rounded-[2rem] bg-lav-100 p-[clamp(1.75rem,4vw,3.5rem)]">
           <Butterfly flap="slow" sizes="180px" className="pointer-events-none absolute -right-[1.875rem] -top-[1.625rem] w-[11.25rem] rotate-[18deg] opacity-60" />

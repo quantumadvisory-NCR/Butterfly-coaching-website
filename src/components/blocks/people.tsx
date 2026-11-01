@@ -51,7 +51,7 @@ function StoryPair({ items, data, ctx }: { items: TestimonialView[]; data: Block
       background={data.background}
       anchor={data.anchor}
       flush
-      className={cn("pb-[clamp(4.5rem,9vw,8rem)] font-text", continues ? "pt-4" : "pt-[clamp(4.5rem,9vw,8rem)]")}
+      className={cn("pb-[var(--design-space)] font-text", continues ? "pt-4" : "pt-[var(--design-space)]")}
     >
       <div className="container-site flex flex-col gap-[1.125rem]">
         <h2 className={cn("reveal m-0 font-grotesk font-bold tracking-[-0.025em] text-ink-deep", continues ? "text-2xl" : "text-[clamp(2.125rem,4vw,3.5rem)] font-extrabold leading-[1.05]")}>

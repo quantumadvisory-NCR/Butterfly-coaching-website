@@ -123,8 +123,8 @@ const hero = [
   {
     type: "text",
     name: "stickerText",
-    label: "Turning circle text (homepage)",
-    help: 'Optional words that circle slowly beside the photograph, e.g. "LIVE ONLINE ✦ JOIN FROM ANYWHERE ✦ ENGLISH ✦".',
+    label: "Globe badge text (homepage)",
+    help: 'Optional. Shows a turning globe with India marked beside the photograph, above this text, e.g. "Live online · join from anywhere". Leave empty for no globe.',
     maxLength: 60,
   },
 ] as const satisfies readonly Field[];

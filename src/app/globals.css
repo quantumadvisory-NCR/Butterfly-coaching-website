@@ -34,6 +34,9 @@
   --gutter: clamp(1rem, 0.25rem + 3.4vw, 2.5rem);
   /* Above and below each section, so two sections sit twice this apart: about 57px on phones, 105px on desktop. */
   --section-space: clamp(1.75rem, 1.25rem + 2.2vw, 3.25rem);
+  /* Above and below each homepage-design section: about 36px on phones, 60px on desktop. The design file's
+     128px felt empty between sections (owner, 1 November 2026). */
+  --design-space: clamp(2.25rem, 1.5rem + 2.4vw, 3.75rem);
   --header-height: 4rem;
   --container-max: 75rem;
 

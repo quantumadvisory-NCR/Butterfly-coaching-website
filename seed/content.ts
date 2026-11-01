@@ -630,7 +630,7 @@ export const HOME_HERO = {
   credentialValue: "1 of 4",
   credentialLabel: "in India",
   credentialDetail: "accredited at all 3 ICF levels",
-  stickerText: "LIVE ONLINE ✦ JOIN FROM ANYWHERE ✦ ENGLISH ✦",
+  stickerText: "Live online · join from anywhere",
 };
 
 export const HOME_ACCREDITATION = {

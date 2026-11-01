@@ -44,8 +44,8 @@ function NumberedCards({ data, ctx }: BlockProps<"path_cards">) {
   if (items.length === 0) return null;
   const headingId = `path-${data.anchor || "choose"}`;
   return (
-    <Section background={data.background} anchor={data.anchor} labelledBy={headingId} flush className="py-[clamp(4.5rem,9vw,8rem)] font-text">
-      <div className="container-site flex flex-col gap-10">
+    <Section background={data.background} anchor={data.anchor} labelledBy={headingId} flush className="py-[var(--design-space)] font-text">
+      <div className="container-site flex flex-col gap-8">
         <div className="reveal flex flex-wrap items-end justify-between gap-4">
           <h2 id={headingId} className={DESIGN_H2}>
             <Emphasis text={data.heading} auto />
@@ -126,13 +126,13 @@ function ChoiceCards({ data, ctx }: BlockProps<"path_cards">) {
     <section
       id={data.anchor || undefined}
       aria-labelledby={headingId}
-      className="on-dark relative isolate overflow-hidden bg-ink-deep py-[clamp(4.5rem,9vw,8rem)] font-text text-[#f4f1fd]"
+      className="on-dark relative isolate overflow-hidden bg-ink-deep py-[var(--design-space)] font-text text-[#f4f1fd]"
     >
       <div
         aria-hidden
         className="fx-glow pointer-events-none absolute -bottom-64 -left-40 size-[38.75rem] rounded-full bg-[radial-gradient(circle,color-mix(in_srgb,var(--lav)_35%,transparent)_0%,rgb(22_19_29/0)_65%)]"
       />
-      <div className="container-site relative flex flex-col gap-10">
+      <div className="container-site relative flex flex-col gap-8">
         <div className="reveal flex flex-col gap-3">
           <h2 id={headingId} className={cn(DESIGN_H2, "!text-white")}>
             <Emphasis text={data.heading} tone="dark" auto />

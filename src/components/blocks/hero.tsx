@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import { Breadcrumbs } from "@/components/site/breadcrumbs";
+import { GlobeBadge } from "@/components/site/globe-badge";
 import { GuideForm } from "@/components/site/guide-form";
 import { ButtonLink } from "@/components/ui/button-link";
 import { Arrow, Butterfly, Flyer, HandArrow, LiveDot, Twinkle } from "@/components/ui/effects";
@@ -48,60 +49,6 @@ function HeroPill({ text }: { text: string }) {
   );
 }
 
-/** The slowly turning circle of words beside the photograph, with a globe at its centre. */
-function TurningSticker({ text }: { text: string }) {
-  return (
-    <div role="img" aria-label={text.replace(/[✦★•]/g, " ").replace(/\s+/g, " ").trim()} className="fx-bob-slow absolute right-0 top-[2%] z-[4] size-32 max-sm:-right-1 max-sm:top-[17%] max-sm:size-24">
-      <svg aria-hidden viewBox="0 0 120 120" className="fx-spin absolute inset-0 size-full overflow-visible">
-        <defs>
-          <path id="hero-sticker-ring" d="M60,60 m-47,0 a47,47 0 1,1 94,0 a47,47 0 1,1 -94,0" />
-        </defs>
-        <circle cx="60" cy="60" r="59" style={{ fill: "var(--color-ink-deep)" }} />
-        <text style={{ fontFamily: "var(--ff-inter), sans-serif", fontWeight: 700, fontSize: 10, letterSpacing: 1.6, fill: "var(--color-accent)" }}>
-          <textPath href="#hero-sticker-ring" textLength="292" lengthAdjust="spacing">
-            {text}
-          </textPath>
-        </text>
-      </svg>
-      <span aria-hidden className="absolute inset-[24%] flex items-center justify-center rounded-full bg-lav shadow-[inset_0_0_0_3px_rgb(255_255_255/0.25)]">
-        <OnlineGlobe className="size-[3.6rem] max-sm:size-[2.9rem]" />
-      </span>
-    </div>
-  );
-}
-
-/**
- * "Live online, from anywhere": a solid ink globe with lavender meridians, a
- * tilted yellow orbit passing behind and in front of it, and a pulsing "live"
- * dot riding the orbit.
- */
-function OnlineGlobe({ className }: { className?: string }) {
-  return (
-    <svg aria-hidden viewBox="0 0 48 48" className={className}>
-      <defs>
-        <clipPath id="hero-globe-clip">
-          <circle cx="24" cy="24" r="12.5" />
-        </clipPath>
-      </defs>
-      {/* The far half of the orbit, behind the globe. */}
-      <path d="M3 24 A21 7.5 0 0 1 45 24" transform="rotate(-24 24 24)" style={{ fill: "none", stroke: "var(--color-ink-deep)", strokeOpacity: 0.3, strokeWidth: 1.6, strokeLinecap: "round" }} />
-      <circle cx="24" cy="24" r="12.5" style={{ fill: "var(--color-ink-deep)" }} />
-      <g clipPath="url(#hero-globe-clip)" style={{ fill: "none", stroke: "var(--color-lav-200)", strokeWidth: 1.3, strokeLinecap: "round" }}>
-        <ellipse cx="24" cy="24" rx="5.5" ry="12.5" />
-        <path d="M11.5 24h25" />
-        <path d="M12.6 18.2 Q24 15.6 35.4 18.2" />
-        <path d="M12.6 29.8 Q24 32.4 35.4 29.8" />
-      </g>
-      <circle cx="19.5" cy="18.5" r="3.2" style={{ fill: "#fff", opacity: 0.14 }} />
-      {/* The near half of the orbit and the live dot, in front of the globe. */}
-      <g transform="rotate(-24 24 24)">
-        <path d="M45 24 A21 7.5 0 0 1 3 24" style={{ fill: "none", stroke: "var(--color-accent)", strokeWidth: 2.2, strokeLinecap: "round" }} />
-        <circle className="fx-glow" cx="36.05" cy="30.14" r="2.8" style={{ fill: "var(--color-accent)", stroke: "var(--color-ink-deep)", strokeWidth: 1.1 }} />
-      </g>
-    </svg>
-  );
-}
-
 /** Homepage hero, from the November 2026 design. */
 function HomeHero({ data, ctx }: BlockProps<"hero">) {
   const image = pickMedia(ctx, data.image);
@@ -116,15 +63,15 @@ function HomeHero({ data, ctx }: BlockProps<"hero">) {
   const accentLast = split > 0 ? accent.slice(split + 1) : accent;
 
   return (
-    <section id={data.anchor || "top"} className="relative isolate overflow-hidden pb-[clamp(5.5rem,9vw,8.5rem)] pt-[clamp(3rem,7vw,6rem)] font-text text-ink-deep">
+    <section id={data.anchor || "top"} className="relative isolate overflow-hidden pb-[clamp(4.25rem,3.25rem+2vw,5.5rem)] pt-[clamp(1.25rem,0.5rem+2vw,2.5rem)] font-text text-ink-deep">
       <Flyer path="hero" />
       <CornerGlow />
 
       <div className="container-site relative flex flex-wrap items-center gap-[clamp(3rem,5vw,4.5rem)]">
-        <div className="flex min-w-0 flex-[1_1_30rem] flex-col gap-7">
+        <div className="flex min-w-0 flex-[1_1_30rem] flex-col gap-6">
           {data.eyebrow && <HeroPill text={data.eyebrow} />}
 
-          <h1 className="relative m-0 font-grotesk text-[clamp(2.875rem,6.6vw,5.875rem)] font-extrabold leading-[0.98] tracking-[-0.025em] text-ink-deep">
+          <h1 className="relative m-0 font-grotesk text-[length:clamp(2.875rem,min(6.6vw,11vh),5.875rem)] font-extrabold leading-[0.98] tracking-[-0.025em] text-ink-deep">
             <Twinkle className="absolute -top-[1.125rem] left-[62%] size-[1.625rem] fill-accent max-md:hidden" />
             <Twinkle className="absolute right-[4%] top-[46%] size-[1.125rem] fill-lav max-md:hidden" style={delay(1.1)} />
             <span className="fx-rise block" style={delay(0.08)}>
@@ -196,6 +143,14 @@ function HomeHero({ data, ctx }: BlockProps<"hero">) {
           <div aria-hidden className="absolute aspect-square w-[min(35rem,100%)] rounded-full border-[1.5px] border-dashed border-lav-200" />
 
           <div className="fx-rise relative w-[min(25rem,82%)]" style={delay(0.3)}>
+            {/* The globe sits on the frame's edge: its centre on the top-right curve of the arch (85.4% across,
+                11.8% down), straddling the yellow border, with the line of text centred beneath it. */}
+            {data.stickerText && (
+              <GlobeBadge
+                label={data.stickerText}
+                className="absolute left-[85.4%] top-[11.8%] z-[4] -translate-x-1/2 -translate-y-[calc(var(--globe)/2)]"
+              />
+            )}
             <div className="relative flex aspect-[4/5] items-center justify-center overflow-hidden rounded-[12.5rem_12.5rem_2rem_2rem] border-[10px] border-accent bg-[linear-gradient(180deg,var(--color-lav-50),#fff)] shadow-[0_40px_70px_-40px_rgb(70_45_160/0.7)]">
               {image ? (
                 tall ? (
@@ -258,7 +213,6 @@ function HomeHero({ data, ctx }: BlockProps<"hero">) {
               )}
             </div>
           )}
-          {data.stickerText && <TurningSticker text={data.stickerText} />}
         </div>
       </div>
     </section>

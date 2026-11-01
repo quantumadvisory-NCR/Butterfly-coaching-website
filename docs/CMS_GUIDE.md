@@ -64,7 +64,7 @@ Each section has five small buttons:
 
 | Section | Use it for |
 |---|---|
-| Hero | The opening of a page: heading, a sentence, one or two buttons, an image. **Homepage hero** (November 2026 design): a pill with a pulsing dot, a heading whose second line ends in a lavender word over a hand-drawn yellow stroke, a handwritten note beside the button, the second button as a text link, an optional programme guide form, the photo in a yellow arch with up to three floating badges, a dark sticker and a slowly turning circle of words. Every part is optional |
+| Hero | The opening of a page: heading, a sentence, one or two buttons, an image. **Homepage hero** (November 2026 design): a pill with a pulsing dot, a heading whose second line ends in a lavender word over a hand-drawn yellow stroke, a handwritten note beside the button, the second button as a text link, an optional programme guide form, the photo in a yellow arch with up to three floating badges, a dark sticker and a turning globe with India marked, above a short line such as "Live online · join from anywhere" (visitors can drag the globe to spin it). Every part is optional |
 | Rich text | Paragraphs, headings and lists, such as a policy |
 | Image and text | A picture beside some text, with optional bullet points |
 | Pathway cards | Up to four cards that send visitors to the right place. **Numbered cards** ("Choose your path": a big outlined number, a small label, a button and an optional second link; **Colour this card** makes one lavender), **Dark section of choices** ("Where are you today?": coloured card in yellow, the small label as a handwritten note), **Charcoal panel** or **Image cards** |
