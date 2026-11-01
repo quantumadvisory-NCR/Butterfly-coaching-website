@@ -7,6 +7,8 @@ import type { MediaMap } from "@/lib/content/public";
 import { buildMetadata } from "@/lib/seo";
 import { type MasterClass, openMasterClasses, type SiteSettings } from "@/lib/settings";
 import { slugify } from "@/lib/utils";
+import { Emphasis } from "@/components/ui/emphasis";
+import { HeaderFlourish } from "@/components/ui/effects";
 
 /**
  * Enquiry page for master classes, made for links shared in posts:
@@ -58,12 +60,15 @@ export default async function EnquirePage({ searchParams }: Props) {
   const heading = chosen ? chosen.name : classes.length > 0 ? "Enquire about a master class" : "Send an enquiry";
 
   return (
-    <section className="bg-page">
-      <div className="container-site pb-16 pt-5 md:pb-20 lg:pb-24">
+    <section className="relative isolate overflow-hidden bg-page">
+      <HeaderFlourish />
+      <div className="container-site relative pb-16 pt-5 md:pb-20 lg:pb-24">
         <Breadcrumbs items={[{ label: "Enquire", href: "/enquire/" }]} />
         <header className="hero-enter mt-6 max-w-3xl md:mt-8">
           {chosen?.label && <p className="eyebrow mb-3">{chosen.label}</p>}
-          <h1 className="text-h1">{heading}</h1>
+          <h1 className="text-h1">
+            <Emphasis text={heading} auto now />
+          </h1>
           {chosen?.summary && <p className="mt-4 max-w-2xl text-lead">{chosen.summary}</p>}
         </header>
 

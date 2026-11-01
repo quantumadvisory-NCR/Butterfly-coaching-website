@@ -11,6 +11,7 @@ import { siteUrl } from "@/lib/env";
 import { absoluteUrl } from "@/lib/seo";
 import { resolveHref } from "@/lib/settings";
 import { formatDate, readingMinutes } from "@/lib/utils";
+import { Emphasis } from "@/components/ui/emphasis";
 
 export async function PostTemplate({
   post,
@@ -41,7 +42,9 @@ export async function PostTemplate({
                 ))}
               </p>
             )}
-            <h1 className="mt-3 text-h1">{post.title}</h1>
+            <h1 className="mt-3 text-h1">
+              <Emphasis text={post.title} auto now />
+            </h1>
             <p className="mt-5 text-[0.9375rem] text-muted">
               {post.authorName} <span aria-hidden>·</span> <time dateTime={post.publishedAt ?? undefined}>{formatDate(post.publishedAt)}</time>{" "}
               <span aria-hidden>·</span> {readingMinutes(post.contentHtml)} min read
@@ -85,7 +88,9 @@ export async function PostTemplate({
       {related.length > 0 && (
         <section className="section-space border-t border-line bg-page">
           <div className="container-site">
-            <h2 className="text-h2">Keep reading</h2>
+            <h2 className="text-h2">
+              <Emphasis text="Keep reading" auto />
+            </h2>
             <ul className="mt-9 grid gap-x-6 gap-y-10 md:grid-cols-3">
               {related.map((p) => (
                 <PostCard key={p.id} post={p} image={ctx.media[p.featuredImageId ?? ""] ?? null} />

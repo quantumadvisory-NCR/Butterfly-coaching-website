@@ -64,14 +64,14 @@ Each section has five small buttons:
 
 | Section | Use it for |
 |---|---|
-| Hero | The opening of a page: heading, a sentence, one or two buttons, an image. The homepage layout also takes a second heading line (shown in blue), up to four short proof points, a trust line with learner photos, a photo crop setting and an optional credential card on the photo |
+| Hero | The opening of a page: heading, a sentence, one or two buttons, an image. **Homepage hero** (November 2026 design): a pill with a pulsing dot, a heading whose second line ends in a lavender word over a hand-drawn yellow stroke, a handwritten note beside the button, the second button as a text link, an optional programme guide form, the photo in a yellow arch with up to three floating badges, a dark sticker and a slowly turning circle of words. Every part is optional |
 | Rich text | Paragraphs, headings and lists, such as a policy |
 | Image and text | A picture beside some text, with optional bullet points |
-| Pathway cards | Up to four cards that send visitors to the right place. **Charcoal panel** (icon cards; straight after a homepage hero it overlaps the hero) or **Image cards** |
-| Feature list | A short list of points with an optional image. **Sequence** adds a few words as chips after the introduction, joined by arrows (e.g. Awareness, Choice, Action, Transformation); the last is highlighted. In a point's description, put `**double asterisks**` around letters or words to show them in bold, as in the iKAN initials |
+| Pathway cards | Up to four cards that send visitors to the right place. **Numbered cards** ("Choose your path": a big outlined number, a small label, a button and an optional second link; **Colour this card** makes one lavender), **Dark section of choices** ("Where are you today?": coloured card in yellow, the small label as a handwritten note), **Charcoal panel** or **Image cards** |
+| Feature list | A short list of points. **Numbered points beside a photograph**, or **Picture cards side by side** ("Why learners choose BCA"): each card can show a **Loop** (the Sequence words around a circle, the handwritten note in the middle), **Letter tiles** (one per line, as `K: Explore the known and unknown`) or a **Big figure on a dark card** with small labels. `**Double asterisks**` show letters or words in bold |
 | Programme cards | Cards created automatically from your programmes |
-| Comparison table | The ACC, PCC and MCC comparison (automatic), or a table you build |
-| Testimonials | Approved student stories |
+| Comparison table | The ACC, PCC and MCC comparison (automatic), **Programmes and fees** (the homepage design: badges, hours, next start, format, language, session times and fee from **Programmes**, a button under each level and an optional handwritten note; rows with no information are left out), or a table you build |
+| Testimonials | Approved student stories. Featured stories can be **one story told large, with the others to choose from**, or **two stories side by side** (the homepage design) |
 | Founder and faculty | Profiles from the Faculty list |
 | FAQ accordion | Questions from one FAQ group |
 | Timeline | A sequence of steps. **Layout: A loop around an outcome** (the homepage learning journey) puts the steps on a circle around the last step, which becomes the outcome at the centre: visitors click a step, or press Next step or Play the loop, to read it in the panel beside the circle. Each step can carry a learner quote (word for word, with permission). On phones it becomes a vertical timeline. The line and button under the loop are set at the bottom of the section |
@@ -79,13 +79,31 @@ Each section has five small buttons:
 | Video | YouTube videos |
 | Call to action | A bold closing band with one or two buttons |
 | Contact form | An enquiry form, with contact details beside it if you wish |
-| Newsletter signup | An email signup form |
+| Newsletter signup | An email signup form, or **Programme guide request** on a lavender panel: visitors leave an email address and the request arrives in Enquiries |
 | Resource downloads | Your published downloads |
-| Trust strip | Accreditation badges, logos and key facts |
+| Trust strip | Accreditation badges, logos and key facts, in a white card or as the **dark spotlight** of the homepage design (a moving yellow ribbon of phrases, medals that turn on hover, a handwritten note over the last one) |
 | Statistics strip | Up to four verified figures that count up once as they scroll into view. A figure left empty is hidden, so you can prepare one before it is confirmed |
 | Latest articles | Your most recent blog articles |
+| Global community | Where learners join from, as chips under a dotted path a butterfly flies along. One place per line, optionally with a code first (`IN India`); the first chip is yellow |
 
 Every section adapts to the screen by itself. You do not design separate phone and desktop versions.
+
+### Effects in headings and short texts
+
+Headings, introductions and card texts can carry the hand-drawn effects of the November 2026 design. Type them around the words in the admin; visitors see the effect, and screen readers hear only the words.
+
+| Type | You get |
+|---|---|
+| `==words==` | A yellow highlighter stroke |
+| `++words++` | A lavender highlighter stroke |
+| `__words__` | A thick hand-drawn yellow underline (lavender on dark sections) |
+| `((words))` | A hand-drawn circle around the words |
+| `[[words]]` | A tilted yellow tag |
+| `**words**` | Bold |
+
+A section heading with none of these gets the underline beneath its last word automatically, so every page shares the homepage's signature. The help text under each field says which effects it accepts.
+
+On wide screens the effects draw in as they scroll into view; for visitors who ask their device for less motion, everything is simply shown.
 
 ### Buttons and links
 
@@ -205,6 +223,7 @@ Every form submitted on the site arrives in **Enquiries**.
 - Filter by status or type, or search by name, email, organisation, message or campaign name.
 - Enquiries that came through a tracked link show where from in the list (for example "via LinkedIn") and, on the enquiry itself, in one line under **Where this came from**.
 - **Export CSV** (administrators) downloads the list for a spreadsheet.
+- **Programme guide requests** come from the "Get the programme guide" forms on the homepage. They hold only an email address (shown in place of a name). Nothing is sent to the visitor automatically: reply with the guide by email, then mark the request Contacted.
 
 If notification emails are switched on you also receive an email for each enquiry. If they are not, the enquiry is still saved here. The dashboard tells you which.
 

@@ -143,14 +143,16 @@ const integrations = [
 ] as const satisfies readonly Field[];
 
 export const HEADING_FONTS = [
-  { value: "jakarta", label: "Plus Jakarta Sans (BCA default)" },
+  { value: "bricolage", label: "Bricolage Grotesque (homepage design, default)" },
+  { value: "jakarta", label: "Plus Jakarta Sans (earlier BCA typeface)" },
   { value: "schibsted", label: "Schibsted Grotesk" },
   { value: "manrope", label: "Manrope" },
   { value: "newsreader", label: "Newsreader (serif)" },
 ] as const;
 
 export const BODY_FONTS = [
-  { value: "jakarta", label: "Plus Jakarta Sans (BCA default)" },
+  { value: "inter", label: "Inter (homepage design, default)" },
+  { value: "jakarta", label: "Plus Jakarta Sans (earlier BCA typeface)" },
   { value: "manrope", label: "Manrope" },
 ] as const;
 
@@ -213,8 +215,8 @@ export const DEFAULT_THEME: SiteSettings["theme"] = {
   accent: "#f5ba00",
   background: "#fcfcfc",
   ink: "#5f5f5f",
-  headingFont: "jakarta",
-  bodyFont: "jakarta",
+  headingFont: "bricolage",
+  bodyFont: "inter",
 };
 
 export const DEFAULT_SETTINGS: SiteSettings = {

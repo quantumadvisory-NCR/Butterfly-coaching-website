@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
 import { cn, isExternalHref } from "@/lib/utils";
 
-type Variant = "primary" | "secondary" | "blue" | "quiet";
+type Variant = "primary" | "secondary" | "blue" | "quiet" | "ink" | "lav";
 
 type Props = {
   href: string;

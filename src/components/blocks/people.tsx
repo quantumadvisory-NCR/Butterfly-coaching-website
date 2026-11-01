@@ -1,11 +1,113 @@
 import { LinkedinLogoIcon, QuotesIcon } from "@phosphor-icons/react/dist/ssr";
+import Link from "next/link";
 import { type Story, StoryShowcase } from "@/components/site/story-showcase";
 import { ButtonLink } from "@/components/ui/button-link";
+import { Arrow } from "@/components/ui/effects";
+import { Emphasis } from "@/components/ui/emphasis";
 import { MediaImage } from "@/components/ui/media-image";
 import { Section, SectionHeading } from "@/components/ui/section";
 import { type FacultyView, type TestimonialView, getFaculty, getTestimonials } from "@/lib/content/public";
 import { cn } from "@/lib/utils";
 import { type BlockContext, type BlockProps, pickMedia, usableLink } from "./types";
+
+/** "Dr. Supriya Dhongde" becomes "SD". */
+function initials(name: string) {
+  return name
+    .replace(/^(dr|mr|mrs|ms)\.?\s+/i, "")
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((word) => word.charAt(0))
+    .join("");
+}
+
+/**
+ * Two student stories side by side, from the November 2026 design: the first
+ * large on a deep ink card under an oversized lavender quote mark, the second
+ * on a white card with a dashed lavender edge.
+ */
+function StoryPair({ items, data, ctx }: { items: TestimonialView[]; data: BlockProps<"testimonials">["data"]; ctx: BlockContext }) {
+  const [lead, second] = items;
+  if (!lead) return null;
+  const cta = usableLink(data.cta, ctx.settings);
+  // Straight after the community chips the stories continue the same section, so they need little space above.
+  const continues = ctx.prev?.type === "community";
+  const role = (t: TestimonialView) => [t.roleTitle, t.organisation].filter(Boolean).join(" · ");
+  const avatar = (t: TestimonialView, dark: boolean) => {
+    const photo = pickMedia(ctx, t.photoId);
+    return photo ? (
+      <span className="relative size-[3.25rem] shrink-0 overflow-hidden rounded-full bg-lav-100">
+        <MediaImage media={photo} fill alt="" sizes="52px" className="!object-top" />
+      </span>
+    ) : (
+      <span aria-hidden className={cn("flex size-[3.25rem] shrink-0 items-center justify-center rounded-full text-[1.0625rem] font-extrabold", dark ? "bg-lav text-ink-deep" : "bg-lav-50 text-lav-deep")}>
+        {initials(t.name)}
+      </span>
+    );
+  };
+  const leadQuote = lead.excerpt || lead.quote;
+  const secondQuote = second ? second.excerpt || second.quote : "";
+  return (
+    <Section
+      background={data.background}
+      anchor={data.anchor}
+      flush
+      className={cn("pb-[clamp(4.5rem,9vw,8rem)] font-text", continues ? "pt-4" : "pt-[clamp(4.5rem,9vw,8rem)]")}
+    >
+      <div className="container-site flex flex-col gap-[1.125rem]">
+        <h2 className={cn("reveal m-0 font-grotesk font-bold tracking-[-0.025em] text-ink-deep", continues ? "text-2xl" : "text-[clamp(2.125rem,4vw,3.5rem)] font-extrabold leading-[1.05]")}>
+          <Emphasis text={data.heading} auto={!continues} />
+        </h2>
+        <div className="flex flex-wrap gap-[1.125rem]">
+          <figure className="on-dark fx-card reveal relative m-0 flex min-w-0 flex-[1.4_1_27.5rem] flex-col gap-[1.625rem] overflow-hidden rounded-[1.75rem] border border-ink-deep bg-ink-deep p-[clamp(1.75rem,3vw,2.5rem)] text-[#f4f1fd]">
+            <span aria-hidden className="pointer-events-none absolute -top-10 right-4 font-grotesk text-[13.75rem] font-extrabold leading-none text-lav opacity-[0.22]">
+              &ldquo;
+            </span>
+            <blockquote
+              className={cn(
+                "relative m-0 font-grotesk font-semibold leading-[1.25] tracking-[-0.02em]",
+                leadQuote.length > 160 ? "text-[clamp(1.25rem,1.9vw,1.75rem)]" : "text-[clamp(1.5rem,2.4vw,2.125rem)]",
+              )}
+            >
+              <p>&ldquo;{leadQuote}&rdquo;</p>
+            </blockquote>
+            <figcaption className="mt-auto flex items-center gap-3.5">
+              {avatar(lead, true)}
+              <span className="flex flex-col gap-0.5">
+                <strong className="text-base text-white">{lead.name}</strong>
+                {role(lead) && <span className="text-sm text-lilac">{role(lead)}</span>}
+              </span>
+            </figcaption>
+          </figure>
+          {second && (
+            <figure className="fx-card reveal m-0 flex min-w-0 flex-[1_1_20rem] flex-col justify-between gap-[1.625rem] rounded-[1.75rem] border-[1.5px] border-dashed border-lav bg-white p-[clamp(1.75rem,3vw,2.5rem)]">
+              <blockquote
+                className={cn(
+                  "m-0 font-grotesk font-semibold leading-[1.3] tracking-[-0.015em] text-lav-deep",
+                  secondQuote.length > 200 ? "text-[1.125rem]" : "text-[clamp(1.25rem,1.8vw,1.5rem)]",
+                )}
+              >
+                <p>&ldquo;{secondQuote}&rdquo;</p>
+              </blockquote>
+              <figcaption className="flex items-center gap-3.5">
+                {avatar(second, false)}
+                <span className="flex flex-col gap-0.5">
+                  <strong className="text-base text-ink-deep">{second.name}</strong>
+                  {role(second) && <span className="text-sm text-mauve">{role(second)}</span>}
+                </span>
+              </figcaption>
+            </figure>
+          )}
+        </div>
+        {cta && (
+          <Link href={cta.href} data-track="cta_click" data-track-label={`Stories: ${cta.label}`} className="fx-link reveal self-start text-[0.9375rem] text-ink-deep">
+            {cta.label}
+            <Arrow />
+          </Link>
+        )}
+      </div>
+    </Section>
+  );
+}
 
 /* ---- founder and faculty -------------------------------------------------- */
 
@@ -109,7 +211,9 @@ export async function ProfilesBlock({ data, ctx }: BlockProps<"profiles">) {
         {showTeam && (
           <div className={cn(showFounder && "mt-16 border-t border-line pt-14 md:mt-20 md:pt-16")}>
             {!showFounder && <SectionHeading heading={data.heading} intro={data.intro} />}
-            {showFounder && <h3 className="text-h2">Faculty and mentor coaches</h3>}
+            {showFounder && <h3 className="text-h2">
+<Emphasis text="Faculty and mentor coaches" auto />
+</h3>}
             <ul className="mt-9 grid gap-x-6 gap-y-11 sm:grid-cols-2 lg:grid-cols-4">
               {team.map((person) => (
                 <FacultyCard key={person.id} person={person} ctx={ctx} />
@@ -213,7 +317,7 @@ function StoryCard({ t, credential, ctx, lead = false }: { t: TestimonialView; c
   return (
     <figure
       className={cn(
-        "reveal flex flex-col rounded-[var(--radius-panel)] p-6 transition-[translate,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-lift sm:p-8",
+        "reveal fx-card flex flex-col rounded-[var(--radius-panel)] p-6 sm:p-8",
         lead ? "on-dark bg-navy text-white lg:p-10" : "border border-line bg-surface",
       )}
     >
@@ -294,6 +398,8 @@ export async function TestimonialsBlock({ data, ctx }: BlockProps<"testimonials"
   if (items.length === 0) return null;
   const cta = usableLink(data.cta, ctx.settings);
 
+  if (data.source === "featured" && data.layout === "pair") return <StoryPair items={items} data={data} ctx={ctx} />;
+
   // Featured: an editorial showcase, one story told large with the others to choose from.
   if (data.source === "featured") {
     const stories: Story[] = items.map((t) => ({
@@ -313,7 +419,9 @@ export async function TestimonialsBlock({ data, ctx }: BlockProps<"testimonials"
                 <span aria-hidden className="h-0.5 w-6 rounded-full bg-accent" />
                 In their own words
               </p>
-              <h2 className="text-h2">{data.heading}</h2>
+              <h2 className="text-h2">
+                <Emphasis text={data.heading} auto />
+              </h2>
               {data.intro && <p className="mt-4 max-w-xl text-lead text-ink">{data.intro}</p>}
             </div>
             {cta && (

@@ -592,83 +592,221 @@ const FOUNDER_FACTS = [
   { value: "4,100+", label: "hours of one-to-one coaching" },
   { value: "24+", label: "years of professional experience" },
 ];
-// On the homepage the figures row already gives the founder's coaching hours, so the founder section leaves them out.
-const HOME_FOUNDER_FACTS = FOUNDER_FACTS.filter((fact) => fact.value !== "4,100+");
 
-/* The homepage's top half (hero, pathways, figures) and its FAQ. Shared with
-   scripts/upgrade-homepage.ts, which brings the live homepage up to this layout. */
+/* The homepage, from the November 2026 design ("Butterfly Home Redesign"). Shared
+   with scripts/upgrade-homepage.ts, which moves a live homepage to this layout as a
+   draft. Text uses the design's effects markup (see src/components/ui/emphasis.tsx):
+   ==yellow highlight==, ++lavender highlight++, **bold**, __underline__, ((circle)),
+   [[yellow tag]].
+
+   Claims in the design that the owner must confirm before publishing (they are
+   listed in docs/CONTENT_APPROVAL_CHECKLIST.md): "1 of 4 in India" and "about 46
+   academies worldwide", live online delivery, instalments, and the list of
+   countries learners join from. */
+const RESERVE = link("Reserve my seat", "/level-1-acc-coach-program/#enquire");
+
+const ICF_LOGOS = [
+  { image: m("icf.level-1"), name: "ICF Level 1 accredited coaching education", caption: "Level 1 · ACC" },
+  { image: m("icf.level-2"), name: "ICF Level 2 accredited coaching education", caption: "Level 2 · PCC" },
+  { image: m("icf.level-3"), name: "ICF Level 3 accredited coaching education", caption: "Level 3 · MCC" },
+];
+
 export const HOME_HERO = {
   variant: "home",
-  // Each claim appears once here (owner, October 2026): ICF accreditation in the line under the heading, the
-  // founder on the photograph's tag; the founder's coaching hours are in the figures row below.
-  eyebrow: "",
+  eyebrow: "ICF-accredited at ++all 3 levels++",
   heading: "Learning that stays.",
   headingAccent: "Coaching that transforms.",
-  subheading: "ICF-accredited coach training built on practice, spaced review and founder mentoring.",
-  primaryCta: BOOK,
-  secondaryCta: link("Explore programmes", "/coaching-certifications/"),
-  chips: [],
-  trustText: "Join coaches learning through practice, reflection and feedback.",
-  trustPhotos: true,
+  subheading: "==Rooted in India. Recognised worldwide.== ICF coach training built on practice, review and founder mentoring.",
+  primaryCta: RESERVE,
+  ctaNote: "takes 2 minutes",
+  secondaryCta: link("Just browsing? See programmes and fees", "#programmes"),
+  guideForm: true,
+  guideLabel: "++Free++ programme guide: fees, dates and session times",
   // Authentic BCA photograph: Anup Mittal with learners around a practice table.
   image: m("gallery.anup-with-table-group"),
   imageTall: null,
   imageFocus: "left",
-  credentialValue: "Anup Mittal, MCC",
-  credentialLabel: "Master Certified Coach, ICF",
+  badges: ICF_LOGOS.map(({ image, name }) => ({ image, name })),
+  credentialValue: "1 of 4",
+  credentialLabel: "in India",
+  credentialDetail: "accredited at all 3 ICF levels",
+  stickerText: "LIVE ONLINE ✦ JOIN FROM ANYWHERE ✦ ENGLISH ✦",
+};
+
+export const HOME_ACCREDITATION = {
+  layout: "spotlight",
+  anchor: "accreditation",
+  eyebrow: "A rare distinction",
+  heading: "One of about ((46 academies worldwide)) accredited by ICF at ++all three levels++, and one of [[only 4 in India.]]",
+  intro: "As per ICF's published data.",
+  ticker: ["ICF Level 1", "ICF Level 2", "ICF Level 3", "About 46 worldwide", "Only 4 in India", "Butterfly is one"],
+  note: "all three!",
+  logos: ICF_LOGOS,
+  facts: [],
 };
 
 export const HOME_PATHS = {
-  layout: "panel",
+  layout: "numbered",
   heading: "Choose your path",
-  intro: "Three ways to work with us, depending on where you are headed.",
+  intro: "Three ways to work with us, depending on ++where you are headed.++",
   items: [
     {
+      tag: "For aspiring coaches",
       title: "Become a Coach",
-      body: "ACC, PCC and MCC pathways",
-      link: link("Explore coach training", "/coaching-certifications/"),
+      body: "Earn your credential: **ACC, PCC and MCC**",
+      link: RESERVE,
+      secondaryLink: link("Fees", "#programmes"),
+      accent: false,
       icon: "cap",
       image: m("photo.path-become-a-coach"),
     },
     {
+      tag: "For people leaders",
       title: "Grow as a Leader",
-      body: "Coaching skills for HR, L&D and managers",
-      link: link("Start with Level 1", "/level-1-acc-coach-program/"),
+      body: "Coaching skills for **HR, L&D and managers**",
+      link: RESERVE,
+      secondaryLink: link("Fees", "#programmes"),
+      accent: false,
       icon: "trend",
       image: m("photo.path-grow-as-a-leader"),
     },
     {
+      tag: "For organisations",
       title: "Develop your Organisation",
-      body: "Corporate coaching and leadership programmes",
-      link: link("See corporate programmes", "/services/corporate-programs/"),
+      body: "**Corporate coaching** programmes",
+      link: link("Talk to us", "/contact-us/?intent=corporate#enquire"),
+      secondaryLink: link("Details", "/services/corporate-programs/"),
+      accent: true,
       icon: "buildings",
       image: m("photo.path-develop-your-organisation"),
     },
   ],
 };
 
-/** Verified figures only. "Coaches trained" and "Organisations partnered" stay empty, and so hidden, until the owner confirms them. */
-export const HOME_STATS = {
-  heading: "Butterfly Coaching Academy in figures",
-  showHeading: false,
+export const HOME_WHY = {
+  layout: "bento",
+  background: "lavender",
+  heading: "Why learners choose ==BCA==",
+  intro: "",
+  sequence: ["Learn", "Practise", "Feedback", "Revisit"],
   items: [
-    { value: "4,100", prefix: "", suffix: "+", label: "Hours of one-to-one coaching by our founder", countUp: true },
-    { value: "3", prefix: "", suffix: "", label: "ICF credential pathways: ACC, PCC and MCC", countUp: true },
-    { value: "24", prefix: "", suffix: "+", label: "Years of professional experience behind our founder", countUp: true },
-    { value: "2022", prefix: "", suffix: "", label: "Founded by Anup Mittal, MCC", countUp: false },
-    { value: "", prefix: "", suffix: "+", label: "Coaches trained", countUp: true },
-    { value: "", prefix: "", suffix: "", label: "Organisations partnered", countUp: true },
+    {
+      title: "Learning that sticks",
+      body: "Learn, practise, revisit. ++Knowledge becomes instinct.++",
+      visual: "loop",
+      note: "repeat, deeper",
+      letters: [],
+      figure: "",
+      figureLabel: "",
+      tags: [],
+    },
+    {
+      title: "The __iKAN__ framework",
+      body: "A clear structure you can use **from your first session.**",
+      visual: "letters",
+      note: "our own",
+      letters: ["i: Identify the real need", "K: Explore the known and unknown", "A: Choose an alternate path", "N: Take actio**N**, then repeat"],
+      figure: "",
+      figureLabel: "",
+      tags: [],
+    },
+    {
+      title: "Mentoring and feedback",
+      body: "Practice labs, ++assessed against ICF competencies.++",
+      visual: "figure",
+      note: "",
+      letters: [],
+      // Every certification programme includes 10 hours of mentor coaching (see PROGRAMMES).
+      figure: "10",
+      figureLabel: "hours of mentor coaching at every level",
+      tags: ["Practice labs", "Mentor coaching", "ICF competencies"],
+    },
   ],
+  image: null,
+  cta: NO_LINK,
+};
+
+export const HOME_FEES = {
+  source: "fees",
+  background: "lavender",
+  anchor: "programmes",
+  heading: "Programmes and fees",
+  intro: "Every level runs ++live online, in English.++",
+  note: "instalments available",
+  buttonLabel: "Reserve",
+  columns: [],
+  rows: [],
+  footnote: "",
+};
+
+export const HOME_COMMUNITY = {
+  heading: "A ((global)) learning community",
+  intro: "Live online, so the room can include coaches from around the world.",
+  places: ["IN India", "AE UAE", "SG Singapore", "ID Indonesia", "GB UK", "US USA"],
+  moreLabel: "+ more",
+};
+
+export const HOME_STORIES = {
+  heading: "Student stories",
+  intro: "",
+  source: "featured",
+  layout: "pair",
+  limit: 2,
+  cta: link("Read more stories", "/testimonial/"),
 };
 
 export const HOME_FAQ = {
-  heading: "Questions, answered.",
-  intro: "Straight answers on programmes, eligibility, formats and how to enquire. If you are still deciding, we will help you choose.",
+  background: "lavender",
+  heading: "Questions, answered",
+  intro: "",
   group: "home",
   helpHeading: "Still unsure? Talk to us.",
-  helpText: "A short conversation is often the quickest way to find the programme that fits where you are headed.",
+  helpText: "A short conversation is often the quickest way to find the programme that fits.",
   cta: BOOK,
 };
+
+export const HOME_CHOICES = {
+  layout: "choices",
+  heading: "Where are you today?",
+  intro: "",
+  items: [
+    { tag: "takes 2 minutes", title: "I'm ready", body: "", link: RESERVE, secondaryLink: NO_LINK, accent: true, icon: "cap", image: null },
+    { tag: "", title: "I'm curious", body: "++Free guide++ with fees and dates.", link: link("Get the guide", "#guide"), secondaryLink: NO_LINK, accent: false, icon: "compass", image: null },
+    {
+      tag: "",
+      title: "I'm still deciding",
+      body: "**No sign-up.** We won't contact you.",
+      link: link("Compare programmes", "#programmes"),
+      secondaryLink: NO_LINK,
+      accent: false,
+      icon: "users",
+      image: null,
+    },
+  ],
+};
+
+export const HOME_GUIDE = {
+  layout: "guide",
+  anchor: "guide",
+  note: "it's free",
+  heading: "Get the programme ==guide==",
+  body: "Fees, dates and session times for all three levels, sent to your inbox.",
+  formNote: "We only use your email to send the guide.",
+};
+
+/** The homepage's sections, in the design's order. */
+export const HOME_SECTIONS: Section[] = [
+  { type: "hero", data: HOME_HERO },
+  { type: "trust_strip", data: HOME_ACCREDITATION },
+  { type: "path_cards", data: HOME_PATHS },
+  { type: "feature_list", data: HOME_WHY },
+  { type: "comparison_table", data: HOME_FEES },
+  { type: "community", data: HOME_COMMUNITY },
+  { type: "testimonials", data: HOME_STORIES },
+  { type: "faq", data: HOME_FAQ },
+  { type: "path_cards", data: HOME_CHOICES },
+  { type: "newsletter", data: HOME_GUIDE },
+];
 
 const closingCta = (heading = "Ready to find your next step?"): Section => ({
   type: "cta",
@@ -687,135 +825,7 @@ export const PAGES: PageSeed[] = [
     seoTitle: "Butterfly Coaching Academy: ICF-accredited coach training in India",
     seoDescription:
       "Learning that stays. ICF-accredited coach training built on practice, spaced review and founder mentoring. ACC, PCC and MCC pathways, mentoring and corporate programmes.",
-    sections: [
-      {
-        type: "hero",
-        data: HOME_HERO,
-      },
-      {
-        type: "path_cards",
-        data: HOME_PATHS,
-      },
-      {
-        type: "stats",
-        data: HOME_STATS,
-      },
-      {
-        type: "trust_strip",
-        data: {
-          heading: "ICF-accredited coach education",
-          logos: [
-            { image: m("icf.level-1"), name: "ICF Level 1 accredited coaching education" },
-            { image: m("icf.level-2"), name: "ICF Level 2 accredited coaching education" },
-            { image: m("icf.level-3"), name: "ICF Level 3 accredited coaching education" },
-          ],
-          facts: [],
-        },
-      },
-      {
-        type: "feature_list",
-        data: {
-          background: "cream",
-          heading: "Why learners choose BCA",
-          intro: "Coach training that changes how you show up with people, not just what you know about coaching.",
-          items: [
-            {
-              title: "Learning that sticks",
-              body: "You learn a concept, use it in real coaching conversations, then come back to it with what you've learnt. Going round that loop is how knowledge becomes instinct.",
-            },
-            {
-              title: "iKAN, our own coaching framework",
-              body: "A clear structure you can use from your first session: **I**dentify the real need, explore the **K**nown and unknown, choose an **A**lternate path, and take actio**N**. Then repeat.",
-            },
-            {
-              title: "Practice, reflection and mentoring",
-              body: "Learning labs build understanding. Practice labs, mentor coaching and feedback against ICF competencies build skill, so you leave ready to coach and not just knowing about coaching.",
-            },
-          ],
-          image: m("photo.practice-feedback"),
-          cta: link("How we teach", "/about-us/"),
-        },
-      },
-      {
-        type: "programme_cards",
-        data: {
-          heading: "Explore programmes",
-          intro: "ICF credential pathways, mentoring for working coaches, and programmes for organisations.",
-          source: "featured",
-          cta: link("Compare the pathways", "/coaching-certifications/#compare"),
-        },
-      },
-      {
-        type: "timeline",
-        data: {
-          background: "cream",
-          layout: "loop",
-          eyebrow: "The learning journey",
-          heading: "How you'll grow, one loop at a time",
-          intro: "Every programme follows the same rhythm. Each time round, the skill goes deeper.",
-          // Quotes: word for word from the published student stories (see TESTIMONIALS).
-          steps: [
-            {
-              marker: "",
-              title: "Learn",
-              body: "Live learning labs with Anup and faculty. Small groups, real questions.",
-              quote: "The hands-on learning labs makes it experiential.",
-              quoteBy: "Naved Narayan",
-            },
-            {
-              marker: "",
-              title: "Practise",
-              body: "Coach a peer in your first week. Yes, your first week.",
-              quote: "Understanding the nuances of ICF standards and applying it in my work has provided some remarkable results.",
-              quoteBy: "Mrinal Bafna",
-            },
-            {
-              marker: "",
-              title: "Receive feedback",
-              body: 'Specific notes against ICF competencies, not "that was good".',
-              quote: "Anup makes himself available always, be it additional group sessions or a one-on-one mentoring calls.",
-              quoteBy: "Naved Narayan",
-            },
-            {
-              marker: "",
-              title: "Reflect and revisit",
-              body: "Come back to week-one ideas in week eight and see them differently.",
-              quote: "I am a firm believer that in order to be an effective coach, you keep challenging your own beliefs and patterns in order to be the same with clients.",
-              quoteBy: "Dr. Supriya Dhongde",
-            },
-            { marker: "", title: "Build capability", body: "Evaluated practice shows you are ready for your credential.", quote: "", quoteBy: "" },
-          ],
-          ctaLead: "Want to see a practice lab before you decide?",
-          cta: BOOK,
-        },
-      },
-      {
-        type: "profiles",
-        data: {
-          heading: "Meet the founder",
-          intro: "",
-          source: "founder",
-          facts: HOME_FOUNDER_FACTS,
-          cta: link("About BCA", "/about-us/"),
-        },
-      },
-      {
-        type: "testimonials",
-        data: {
-          background: "cream",
-          heading: "Student stories",
-          intro: "What learning with BCA is like, in our learners' own words.",
-          source: "featured",
-          limit: 4,
-          cta: link("Read more student stories", "/testimonial/"),
-        },
-      },
-      {
-        type: "faq",
-        data: HOME_FAQ,
-      },
-      closingCta(),
-    ],
+    sections: HOME_SECTIONS,
   },
 
   {

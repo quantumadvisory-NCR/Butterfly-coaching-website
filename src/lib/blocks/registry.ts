@@ -7,6 +7,11 @@ import { type DataOf, type Field, collectMediaIds, defaultsFor, mapRichText, obj
 
 const link = <N extends string>(name: N, label: string, help?: string) => ({ type: "link", name, label, help }) as const;
 
+/** Help for text fields that accept the design's emphasis markup (see components/ui/emphasis.tsx). */
+const EFFECTS =
+  "Effects: **words** in bold, ==words== yellow highlighter, ++words++ lavender highlighter, __words__ hand-drawn underline, ((words)) hand-drawn circle, [[words]] yellow tag.";
+const HEADING_EFFECTS = `${EFFECTS} Without any, the last word gets the hand-drawn underline.`;
+
 /** Options every block shares. */
 const shared = [
   {
@@ -19,6 +24,7 @@ const shared = [
     options: [
       { value: "cream", label: "Page background (standard)" },
       { value: "surface", label: "White" },
+      { value: "lavender", label: "Soft lavender (homepage design)" },
     ],
   },
   {
@@ -42,54 +48,37 @@ const hero = [
       { value: "page", label: "Page header (compact)" },
     ],
   },
-  { type: "text", name: "eyebrow", label: "Small label above the heading", maxLength: 60 },
-  { type: "text", name: "heading", label: "Heading", required: true, maxLength: 90 },
+  {
+    type: "text",
+    name: "eyebrow",
+    label: "Small label above the heading",
+    help: 'On the homepage it sits in a pill with a pulsing dot; separate phrases with " · ". ++words++ shows words in lavender.',
+    maxLength: 90,
+  },
+  { type: "text", name: "heading", label: "Heading", required: true, help: `${EFFECTS} On a page header without any, the last word gets the hand-drawn underline.`, maxLength: 90 },
   {
     type: "text",
     name: "headingAccent",
     label: "Second line of the heading (homepage)",
-    help: "Optional. Shown on its own line in the accent colour, e.g. \"Coaching that transforms.\"",
+    help: 'Optional. Shown in gray, with its last word on a line of its own in lavender over a hand-drawn yellow stroke, e.g. "Coaching that transforms."',
     maxLength: 90,
   },
-  { type: "textarea", name: "subheading", label: "Supporting statement", maxLength: 320, rows: 3 },
+  { type: "textarea", name: "subheading", label: "Supporting statement", help: EFFECTS, maxLength: 320, rows: 3 },
   link("primaryCta", "Primary button"),
-  link("secondaryCta", "Secondary button"),
+  { type: "text", name: "ctaNote", label: "Handwritten note beside the button (homepage)", help: 'Optional, e.g. "takes 2 minutes".', maxLength: 32 },
+  link("secondaryCta", "Secondary button", "On the homepage this is a text link under the button."),
   {
-    type: "list",
-    name: "chips",
-    label: "Proof points under the buttons (homepage)",
-    help: "Short, verified facts only. They are shown as small labels.",
-    itemLabel: "Proof point",
-    titleField: "label",
-    max: 4,
-    fields: [
-      { type: "text", name: "label", label: "Text", required: true, maxLength: 48 },
-      {
-        type: "select",
-        name: "icon",
-        label: "Icon",
-        options: [
-          { value: "seal", label: "Seal (accreditation)" },
-          { value: "person", label: "Person (founder)" },
-          { value: "clock", label: "Clock (hours)" },
-          { value: "cap", label: "Graduation cap (pathways)" },
-          { value: "none", label: "No icon" },
-        ],
-      },
-    ],
+    type: "boolean",
+    name: "guideForm",
+    label: "Show the programme guide form (homepage)",
+    help: "An email box that asks for the free programme guide. Requests arrive in Enquiries as \"Programme guide request\" so the team can send it.",
   },
   {
     type: "text",
-    name: "trustText",
-    label: "Trust line (homepage)",
-    help: "One short sentence beside learner photos. Do not use a number unless it is verified.",
-    maxLength: 120,
-  },
-  {
-    type: "boolean",
-    name: "trustPhotos",
-    label: "Show learner photos beside the trust line",
-    help: "Uses photographs from approved testimonials only.",
+    name: "guideLabel",
+    label: "Guide form label (homepage)",
+    help: `${EFFECTS}`,
+    maxLength: 90,
   },
   { type: "image", name: "image", label: "Image" },
   {
@@ -109,17 +98,44 @@ const hero = [
       { value: "right", label: "Keep the right side in view" },
     ],
   },
-  { type: "text", name: "credentialValue", label: "Credential card: title", help: 'Optional small card on the photograph, e.g. "Anup Mittal, MCC".', maxLength: 40 },
-  { type: "text", name: "credentialLabel", label: "Credential card: detail", help: 'e.g. "Master Certified Coach, ICF". Only use credentials that are accurate.', maxLength: 60 },
+  {
+    type: "list",
+    name: "badges",
+    label: "Badges under the photograph (homepage)",
+    help: "Up to three, e.g. the ICF accreditation marks. The middle one is shown larger.",
+    itemLabel: "Badge",
+    titleField: "name",
+    max: 3,
+    fields: [
+      { type: "image", name: "image", label: "Badge image" },
+      { type: "text", name: "name", label: "Name (read aloud by screen readers)", required: true, maxLength: 80 },
+    ],
+  },
+  {
+    type: "text",
+    name: "credentialValue",
+    label: "Dark sticker: big figure (homepage)",
+    help: 'Optional sticker on the photograph, e.g. "1 of 4". Only use claims you can evidence.',
+    maxLength: 40,
+  },
+  { type: "text", name: "credentialLabel", label: "Dark sticker: first line", help: 'e.g. "in India".', maxLength: 60 },
+  { type: "text", name: "credentialDetail", label: "Dark sticker: second line", help: 'e.g. "accredited at all 3 ICF levels".', maxLength: 60 },
+  {
+    type: "text",
+    name: "stickerText",
+    label: "Turning circle text (homepage)",
+    help: 'Optional words that circle slowly beside the photograph, e.g. "LIVE ONLINE ✦ JOIN FROM ANYWHERE ✦ ENGLISH ✦".',
+    maxLength: 60,
+  },
 ] as const satisfies readonly Field[];
 
 const richText = [
-  { type: "text", name: "heading", label: "Heading", maxLength: 120 },
+  { type: "text", name: "heading", label: "Heading", help: HEADING_EFFECTS, maxLength: 120 },
   { type: "richtext", name: "body", label: "Text", required: true },
 ] as const satisfies readonly Field[];
 
 const imageText = [
-  { type: "text", name: "heading", label: "Heading", required: true, maxLength: 120 },
+  { type: "text", name: "heading", label: "Heading", required: true, help: HEADING_EFFECTS, maxLength: 120 },
   { type: "richtext", name: "body", label: "Text" },
   { type: "stringList", name: "bullets", label: "Bullet points", itemLabel: "Point" },
   link("cta", "Button"),
@@ -141,13 +157,16 @@ const pathCards = [
     name: "layout",
     label: "Layout",
     help: "The charcoal panel overlaps the bottom of a homepage hero placed directly above it.",
+    // The first option is the default for saved pages that predate this field, so it stays first.
     options: [
       { value: "panel", label: "Charcoal panel with icon cards" },
       { value: "images", label: "Image cards" },
+      { value: "numbered", label: "Numbered cards (homepage design)" },
+      { value: "choices", label: "Dark section of choices, e.g. \"Where are you today?\" (homepage design)" },
     ],
   },
-  { type: "text", name: "heading", label: "Heading", required: true, maxLength: 120 },
-  { type: "textarea", name: "intro", label: "Introduction", maxLength: 300, rows: 2 },
+  { type: "text", name: "heading", label: "Heading", required: true, help: HEADING_EFFECTS, maxLength: 120 },
+  { type: "textarea", name: "intro", label: "Introduction", help: EFFECTS, maxLength: 300, rows: 2 },
   {
     type: "list",
     name: "items",
@@ -156,9 +175,23 @@ const pathCards = [
     titleField: "title",
     max: 4,
     fields: [
+      {
+        type: "text",
+        name: "tag",
+        label: "Small label (numbered cards) or handwritten note (choices)",
+        help: 'e.g. "For aspiring coaches", or "takes 2 minutes".',
+        maxLength: 40,
+      },
       { type: "text", name: "title", label: "Title", required: true, maxLength: 60 },
-      { type: "textarea", name: "body", label: "Description", maxLength: 240, rows: 3 },
-      link("link", "Link"),
+      { type: "textarea", name: "body", label: "Description", help: EFFECTS, maxLength: 240, rows: 3 },
+      link("link", "Link", "In the homepage design layouts this is the card's button."),
+      link("secondaryLink", "Second link (numbered cards)", 'Optional text link beside the button, e.g. "Fees".'),
+      {
+        type: "boolean",
+        name: "accent",
+        label: "Colour this card",
+        help: "Numbered cards: soft lavender with a lavender button. Choices: butterfly yellow with a dark button.",
+      },
       {
         type: "select",
         name: "icon",
@@ -177,14 +210,23 @@ const pathCards = [
 ] as const satisfies readonly Field[];
 
 const featureList = [
-  { type: "text", name: "heading", label: "Heading", required: true, maxLength: 120 },
+  {
+    type: "select",
+    name: "layout",
+    label: "Layout",
+    options: [
+      { value: "steps", label: "Numbered points beside a photograph" },
+      { value: "bento", label: "Picture cards side by side (homepage design)" },
+    ],
+  },
+  { type: "text", name: "heading", label: "Heading", required: true, help: HEADING_EFFECTS, maxLength: 120 },
   { type: "textarea", name: "intro", label: "Introduction", maxLength: 400, rows: 3 },
   {
     type: "stringList",
     name: "sequence",
     label: "Sequence",
     itemLabel: "Word",
-    help: "Optional. A few short words shown after the introduction as chips joined by arrows, e.g. Awareness, Choice, Action. The last one is highlighted.",
+    help: "Optional. Numbered layout: chips joined by arrows after the introduction, e.g. Awareness, Choice, Action. Picture cards: up to four words around the loop on a \"Loop\" card, e.g. Learn, Practise, Feedback, Revisit.",
   },
   {
     type: "list",
@@ -194,8 +236,37 @@ const featureList = [
     titleField: "title",
     max: 8,
     fields: [
-      { type: "text", name: "title", label: "Title", required: true, maxLength: 80 },
-      { type: "textarea", name: "body", label: "Description", help: "Put **double asterisks** around letters or words to show them in bold.", maxLength: 400, rows: 3 },
+      { type: "text", name: "title", label: "Title", required: true, help: "Picture cards accept the effects, e.g. The __iKAN__ framework.", maxLength: 80 },
+      {
+        type: "textarea",
+        name: "body",
+        label: "Description",
+        help: "**Double asterisks** show letters or words in bold. Picture cards also take the effects, e.g. ++words++ for a lavender highlight.",
+        maxLength: 400,
+        rows: 3,
+      },
+      {
+        type: "select",
+        name: "visual",
+        label: "Picture (picture cards)",
+        options: [
+          { value: "none", label: "None" },
+          { value: "loop", label: "Loop: the sequence words around a circle" },
+          { value: "letters", label: "Letter tiles" },
+          { value: "figure", label: "Big figure on a dark card" },
+        ],
+      },
+      { type: "text", name: "note", label: "Handwritten note (picture cards)", help: 'e.g. "our own", or the words in the middle of the loop.', maxLength: 40 },
+      {
+        type: "stringList",
+        name: "letters",
+        label: "Letter tiles",
+        itemLabel: "Tile",
+        help: 'One per tile, as "Letter: text", e.g. "K: Explore the known and unknown". Wrap a letter in **asterisks** to colour it.',
+      },
+      { type: "text", name: "figure", label: "Big figure", help: 'e.g. "10". Verified figures only.', maxLength: 8 },
+      { type: "text", name: "figureLabel", label: "What the figure measures", maxLength: 80 },
+      { type: "stringList", name: "tags", label: "Small labels under the figure", itemLabel: "Label" },
     ],
   },
   { type: "image", name: "image", label: "Image", help: "Optional. Shown beside the list on wide screens." },
@@ -203,7 +274,7 @@ const featureList = [
 ] as const satisfies readonly Field[];
 
 const programmeCards = [
-  { type: "text", name: "heading", label: "Heading", required: true, maxLength: 120 },
+  { type: "text", name: "heading", label: "Heading", required: true, help: HEADING_EFFECTS, maxLength: 120 },
   { type: "textarea", name: "intro", label: "Introduction", maxLength: 400, rows: 3 },
   {
     type: "select",
@@ -220,16 +291,31 @@ const programmeCards = [
 ] as const satisfies readonly Field[];
 
 const comparisonTable = [
-  { type: "text", name: "heading", label: "Heading", required: true, maxLength: 120 },
-  { type: "textarea", name: "intro", label: "Introduction", maxLength: 400, rows: 3 },
+  { type: "text", name: "heading", label: "Heading", required: true, help: HEADING_EFFECTS, maxLength: 120 },
+  { type: "textarea", name: "intro", label: "Introduction", help: EFFECTS, maxLength: 400, rows: 3 },
   {
     type: "select",
     name: "source",
     label: "Content",
     options: [
       { value: "programmes", label: "Compare ICF credential pathways automatically" },
+      { value: "fees", label: "Programmes and fees, with badges and buttons (homepage design)" },
       { value: "custom", label: "Custom table (use the columns and rows below)" },
     ],
+  },
+  {
+    type: "text",
+    name: "note",
+    label: "Handwritten note (programmes and fees)",
+    help: 'Shown under the table, e.g. "instalments available". Leave empty for none.',
+    maxLength: 40,
+  },
+  {
+    type: "text",
+    name: "buttonLabel",
+    label: "Button under each programme (programmes and fees)",
+    help: 'e.g. "Reserve". Opens the programme\'s enquiry form. Leave empty for no buttons.',
+    maxLength: 24,
   },
   { type: "stringList", name: "columns", label: "Column headings (custom table)", itemLabel: "Column" },
   {
@@ -247,7 +333,7 @@ const comparisonTable = [
 ] as const satisfies readonly Field[];
 
 const testimonials = [
-  { type: "text", name: "heading", label: "Heading", required: true, maxLength: 120 },
+  { type: "text", name: "heading", label: "Heading", required: true, help: HEADING_EFFECTS, maxLength: 120 },
   { type: "textarea", name: "intro", label: "Introduction", maxLength: 300, rows: 2 },
   {
     type: "select",
@@ -259,12 +345,21 @@ const testimonials = [
       { value: "all", label: "All approved testimonials" },
     ],
   },
+  {
+    type: "select",
+    name: "layout",
+    label: "Layout (featured testimonials)",
+    options: [
+      { value: "showcase", label: "One story told large, with the others to choose from" },
+      { value: "pair", label: "Two stories side by side, the first on a dark card (homepage design)" },
+    ],
+  },
   { type: "number", name: "limit", label: "Maximum to show", min: 1, max: 60 },
   link("cta", "Button"),
 ] as const satisfies readonly Field[];
 
 const profiles = [
-  { type: "text", name: "heading", label: "Heading", required: true, maxLength: 120 },
+  { type: "text", name: "heading", label: "Heading", required: true, help: HEADING_EFFECTS, maxLength: 120 },
   { type: "textarea", name: "intro", label: "Introduction", maxLength: 500, rows: 3 },
   {
     type: "select",
@@ -293,7 +388,7 @@ const profiles = [
 ] as const satisfies readonly Field[];
 
 const faq = [
-  { type: "text", name: "heading", label: "Heading", required: true, maxLength: 120 },
+  { type: "text", name: "heading", label: "Heading", required: true, help: HEADING_EFFECTS, maxLength: 120 },
   { type: "textarea", name: "intro", label: "Introduction", maxLength: 300, rows: 2 },
   {
     type: "reference",
@@ -319,7 +414,7 @@ const timeline = [
     ],
   },
   { type: "text", name: "eyebrow", label: "Small label above the heading", maxLength: 60 },
-  { type: "text", name: "heading", label: "Heading", required: true, maxLength: 120 },
+  { type: "text", name: "heading", label: "Heading", required: true, help: HEADING_EFFECTS, maxLength: 120 },
   { type: "textarea", name: "intro", label: "Introduction", maxLength: 400, rows: 3 },
   {
     type: "list",
@@ -347,7 +442,7 @@ const timeline = [
 ] as const satisfies readonly Field[];
 
 const gallery = [
-  { type: "text", name: "heading", label: "Heading", maxLength: 120 },
+  { type: "text", name: "heading", label: "Heading", help: HEADING_EFFECTS, maxLength: 120 },
   { type: "textarea", name: "intro", label: "Introduction", maxLength: 300, rows: 2 },
   {
     type: "list",
@@ -364,7 +459,7 @@ const gallery = [
 ] as const satisfies readonly Field[];
 
 const video = [
-  { type: "text", name: "heading", label: "Heading", maxLength: 120 },
+  { type: "text", name: "heading", label: "Heading", help: HEADING_EFFECTS, maxLength: 120 },
   { type: "textarea", name: "intro", label: "Introduction", maxLength: 300, rows: 2 },
   {
     type: "list",
@@ -381,14 +476,14 @@ const video = [
 ] as const satisfies readonly Field[];
 
 const cta = [
-  { type: "text", name: "heading", label: "Heading", required: true, maxLength: 120 },
+  { type: "text", name: "heading", label: "Heading", required: true, help: HEADING_EFFECTS, maxLength: 120 },
   { type: "textarea", name: "body", label: "Text", maxLength: 300, rows: 2 },
   link("primaryCta", "Primary button"),
   link("secondaryCta", "Secondary button", 'Use "whatsapp" as the link to open WhatsApp with the number from Site settings.'),
 ] as const satisfies readonly Field[];
 
 const contactForm = [
-  { type: "text", name: "heading", label: "Heading", required: true, maxLength: 120 },
+  { type: "text", name: "heading", label: "Heading", required: true, help: HEADING_EFFECTS, maxLength: 120 },
   { type: "textarea", name: "intro", label: "Introduction", maxLength: 400, rows: 3 },
   {
     type: "select",
@@ -407,18 +502,66 @@ const contactForm = [
 ] as const satisfies readonly Field[];
 
 const newsletter = [
-  { type: "text", name: "heading", label: "Heading", required: true, maxLength: 120 },
+  {
+    type: "select",
+    name: "layout",
+    label: "Form",
+    options: [
+      { value: "newsletter", label: "Newsletter signup" },
+      { value: "guide", label: "Programme guide request, on a lavender panel (homepage design)" },
+    ],
+  },
+  { type: "text", name: "note", label: "Handwritten note above the heading", help: 'Optional, e.g. "it\'s free".', maxLength: 32 },
+  { type: "text", name: "heading", label: "Heading", required: true, help: EFFECTS, maxLength: 120 },
   { type: "textarea", name: "body", label: "Text", maxLength: 300, rows: 2 },
+  {
+    type: "text",
+    name: "formNote",
+    label: "Line under the form (programme guide)",
+    help: 'e.g. "We only use your email to send the guide."',
+    maxLength: 120,
+  },
+] as const satisfies readonly Field[];
+
+const community = [
+  { type: "text", name: "heading", label: "Heading", required: true, help: HEADING_EFFECTS, maxLength: 120 },
+  { type: "textarea", name: "intro", label: "Introduction", help: EFFECTS, maxLength: 300, rows: 2 },
+  {
+    type: "stringList",
+    name: "places",
+    label: "Places",
+    itemLabel: "Place",
+    help: 'One chip each, with an optional two-letter code first, e.g. "IN India". The first chip is yellow. Only list places your learners really join from.',
+  },
+  { type: "text", name: "moreLabel", label: "Last chip", help: 'Optional, e.g. "+ more".', maxLength: 30 },
 ] as const satisfies readonly Field[];
 
 const resourceDownloads = [
-  { type: "text", name: "heading", label: "Heading", required: true, maxLength: 120 },
+  { type: "text", name: "heading", label: "Heading", required: true, help: HEADING_EFFECTS, maxLength: 120 },
   { type: "textarea", name: "intro", label: "Introduction", maxLength: 300, rows: 2 },
 ] as const satisfies readonly Field[];
 
 const trustStrip = [
-  { type: "text", name: "heading", label: "Heading", maxLength: 120 },
+  {
+    type: "select",
+    name: "layout",
+    label: "Layout",
+    options: [
+      { value: "card", label: "Badges in a white card" },
+      { value: "spotlight", label: "Dark spotlight with a moving ribbon and medals (homepage design)" },
+    ],
+  },
+  { type: "text", name: "eyebrow", label: "Small label above the heading (spotlight)", help: 'e.g. "A rare distinction".', maxLength: 60 },
+  { type: "text", name: "heading", label: "Heading", help: `${EFFECTS} Only claims you can evidence.`, maxLength: 160 },
   { type: "textarea", name: "intro", label: "Short text under the heading", help: "Optional. One sentence, and only verified claims.", maxLength: 200, rows: 2 },
+  {
+    type: "stringList",
+    name: "ticker",
+    label: "Moving ribbon (spotlight)",
+    itemLabel: "Phrase",
+    help: 'Short phrases that scroll across the yellow ribbon, e.g. "ICF Level 1". Leave empty for no ribbon.',
+  },
+  { type: "text", name: "note", label: "Handwritten note over the last badge (spotlight)", help: 'Optional, e.g. "all three!".', maxLength: 30 },
   {
     type: "list",
     name: "logos",
@@ -429,6 +572,7 @@ const trustStrip = [
     fields: [
       { type: "image", name: "image", label: "Logo image" },
       { type: "text", name: "name", label: "Name (read aloud by screen readers)", required: true, maxLength: 80 },
+      { type: "text", name: "caption", label: "Caption under the medal (spotlight)", help: 'e.g. "Level 1 · ACC".', maxLength: 40 },
     ],
   },
   {
@@ -467,7 +611,7 @@ const stats = [
 ] as const satisfies readonly Field[];
 
 const blogTeasers = [
-  { type: "text", name: "heading", label: "Heading", required: true, maxLength: 120 },
+  { type: "text", name: "heading", label: "Heading", required: true, help: HEADING_EFFECTS, maxLength: 120 },
   { type: "textarea", name: "intro", label: "Introduction", maxLength: 300, rows: 2 },
   { type: "number", name: "limit", label: "Number of articles", min: 1, max: 6 },
   link("cta", "Button"),
@@ -498,6 +642,7 @@ export type BlockData = {
   trust_strip: DataOf<typeof trustStrip> & Shared;
   stats: DataOf<typeof stats> & Shared;
   blog_teasers: DataOf<typeof blogTeasers> & Shared;
+  community: DataOf<typeof community> & Shared;
 };
 
 export type BlockType = keyof BlockData;
@@ -537,6 +682,7 @@ export const BLOCKS: readonly BlockDefinition[] = [
   define("trust_strip", "Trust strip", "Accreditation badges, logos and key facts.", trustStrip),
   define("stats", "Statistics strip", "Up to four verified figures that count up as they come into view.", stats),
   define("blog_teasers", "Latest articles", "The most recent blog posts.", blogTeasers),
+  define("community", "Global community", "Where learners join from, as chips along a butterfly's flight path.", community),
 ];
 
 const byType = new Map(BLOCKS.map((b) => [b.type, b]));

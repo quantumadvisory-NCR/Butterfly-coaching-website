@@ -16,6 +16,8 @@ import { siteUrl } from "@/lib/env";
 import { absoluteUrl } from "@/lib/seo";
 import { resolveHref } from "@/lib/settings";
 import { cn, formatDate, stripHtml } from "@/lib/utils";
+import { HeaderFlourish, Twinkle } from "@/components/ui/effects";
+import { Emphasis } from "@/components/ui/emphasis";
 
 function CheckList({ items, columns = false }: { items: string[]; columns?: boolean }) {
   return (
@@ -38,7 +40,9 @@ function Journey({ modules }: { modules: ProgrammeView["modules"] }) {
     <section id="journey" className="section-space bg-page">
       <div className="container-site grid gap-9 lg:grid-cols-12 lg:gap-12">
         <div className="lg:col-span-4">
-          <h2 className="text-h2">The journey, step by step</h2>
+          <h2 className="text-h2">
+            <Emphasis text="The journey, step by step" auto />
+          </h2>
           <p className="mt-4 text-lead">Education, practice, mentoring and evaluation, in the order you will experience them.</p>
         </div>
         <ol className="lg:col-span-8">
@@ -73,7 +77,9 @@ function Outcomes({ outcomes }: { outcomes: string[] }) {
   return (
     <section className="section-space bg-page">
       <div className="container-site">
-        <h2 className="text-h2">What you will build</h2>
+        <h2 className="text-h2">
+          <Emphasis text="What you will build" auto />
+        </h2>
         <div className="reveal mt-8 rounded-card bg-surface p-6 md:p-9">
           <CheckList items={outcomes} columns />
         </div>
@@ -113,14 +119,18 @@ export async function ProgrammeTemplate({
 
   return (
     <>
-      {/* Hero */}
-      <section className="bg-page">
-        <div className="container-site pb-12 pt-5 md:pb-16 lg:pb-20">
+      {/* Hero, with the flourish every page header shares with the homepage. */}
+      <section className="relative isolate overflow-hidden bg-page">
+        <HeaderFlourish />
+        <div className="container-site relative pb-12 pt-5 md:pb-16 lg:pb-20">
           <Breadcrumbs items={breadcrumbs} />
           <div className={cn("mt-6 grid items-center gap-9 md:mt-8", hero && "lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:gap-14")}>
             <div className="hero-enter max-w-2xl">
               <p className="eyebrow mb-3">{[p.levelLabel, p.credential && `${p.credential} pathway`].filter(Boolean).join(" · ")}</p>
-              <h1 className="text-h1">{p.name}</h1>
+              <h1 className="relative text-h1">
+                <Twinkle className="absolute -top-4 right-0 size-5 fill-accent max-sm:hidden" />
+                <Emphasis text={p.name} auto now />
+              </h1>
               {p.tagline && <p className="mt-4 max-w-xl text-lead">{p.tagline}</p>}
               <div className="mt-7 flex flex-col gap-3 min-[26rem]:flex-row min-[26rem]:flex-wrap">
                 <ButtonLink href={bookingHref}>Book a discovery call</ButtonLink>
@@ -141,7 +151,7 @@ export async function ProgrammeTemplate({
                   <MediaImage media={hero} fill preload sizes="(min-width: 64rem) 44vw, 100vw" />
                 </div>
                 {badge && (
-                  <div className="absolute -bottom-6 left-5 size-24 rounded-full bg-surface p-1.5 shadow-card md:size-28 lg:-left-6">
+                  <div className="fx-bob fx-medal absolute -bottom-6 left-5 size-24 rounded-full bg-surface p-1.5 shadow-[0_0_0_4px_var(--color-accent),0_18px_30px_-12px_rgb(28_22_49/0.55)] md:size-28 lg:-left-6">
                     <div className="relative size-full">
                       <MediaImage media={badge} fill sizes="112px" className="!object-contain" />
                     </div>
@@ -171,7 +181,9 @@ export async function ProgrammeTemplate({
       <section className="section-space bg-page">
         <div className="container-site grid gap-10 lg:grid-cols-12 lg:gap-14">
           <div className="reveal lg:col-span-7">
-            <h2 className="text-h2">About this pathway</h2>
+            <h2 className="text-h2">
+              <Emphasis text="About this pathway" auto />
+            </h2>
             <RichText html={p.descriptionHtml} className="prose-lg mt-5" />
             {p.accreditationNote && <p className="mt-6 rounded-field bg-tint px-4 py-3 text-[0.9375rem] text-navy">{p.accreditationNote}</p>}
           </div>
@@ -194,7 +206,9 @@ export async function ProgrammeTemplate({
           <div className="container-site grid gap-10 md:grid-cols-2 md:gap-12">
             {p.audience.length > 0 && (
               <div className="reveal">
-                <h2 className="text-h2">Who this is for</h2>
+                <h2 className="text-h2">
+                  <Emphasis text="Who this is for" auto />
+                </h2>
                 <div className="mt-6">
                   <CheckList items={p.audience} />
                 </div>
@@ -202,7 +216,9 @@ export async function ProgrammeTemplate({
             )}
             {p.eligibility.length > 0 && (
               <div className="reveal">
-                <h2 className="text-h2">Before you join</h2>
+                <h2 className="text-h2">
+                  <Emphasis text="Before you join" auto />
+                </h2>
                 <div className="mt-6">
                   <CheckList items={p.eligibility} />
                 </div>
@@ -230,7 +246,9 @@ export async function ProgrammeTemplate({
           <div className="container-site grid gap-10 md:grid-cols-2 md:gap-12">
             {cohorts.length > 0 && (
               <div>
-                <h2 className="text-h2">Upcoming cohorts</h2>
+                <h2 className="text-h2">
+                  <Emphasis text="Upcoming cohorts" auto />
+                </h2>
                 <ul className="mt-6 grid gap-3">
                   {cohorts.map((cohort) => (
                     <li key={cohort.id} className="rounded-card border border-line p-5">
@@ -250,7 +268,9 @@ export async function ProgrammeTemplate({
             )}
             {p.feeText && (
               <div>
-                <h2 className="text-h2">Fees</h2>
+                <h2 className="text-h2">
+                  <Emphasis text="Fees" auto />
+                </h2>
                 <p className="mt-6 font-display text-3xl font-bold tracking-tight text-navy">{p.feeText}</p>
                 {p.feeNote && <p className="mt-3 max-w-prose">{p.feeNote}</p>}
               </div>
@@ -263,7 +283,9 @@ export async function ProgrammeTemplate({
       {faculty.length > 0 && (
         <section className="section-space border-t border-line bg-page">
           <div className="container-site">
-            <h2 className="text-h2">Who you will learn with</h2>
+            <h2 className="text-h2">
+              <Emphasis text="Who you will learn with" auto />
+            </h2>
             <ul className="mt-9 grid gap-x-6 gap-y-9 sm:grid-cols-2 lg:grid-cols-4">
               {faculty.map((person) => {
                 const photo = ctx.media[person.photoId ?? ""] ?? null;
@@ -288,7 +310,9 @@ export async function ProgrammeTemplate({
       {stories.length > 0 && (
         <section className="section-space bg-page">
           <div className="container-site">
-            <h2 className="text-h2">What {p.credential ?? "programme"} learners say</h2>
+            <h2 className="text-h2">
+              <Emphasis text={`What ${p.credential ?? "programme"} learners say`} auto />
+            </h2>
             <div className="mt-9">
               <ProgrammeStories items={stories} credential={p.credential} ctx={blockCtx} />
             </div>
@@ -302,7 +326,9 @@ export async function ProgrammeTemplate({
         <section className="section-space bg-page">
           <div className="container-site grid gap-9 lg:grid-cols-12 lg:gap-12">
             <div className="lg:col-span-4">
-              <h2 className="text-h2">Questions about {p.credential ?? "this programme"}</h2>
+              <h2 className="text-h2">
+                <Emphasis text={`Questions about ${p.credential ?? "this programme"}`} auto />
+              </h2>
             </div>
             <div className="lg:col-span-8">
               <Accordion items={faqs.map((f) => ({ id: f.id, question: f.question, answerHtml: f.answerHtml }))} />
@@ -316,7 +342,9 @@ export async function ProgrammeTemplate({
       <section id="enquire" className="section-space bg-page">
         <div className="container-site grid gap-10 lg:grid-cols-12 lg:gap-14">
           <div className="lg:col-span-5">
-            <h2 className="text-h2">Talk to us about {p.credential ? `the ${p.credential} pathway` : p.name}</h2>
+            <h2 className="text-h2">
+              <Emphasis text={`Talk to us about ${p.credential ? `the ${p.credential} pathway` : p.name}`} auto />
+            </h2>
             <p className="mt-4 text-lead">
               Tell us where you are in your coaching journey. We will help you work out whether this is the right next step, and share current dates and fees.
             </p>

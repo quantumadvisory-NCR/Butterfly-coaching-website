@@ -44,6 +44,18 @@ The yellow strip above the menu reads "Next ACC cohort starts {date} · Limited 
 
 - [ ] When the next ACC cohort date is confirmed: **Settings > Header and announcement**, enter the **Cohort start date**, tick **Show the announcement bar**, save.
 
+### 1d. Claims in the November 2026 homepage design
+
+The new homepage design ("Butterfly Home Redesign") states facts that could not be checked against the existing website. They are in the homepage **draft** made by `npm run content:upgrade-home -- --apply`, exactly as the design has them, and nothing is live until the homepage is published. Confirm each one, or edit or remove it, in **Admin > Pages > Home** before publishing.
+
+- [ ] **"1 of 4 in India", "One of about 46 academies worldwide accredited by ICF at all three levels" and "Only 4 in India · Butterfly is one".** The hero's dark sticker, the accreditation spotlight heading and its moving ribbon. The research in [RESEARCH.md](RESEARCH.md) left a similar claim out (item 3) because it could not be evidenced. The design cites "ICF's published data": keep it only if you have that source. To remove it: clear the **Dark sticker** fields in the hero, and edit the spotlight's heading and ribbon.
+- [ ] **Live online, in English, join from anywhere.** The turning circle beside the hero photo, "Every level runs live online, in English." above the fees table, and the community introduction. The programme pages say "English, with Hindi support" and do not mention online delivery.
+- [ ] **"instalments available".** The handwritten note under the fees table.
+- [ ] **Countries learners join from.** India, UAE, Singapore, Indonesia, UK and USA in "A global learning community". List only places learners really join from.
+- [ ] **"takes 2 minutes".** The handwritten note beside "Reserve my seat".
+- [ ] **Fees, dates and session times.** The fees table shows these only when they are entered in **Programmes** (fee) and the programme's cohorts (dates and schedule); until then it says "Ask us for the current fee". The design file's placeholders (`[DD Month]`, `[____]`, `[X] countries`, a second story "from a learner outside India") were not carried over.
+- [ ] **The programme guide.** "Get the programme guide" asks only for an email address. Each request arrives in **Enquiries** as a "Programme guide request" (and by email, once notifications are set up); someone needs to reply with the guide. The visitor is told "We'll send you the guide shortly".
+
 ### 2. Level 3 (MCC) accreditation
 
 Your existing site disagrees with itself. The MCC page says "ICF Level 3 accredited" and shows a Level 3 badge; the founder's page says BCA is "on its way to achieve Level 3 accreditation".

@@ -1,10 +1,15 @@
 import { ArrowRightIcon } from "@phosphor-icons/react/dist/ssr";
 import Link from "next/link";
+import type { ReactNode } from "react";
+import { todayInIndia } from "@/lib/announcement";
 import { ButtonLink, TextLink } from "@/components/ui/button-link";
+import { Arrow, LiveDot } from "@/components/ui/effects";
+import { Emphasis, plainText } from "@/components/ui/emphasis";
 import { MediaImage } from "@/components/ui/media-image";
 import { Section, SectionHeading } from "@/components/ui/section";
 import { type ProgrammeView, getProgrammes } from "@/lib/content/public";
-import { cn, formatHours } from "@/lib/utils";
+import { cn, formatDate, formatHours } from "@/lib/utils";
+import { DESIGN_H2 } from "./content";
 import { type BlockContext, type BlockProps, pickMedia, usableLink } from "./types";
 
 /** Verified facts only: anything left empty in the admin is simply not shown. */
@@ -26,7 +31,7 @@ function CertificationCard({ p, ctx, reveal = true }: { p: ProgrammeView; ctx: B
   const badge = p.accreditationStatus === "accredited" ? pickMedia(ctx, p.badgeId) : null;
   const facts = programmeFacts(p).slice(0, 3);
   return (
-    <li className={cn("press group relative isolate flex flex-col rounded-card border border-line bg-surface p-6 hover:shadow-lift max-md:p-5 md:p-7 lg:p-8", reveal && "reveal")}>
+    <li className={cn("press fx-card group relative isolate flex flex-col rounded-card border border-line bg-surface p-6 max-md:p-5 md:p-7 lg:p-8", reveal && "reveal")}>
       <div className="flex items-start justify-between gap-4">
         <div>
           {p.levelLabel && <p className="text-sm font-semibold text-primary">{p.levelLabel}</p>}
@@ -78,7 +83,7 @@ function ServiceCard({ p, ctx, stacked }: { p: ProgrammeView; ctx: BlockContext;
   return (
     <li
       className={cn(
-        "press reveal group relative isolate grid overflow-hidden rounded-card border border-line bg-surface hover:shadow-lift max-sm:grid-cols-[minmax(0,0.36fr)_minmax(0,1fr)] sm:grid-cols-[minmax(0,0.42fr)_minmax(0,1fr)] md:grid-cols-1",
+        "press fx-card reveal group relative isolate grid overflow-hidden rounded-card border border-line bg-surface max-sm:grid-cols-[minmax(0,0.36fr)_minmax(0,1fr)] sm:grid-cols-[minmax(0,0.42fr)_minmax(0,1fr)] md:grid-cols-1",
         !stacked && "xl:grid-cols-[minmax(0,0.42fr)_minmax(0,1fr)]",
       )}
     >
@@ -193,11 +198,214 @@ function programmeTable(programmes: ProgrammeView[]): Table {
   };
 }
 
+type FeeRow = { label: string; cells: ReactNode[]; top?: boolean };
+
+/** Hours as the design shows them: the number large, "hrs" after it. */
+function Hours({ value }: { value: string | number | null }) {
+  const formatted = formatHours(value);
+  if (!formatted) return <span className="text-mauve">Ask us</span>;
+  return (
+    <>
+      <strong className="font-grotesk text-[1.375rem] font-bold text-ink-deep">{formatted}</strong> hrs
+    </>
+  );
+}
+
+/** The rows of the fees table. A row appears only when at least one programme has that fact in the admin. */
+function feeRows(programmes: ProgrammeView[]): FeeRow[] {
+  const today = todayInIndia();
+  const cohorts = programmes.map((p) => p.cohorts.find((c) => c.isOpen && c.startDate >= today) ?? null);
+  const rows: FeeRow[] = [];
+  if (programmes.some((p) => formatHours(p.educationHours))) {
+    rows.push({ label: "Coach education", cells: programmes.map((p) => <Hours key={p.id} value={p.educationHours} />) });
+  }
+  if (programmes.some((p) => formatHours(p.mentoringHours))) {
+    rows.push({ label: "Mentor coaching", cells: programmes.map((p) => <Hours key={p.id} value={p.mentoringHours} />) });
+  }
+  if (cohorts.some(Boolean)) {
+    rows.push({
+      label: "Next start",
+      cells: cohorts.map((c, i) => (c ? <span key={i} className="font-semibold">{formatDate(c.startDate)}</span> : <span key={i} className="text-mauve">To be announced</span>)),
+    });
+  }
+  if (programmes.some((p) => p.format)) {
+    rows.push({
+      label: "Format",
+      cells: programmes.map((p) =>
+        p.format ? (
+          <span key={p.id} className="inline-flex items-center gap-2 font-medium">
+            <LiveDot className="size-[7px]" />
+            {p.format}
+          </span>
+        ) : (
+          <span key={p.id} className="text-mauve">
+            Ask us
+          </span>
+        ),
+      ),
+    });
+  }
+  if (programmes.some((p) => p.languages)) {
+    rows.push({ label: "Language", cells: programmes.map((p) => <span key={p.id}>{p.languages ?? ""}</span>) });
+  }
+  if (cohorts.some((c) => c?.schedule)) {
+    rows.push({ label: "Session times", top: true, cells: cohorts.map((c, i) => <span key={i}>{c?.schedule || <span className="text-mauve">To be announced</span>}</span>) });
+  }
+  // Always shown, so a table headed "fees" never leaves the question open.
+  rows.push({
+    label: "Fee",
+    top: true,
+    cells: programmes.map((p) =>
+      p.feeText ? (
+        <span key={p.id} className="flex flex-col gap-1">
+          <span className="font-semibold text-ink-deep">{p.feeText}</span>
+          {p.feeNote && <span className="text-[0.8125rem] text-mauve">{p.feeNote}</span>}
+        </span>
+      ) : (
+        <span key={p.id} className="text-mauve">
+          Ask us for the current fee
+        </span>
+      ),
+    ),
+  });
+  return rows;
+}
+
+/**
+ * "Programmes and fees" from the November 2026 design: one white panel with a
+ * column per ICF level, its badge at the top and a yellow button at the foot.
+ * Rows come from Programmes in the admin. Phones get one card per level, so
+ * nothing scrolls sideways.
+ */
+async function FeesTable({ data, ctx }: BlockProps<"comparison_table">) {
+  const programmes = (await getProgrammes()).filter((p) => p.kind === "certification");
+  if (programmes.length === 0) return null;
+  const rows = feeRows(programmes);
+  const headingId = `fees-${data.anchor || "programmes"}`;
+  const button = data.buttonLabel.trim();
+  const badge = (p: ProgrammeView) => (p.accreditationStatus === "accredited" ? pickMedia(ctx, p.badgeId) : null);
+  const reserve = (p: ProgrammeView) =>
+    button ? (
+      <ButtonLink href={`${p.path}#enquire`} trackLabel={`Fees: ${button} ${p.credential ?? p.name}`} aria-label={`${button}: ${p.name}`} className="font-text text-[0.9375rem]">
+        {button}
+        <Arrow />
+      </ButtonLink>
+    ) : null;
+
+  // Straight after the picture cards on the same band, the table continues that section with little space above.
+  const continues = ctx.prev?.type === "feature_list" && ctx.prev.layout === "bento";
+  return (
+    <Section
+      background={data.background}
+      anchor={data.anchor}
+      labelledBy={headingId}
+      flush
+      className={cn("pb-[clamp(4.5rem,9vw,8rem)] font-text", continues ? "pt-[clamp(0.5rem,2vw,1.5rem)]" : "pt-[clamp(4.5rem,9vw,8rem)]")}
+    >
+      <div className="container-site flex flex-col gap-8">
+        <div className="reveal flex flex-col gap-3">
+          <h2 id={headingId} className={DESIGN_H2}>
+            <Emphasis text={data.heading} auto />
+          </h2>
+          {data.intro && (
+            <p className="m-0 text-[1.0625rem] text-mauve">
+              <Emphasis text={data.intro} strong />
+            </p>
+          )}
+        </div>
+
+        {/* Tablet and desktop */}
+        <div className="reveal hidden overflow-hidden rounded-[1.75rem] border border-lav-100 bg-white shadow-[0_30px_60px_-48px_rgb(70_45_160/0.7)] md:block">
+          <table className="fx-table w-full border-collapse text-left text-[0.9375rem] text-ink-deep">
+            <caption className="sr-only">{plainText(data.heading)}</caption>
+            <thead>
+              <tr>
+                <td className="w-1/5 px-6 pb-[1.125rem] pt-6" />
+                {programmes.map((p) => {
+                  const media = badge(p);
+                  return (
+                    <th key={p.id} scope="col" className="px-5 pb-[1.125rem] pt-6 align-bottom font-normal">
+                      <span className="flex items-center gap-3">
+                        {media && <MediaImage media={media} alt="" sizes="56px" className="!size-14 shrink-0 object-contain" />}
+                        <span className="flex flex-col gap-0.5">
+                          {p.levelLabel && <span className="text-xs font-bold uppercase tracking-[0.1em] text-lav-deep">{p.levelLabel}</span>}
+                          <span className="font-grotesk text-[1.625rem] font-extrabold leading-none">{p.credential ?? p.name}</span>
+                        </span>
+                      </span>
+                    </th>
+                  );
+                })}
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row) => (
+                <tr key={row.label}>
+                  <th scope="row" className={cn("border-t border-[#eeeaf3] px-6 py-4 font-medium text-mauve", row.top && "align-top")}>
+                    {row.label}
+                  </th>
+                  {row.cells.map((cell, c) => (
+                    <td key={programmes[c]!.id} className={cn("border-t border-[#eeeaf3] px-5 py-4", row.top && "align-top")}>
+                      {cell}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+              {(button || data.note) && (
+                <tr>
+                  <td className="border-t border-[#eeeaf3] px-6 pb-[1.625rem] pt-[1.125rem]">
+                    {data.note && <span className="fx-note inline-block -rotate-[4deg] text-[1.375rem]">{data.note}</span>}
+                  </td>
+                  {programmes.map((p) => (
+                    <td key={p.id} className="border-t border-[#eeeaf3] px-5 pb-[1.625rem] pt-[1.125rem]">
+                      {reserve(p)}
+                    </td>
+                  ))}
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Phones: one card per level */}
+        <ul className="grid gap-4 md:hidden">
+          {programmes.map((p, c) => {
+            const media = badge(p);
+            return (
+              <li key={p.id} className="reveal overflow-hidden rounded-[1.75rem] border border-lav-100 bg-white">
+                <h3 className="m-0 flex items-center gap-3 border-b border-[#eeeaf3] px-5 py-4">
+                  {media && <MediaImage media={media} alt="" sizes="48px" className="!size-12 shrink-0 object-contain" />}
+                  <span className="flex flex-col gap-0.5 font-text">
+                    {p.levelLabel && <span className="text-xs font-bold uppercase tracking-[0.1em] text-lav-deep">{p.levelLabel}</span>}
+                    <span className="font-grotesk text-2xl font-extrabold leading-none text-ink-deep">{p.credential ?? p.name}</span>
+                  </span>
+                </h3>
+                <dl className="grid gap-3.5 px-5 py-4">
+                  {rows.map((row) => (
+                    <div key={row.label} className="flex items-baseline justify-between gap-4">
+                      <dt className="text-sm text-mauve">{row.label}</dt>
+                      <dd className="text-right">{row.cells[c]}</dd>
+                    </div>
+                  ))}
+                </dl>
+                {button && <div className="border-t border-[#eeeaf3] px-5 py-4">{reserve(p)}</div>}
+              </li>
+            );
+          })}
+        </ul>
+        {data.note && <p className="fx-note -mt-2 -rotate-2 text-[1.375rem] md:hidden">{data.note}</p>}
+        {data.footnote && <p className="m-0 max-w-3xl text-sm text-mauve">{data.footnote}</p>}
+      </div>
+    </Section>
+  );
+}
+
 /**
  * Comparison table. A real <table> from tablet upwards; on phones each column
  * becomes its own card so nothing needs sideways scrolling.
  */
-export async function ComparisonTableBlock({ data, ctx }: BlockProps<"comparison_table">) {
+export async function ComparisonTableBlock(props: BlockProps<"comparison_table">) {
+  if (props.data.source === "fees") return <FeesTable {...props} />;
+  const { data, ctx } = props;
   let table: Table;
   if (data.source === "programmes") {
     const programmes = (await getProgrammes()).filter((p) => p.kind === "certification");
@@ -219,8 +427,8 @@ export async function ComparisonTableBlock({ data, ctx }: BlockProps<"comparison
 
         {/* Tablet and desktop */}
         <div className="reveal mt-9 hidden overflow-hidden rounded-card border border-line bg-surface md:mt-12 md:block">
-          <table className="w-full border-collapse text-left text-[0.9375rem]">
-            <caption className="sr-only">{data.heading}</caption>
+          <table className="fx-table w-full border-collapse text-left text-[0.9375rem]">
+            <caption className="sr-only">{plainText(data.heading)}</caption>
             <thead>
               <tr className="bg-navy text-white">
                 <td className="w-[22%] p-5" />

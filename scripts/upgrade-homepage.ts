@@ -1,9 +1,14 @@
 /**
- * Brings an existing homepage up to the redesigned layout (October 2026):
- * the two-line hero with proof points and the arched founder photograph, the
- * overlapping "Choose your path" panel, the statistics strip, and the FAQ help
- * card. Everything else on the page, including any edits made in the admin, is
- * kept as it is.
+ * Moves an existing homepage to the November 2026 design ("Butterfly Home
+ * Redesign"): the new hero with the programme guide form, the accreditation
+ * spotlight, numbered pathway cards, "Why learners choose BCA" as picture
+ * cards, programmes and fees, the global community and student stories, the
+ * FAQ, "Where are you today?" and the programme guide.
+ *
+ * Sections the design leaves out (the figures, programme cards, the learning
+ * loop, the founder, the closing call to action, anything added in the admin)
+ * are kept but hidden, so any can be switched back on in Admin > Pages > Home.
+ * The hero keeps the photograph already chosen in the admin.
  *
  *   npm run content:upgrade-home              show what would change (writes nothing)
  *   npm run content:upgrade-home -- --apply   save the result as a DRAFT of the homepage
@@ -13,7 +18,7 @@
  * It acts on whichever database .env.local points at, and says which first.
  */
 import { asc, eq } from "drizzle-orm";
-import { HOME_FAQ, HOME_HERO, HOME_PATHS, HOME_STATS } from "../seed/content";
+import { HOME_SECTIONS } from "../seed/content";
 import { MEDIA } from "../seed/media";
 import { validateBlockData } from "../src/lib/blocks/registry";
 import { closeDb, db } from "../src/lib/db";
@@ -39,6 +44,16 @@ function mediaRef(value: unknown, existing: Set<string>): unknown {
   return value;
 }
 
+/** Which current section, if any, each new section takes the place of (so its id and history carry over). */
+const REPLACES: Record<string, (section: Section) => boolean> = {
+  hero: (section) => section.type === "hero",
+  trust_strip: (section) => section.type === "trust_strip",
+  "path_cards:numbered": (section) => section.type === "path_cards",
+  feature_list: (section) => section.type === "feature_list",
+  testimonials: (section) => section.type === "testimonials" && (section.data.source ?? "featured") === "featured",
+  faq: (section) => section.type === "faq" && (section.data.group ?? "home") === "home",
+};
+
 async function main() {
   loadEnv();
   const target = process.env.BCA_LOCAL_MODE === "1" ? "the LOCAL development database" : "the database in DATABASE_URL (live site)";
@@ -51,62 +66,38 @@ async function main() {
     await db().select().from(s.pageSections).where(eq(s.pageSections.pageId, page.id)).orderBy(asc(s.pageSections.position))
   ).map((row) => ({ id: row.id, type: row.type, data: (row.data ?? {}) as Record<string, unknown>, isHidden: row.isHidden }));
   const mediaIds = new Set((await db().select({ id: s.media.id }).from(s.media)).map((m) => m.id));
-  const resolve = <T>(data: T) => mediaRef(data, mediaIds) as Record<string, unknown>;
 
   const changes: string[] = [];
-  const take = (type: string) => {
-    const index = current.findIndex((section) => section.type === type);
+  const take = (key: string) => {
+    const matches = REPLACES[key];
+    if (!matches) return null;
+    const index = current.findIndex(matches);
     return index >= 0 ? current.splice(index, 1)[0]! : null;
   };
 
-  // Hero: new copy and composition, keeping the buttons and supporting text the owner already has.
-  const oldHero = take("hero");
-  const heroDefaults = resolve(HOME_HERO);
-  const hero: Section = {
-    id: oldHero?.id,
-    type: "hero",
-    isHidden: false,
-    data: {
-      ...(oldHero?.data ?? {}),
-      ...heroDefaults,
-      subheading: (oldHero?.data.subheading as string) || heroDefaults.subheading,
-      primaryCta: (oldHero?.data.primaryCta as object) ?? heroDefaults.primaryCta,
-      secondaryCta: (oldHero?.data.secondaryCta as object) ?? heroDefaults.secondaryCta,
-      // Keep the current photograph if the authentic group photo is not in this media library.
-      image: heroDefaults.image ?? oldHero?.data.image ?? null,
-    },
-  };
-  changes.push(`hero: "${oldHero?.data.heading ?? "(none)"}" -> "${HOME_HERO.heading} ${HOME_HERO.headingAccent}", proof points, trust line, arched photograph`);
-
-  // Pathways: the navy overlapping panel with the brief's copy, keeping each card's image for the image layout.
-  const oldPaths = take("path_cards");
-  const paths: Section = { id: oldPaths?.id, type: "path_cards", isHidden: false, data: { ...(oldPaths?.data ?? {}), ...resolve(HOME_PATHS) } };
-  changes.push("path_cards: navy overlapping panel, three icon cards with the new copy");
-
-  // Statistics strip: verified figures only.
-  const oldStats = take("stats");
-  const stats: Section = { id: oldStats?.id, type: "stats", isHidden: false, data: oldStats?.data ?? resolve(HOME_STATS) };
-  changes.push(oldStats ? "stats: kept as it is" : "stats: added (4,100+, 3, 24+, 2022; coaches trained and organisations left empty, so hidden)");
-
-  // Trust strip: keeps its ICF badges; its figures now live in the statistics strip.
-  const oldTrust = take("trust_strip");
-  const trust: Section | null = oldTrust ? { ...oldTrust, data: { ...oldTrust.data, facts: [] } } : null;
-  if (trust) changes.push("trust_strip: figures removed (now in the statistics strip), badges kept");
-
-  // Everything else keeps its order; two sections get small updates.
-  const rest = current.map((section) => {
-    if (section.type === "faq" && (section.data.group ?? "home") === "home") {
-      changes.push("faq: heading, introduction and the 'Still unsure? Talk to us.' help card");
-      return { ...section, data: { ...section.data, ...resolve(HOME_FAQ) } };
+  const designed: Section[] = HOME_SECTIONS.map((seed) => {
+    const data = mediaRef(seed.data, mediaIds) as Record<string, unknown>;
+    const key = seed.type === "path_cards" ? `path_cards:${String(data.layout)}` : seed.type;
+    const old = take(key);
+    if (seed.type === "hero" && old) {
+      // Keep the photograph chosen in the admin.
+      for (const field of ["image", "imageTall", "imageFocus"]) {
+        if (old.data[field]) data[field] = old.data[field];
+      }
     }
-    if (section.type === "testimonials" && section.data.source === "featured") {
-      changes.push("testimonials: up to 4 featured stories in the new showcase");
-      return { ...section, data: { ...section.data, limit: 4 } };
-    }
-    return section;
+    if (seed.type === "faq" && old?.data.group) data.group = old.data.group;
+    const label = [seed.type, data.layout || data.source || data.variant].filter(Boolean).join(" / ");
+    changes.push(`${old ? "update" : "add   "} ${label}: "${String(data.heading)}"`);
+    return { id: old?.id, type: seed.type, data, isHidden: false };
   });
 
-  const next = [hero, paths, stats, ...(trust ? [trust] : []), ...rest];
+  // Everything the design does not include stays on the page, hidden.
+  const hidden = current.map((section) => {
+    changes.push(`hide   ${section.type}: "${String(section.data.heading ?? "")}"${section.isHidden ? " (already hidden)" : ""}`);
+    return { ...section, isHidden: true };
+  });
+
+  const next = [...designed, ...hidden];
   const rows = next.map((section, position) => {
     const result = validateBlockData(section.type, section.data, sanitiseRichText);
     if (!result.ok) throw new Error(`Section ${position} (${section.type}) is invalid: ${JSON.stringify(result.errors)}`);
@@ -115,8 +106,9 @@ async function main() {
 
   console.log("\nPlanned changes:");
   for (const change of changes) console.log(`  - ${change}`);
-  console.log(`\nNew section order: ${rows.map((r) => r.type).join(", ")}`);
-  if (!heroDefaults.image) console.log("  Note: the authentic group photograph is not in this media library, so the hero keeps its current image.");
+  console.log(`\nNew section order: ${rows.map((r) => `${r.type}${r.isHidden ? " (hidden)" : ""}`).join(", ")}`);
+  const hero = designed[0]!;
+  if (!hero.data.image) console.log("  Note: the hero has no photograph in this media library, so it shows the design's butterfly illustration.");
 
   if (!apply) {
     console.log("\nDry run complete. Nothing was written.");
@@ -130,7 +122,7 @@ async function main() {
       action: "page.save",
       entityType: "page",
       entityId: page.id,
-      summary: "Homepage redesign saved as a draft by scripts/upgrade-homepage.ts",
+      summary: "Homepage November 2026 design saved as a draft by scripts/upgrade-homepage.ts",
     });
   });
   const saved = await db()

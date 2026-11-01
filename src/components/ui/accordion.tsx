@@ -7,8 +7,9 @@ export type AccordionItem = { id: string; question: string; answerHtml: string }
 
 /**
  * Accessible FAQ accordion (WAI-ARIA accordion pattern via Radix). Each question
- * is its own warm-white card; the open one gains a yellow edge. Several can be
- * open at once, so answers can be compared.
+ * is its own white card; the open one takes a lavender edge and a soft purple
+ * shadow, and its plus turns into a yellow cross (the November 2026 design).
+ * Several can be open at once, so answers can be compared.
  */
 export function Accordion({ items, numbered = false }: { items: AccordionItem[]; numbered?: boolean }) {
   return (
@@ -17,9 +18,8 @@ export function Accordion({ items, numbered = false }: { items: AccordionItem[];
         <Primitive.Item
           key={item.id}
           value={item.id}
-          className="group/item relative overflow-hidden rounded-card border border-line bg-surface transition-[border-color,box-shadow] duration-200 hover:border-navy/25 data-[state=open]:border-transparent data-[state=open]:shadow-card"
+          className="group/item reveal relative overflow-hidden rounded-[1.375rem] border border-lilac-line bg-surface transition-[border-color,box-shadow] duration-300 hover:border-lav-200 data-[state=open]:border-lav data-[state=open]:shadow-[0_18px_40px_-30px_rgb(70_45_160/0.6)]"
         >
-          <span aria-hidden className="absolute inset-y-0 left-0 w-1 bg-accent opacity-0 transition-opacity duration-200 group-data-[state=open]/item:opacity-100" />
           <Primitive.Header asChild>
             <h3 className="m-0 font-sans">
               <Primitive.Trigger className="group flex min-h-16 w-full items-center gap-4 px-5 py-4 text-left text-[1.0625rem] font-semibold leading-snug text-navy sm:px-6">
@@ -29,7 +29,7 @@ export function Accordion({ items, numbered = false }: { items: AccordionItem[];
                   </span>
                 )}
                 <span className="flex-1">{item.question}</span>
-                <span className="grid size-9 shrink-0 place-items-center rounded-full bg-tint text-navy transition-[transform,background-color] duration-300 group-hover:bg-accent-soft group-data-[state=open]:rotate-45 group-data-[state=open]:bg-accent">
+                <span className="grid size-9 shrink-0 place-items-center rounded-full bg-lav-50 text-ink-deep transition-[transform,background-color] duration-300 group-hover:bg-lav-100 group-data-[state=open]:rotate-45 group-data-[state=open]:bg-accent">
                   <PlusIcon aria-hidden weight="bold" className="size-4" />
                 </span>
               </Primitive.Trigger>

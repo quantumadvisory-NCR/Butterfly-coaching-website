@@ -5,7 +5,7 @@ const sql = database();
 test.afterAll(() => sql.end());
 // The enquiry endpoint is rate limited per visitor; start each test with a clean slate.
 // Only the form counters: the sign-in tests in admin.spec.ts can run at the same time and rely on theirs.
-test.beforeEach(() => sql`delete from rate_limits where key like 'enquiry:%' or key like 'newsletter:%'`);
+test.beforeEach(() => sql`delete from rate_limits where key like 'enquiry:%' or key like 'newsletter:%' or key like 'guide:%'`);
 
 /** Fills a form the way a person does: interact first (which issues the anti-spam token), then wait a moment. */
 async function waitForToken(page: import("@playwright/test").Page, form: import("@playwright/test").Locator) {
@@ -141,10 +141,33 @@ test.describe("enquiry forms", () => {
 
   test('"Book a discovery call" opens the enquiry form as a discovery call request', async ({ page }) => {
     await page.goto("/");
-    await page.locator("main section").first().getByRole("link", { name: "Book a discovery call" }).click();
+    const faq = page.locator("main section", { has: page.getByRole("heading", { name: "Questions, answered" }) });
+    await faq.getByRole("link", { name: "Book a discovery call" }).click();
     await expect(page).toHaveURL(/\/contact-us\/\?intent=discovery_call#enquire$/);
     await expect(page.getByText("Discovery call request").first()).toBeVisible();
     await expect(page.getByRole("button", { name: "Request my call" })).toBeVisible();
+  });
+
+  test("the programme guide form stores a request in the inbox", async ({ page }) => {
+    const email = `guide.${Date.now()}@e2e.test`;
+    await page.goto("/");
+    const form = page.locator("#guide form");
+    await form.getByLabel("Email").fill("not-an-email");
+    await waitForToken(page, form);
+    await form.getByRole("button", { name: "Send it" }).click();
+    await expect(form.getByRole("alert")).toContainText("valid email");
+
+    await form.getByLabel("Email").fill(email);
+    await form.getByRole("button", { name: "Send it" }).click();
+    const status = page.locator("#guide").getByRole("status");
+    await expect(status).toContainText("send you the guide");
+    await expect(status).toContainText(email);
+    const [row] = await sql`select type, name, source_path from enquiries where email = ${email}`;
+    expect(row).toMatchObject({ type: "guide", name: email, source_path: "/" });
+
+    // "Use another email" brings the form back, empty.
+    await status.getByRole("button", { name: "Use another email" }).click();
+    await expect(page.locator("#guide form").getByLabel("Email")).toHaveValue("");
   });
 
   test("spam protection: bots, replays and floods are stopped", async ({ page }) => {

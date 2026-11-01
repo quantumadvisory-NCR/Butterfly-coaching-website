@@ -28,6 +28,7 @@ export default async function DraftPreviewPage({ params }: { params: Promise<{ i
         isHidden: section.isHidden,
       }))}
       ctx={{ media: chrome.media, settings: chrome.settings, breadcrumbs, preview: true }}
+      home={loaded.page.path === "/"}
     />
   );
 }

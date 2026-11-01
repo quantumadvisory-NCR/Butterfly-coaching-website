@@ -109,22 +109,20 @@ for (const viewport of VIEWPORTS) {
       });
     }
 
-    test("homepage hero shows the heading and both buttons on the first screen", async ({ page }) => {
+    test("homepage hero shows the heading and its message, with every part of it reachable", async ({ page }) => {
       await page.goto("/");
-      const h1 = page.getByRole("heading", { level: 1, name: "Learning that stays" });
+      const h1 = page.getByRole("heading", { level: 1, name: "Learning that stays. Coaching that transforms." });
       await expect(h1).toBeVisible();
-      await expect(page.getByText("ICF-accredited coach training built on practice, spaced review and founder mentoring.")).toBeVisible();
+      await expect(page.getByText("Rooted in India. Recognised worldwide.")).toBeVisible();
       const hero = page.locator("main section").first();
-      for (const label of ["Book a discovery call", "Explore programmes"]) {
-        const button = hero.getByRole("link", { name: label });
-        await expect(button).toBeVisible();
-        const box = (await button.boundingBox())!;
-        expect(box.y + box.height, `"${label}" is below the first screen`).toBeLessThanOrEqual(viewport.height);
+      // The heading starts on the first screen; as in the design, the large type can push the button just below it.
+      expect((await h1.boundingBox())!.y, "the heading starts below the first screen").toBeLessThan(viewport.height);
+      for (const label of ["Reserve my seat", "Just browsing? See programmes and fees", "Get the programme guide"]) {
+        await expect(hero.getByRole(label.startsWith("Get") ? "button" : "link", { name: label })).toBeVisible();
       }
-      // The two-sentence heading wraps naturally: at most three lines from tablet width up (as in the
-      // design reference), four on phones, and the buttons above still sit on the first screen.
+      // At most four lines from tablet width up (exactly as in the design file), five on phones.
       const lines = await h1.evaluate((el) => Math.round(el.getBoundingClientRect().height / parseFloat(getComputedStyle(el).lineHeight)));
-      expect(lines).toBeLessThanOrEqual(viewport.width >= 768 ? 3 : 4);
+      expect(lines).toBeLessThanOrEqual(viewport.width >= 768 ? 4 : 5);
     });
   });
 }

@@ -7,6 +7,8 @@ import { MediaImage } from "@/components/ui/media-image";
 import { type PostView, type TermView, getMediaMap, getPosts, searchPosts } from "@/lib/content/public";
 import { breadcrumbJsonLd } from "@/lib/seo";
 import { cn, formatDate, readingMinutes } from "@/lib/utils";
+import { Emphasis } from "@/components/ui/emphasis";
+import { HeaderFlourish } from "@/components/ui/effects";
 
 const PER_PAGE = 9;
 
@@ -55,12 +57,15 @@ export async function BlogListing({ heading, intro, basePath, filter, query = ""
 
   return (
     <>
-      <section className="bg-page">
-        <div className="container-site pb-10 pt-5 md:pb-14">
+      <section className="relative isolate overflow-hidden bg-page">
+        <HeaderFlourish />
+        <div className="container-site relative pb-10 pt-5 md:pb-14">
           <Breadcrumbs items={crumbs} />
           <div className="mt-6 flex flex-col gap-7 md:mt-8 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-2xl">
-              <h1 className="text-h1">{heading}</h1>
+              <h1 className="text-h1">
+                <Emphasis text={heading} auto now />
+              </h1>
               {intro && <p className="mt-4 text-lead">{intro}</p>}
             </div>
             <form action="/blog/" method="get" role="search" className="w-full lg:max-w-sm">

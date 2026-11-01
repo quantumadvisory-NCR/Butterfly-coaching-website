@@ -140,6 +140,10 @@ describe("settings", () => {
   it("uses the documented gray and yellow palette, with the logo's grey-white #FCFCFC page background, by default", () => {
     expect(DEFAULT_THEME).toMatchObject({ primary: "#2b2b2b", navy: "#2b2b2b", accent: "#f5ba00", background: "#fcfcfc", ink: "#5f5f5f" });
   });
+  it("defaults to the homepage design's typefaces and keeps a saved choice", () => {
+    expect(DEFAULT_THEME).toMatchObject({ headingFont: "bricolage", bodyFont: "inter" });
+    expect(parseSettingsGroup("theme", { headingFont: "jakarta", bodyFont: "jakarta" })).toMatchObject({ headingFont: "jakarta", bodyFont: "jakarta" });
+  });
   it("gives a theme saved under the old pale-blue scheme the current page background", () => {
     // Saved before the redesign: it has "sky" and no "background".
     const theme = parseSettingsGroup("theme", { primary: "#0068bf", navy: "#0f256a", accent: "#f5ba00", sky: "#eff7ff", ink: "#444746" });

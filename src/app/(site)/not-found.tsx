@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { ButtonLink, TextLink } from "@/components/ui/button-link";
+import { Emphasis } from "@/components/ui/emphasis";
+import { HeaderFlourish } from "@/components/ui/effects";
 
 export const metadata: Metadata = {
   title: "Page not found",
@@ -16,11 +18,14 @@ const SUGGESTIONS = [
 
 export default function NotFound() {
   return (
-    <section className="bg-page">
-      <div className="container-site grid items-center gap-10 py-16 md:py-24 lg:grid-cols-2 lg:gap-16">
+    <section className="relative isolate overflow-hidden bg-page">
+      <HeaderFlourish />
+      <div className="container-site relative grid items-center gap-10 py-16 md:py-24 lg:grid-cols-2 lg:gap-16">
         <div className="max-w-xl">
           <p className="eyebrow mb-3">Error 404</p>
-          <h1 className="text-h1">This page has flown away</h1>
+          <h1 className="text-h1">
+            <Emphasis text="This page has flown away" auto now />
+          </h1>
           <p className="mt-4 text-lead">
             The page you were looking for has moved or no longer exists. Here are some good places to pick up the trail.
           </p>

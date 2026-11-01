@@ -1,8 +1,9 @@
-import type { ReactNode } from "react";
+import { Fragment, type ReactNode } from "react";
 import { Breadcrumbs } from "@/components/site/breadcrumbs";
 import type { SectionSnapshot } from "@/lib/content/public";
 import { type BlockData, type BlockType, defaultBlockData, isBlockType } from "@/lib/blocks/registry";
 import { BlogTeasersBlock, CtaBlock, FaqBlock, NewsletterBlock } from "./closing";
+import { CommunityBlock } from "./community";
 import { ContactFormBlock } from "./contact";
 import { FeatureListBlock, ImageTextBlock, RichTextBlock, StatsBlock, TrustStripBlock } from "./content";
 import { HeroBlock } from "./hero";
@@ -36,30 +37,37 @@ const RENDERERS: { [T in BlockType]: Renderer<T> } = {
   trust_strip: TrustStripBlock,
   stats: StatsBlock,
   blog_teasers: BlogTeasersBlock,
+  community: CommunityBlock,
 };
 
 function neighbour(section: SectionSnapshot | undefined) {
   if (!section) return null;
-  const data = { ...defaultBlockData(section.type as BlockType), ...section.data } as { layout?: unknown; variant?: unknown };
-  return { type: section.type, layout: String(data.layout ?? ""), variant: String(data.variant ?? "") };
+  const data = { ...defaultBlockData(section.type as BlockType), ...section.data } as { layout?: unknown; variant?: unknown; source?: unknown };
+  return { type: section.type, layout: String(data.layout ?? ""), variant: String(data.variant ?? ""), source: String(data.source ?? "") };
 }
 
 /** Blocks that render the breadcrumb trail themselves when they open a page. */
 const OWNS_BREADCRUMBS = new Set<string>(["hero", "rich_text"]);
 
-/** Renders a page's sections in order. Unknown block types are skipped, never fatal. */
+/**
+ * Renders a page's sections in order. Unknown block types are skipped, never fatal.
+ * `home` sets the homepage in the November 2026 design's typefaces.
+ */
 export function BlockRenderer({
   sections,
   ctx,
+  home = false,
 }: {
   sections: SectionSnapshot[];
   ctx: Omit<BlockContext, "index">;
+  home?: boolean;
 }) {
   const visible = sections.filter((section) => !section.isHidden && isBlockType(section.type));
   const first = visible[0];
   const needsCrumbBar = ctx.breadcrumbs.length > 0 && (!first || !OWNS_BREADCRUMBS.has(first.type));
+  const Wrapper = home ? HomeFonts : Fragment;
   return (
-    <>
+    <Wrapper>
       {needsCrumbBar && (
         <div className="bg-page">
           <div className="container-site py-4">
@@ -74,6 +82,10 @@ export function BlockRenderer({
         const data = { ...defaultBlockData(type), ...section.data } as BlockData[BlockType];
         return <Component key={section.id} data={data} ctx={{ ...ctx, index, prev: neighbour(visible[index - 1]), next: neighbour(visible[index + 1]) }} />;
       })}
-    </>
+    </Wrapper>
   );
+}
+
+function HomeFonts({ children }: { children: ReactNode }) {
+  return <div className="design-fonts">{children}</div>;
 }

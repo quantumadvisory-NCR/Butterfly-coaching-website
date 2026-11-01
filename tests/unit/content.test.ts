@@ -6,6 +6,7 @@ import { MEDIA } from "@seed/media";
 import { hrefSchema, objectSchema } from "@/lib/blocks/fields";
 import { BLOCKS, defaultBlockData, getBlock, mediaIdsInSections, validateBlockData } from "@/lib/blocks/registry";
 import { sanitiseRichText } from "@/lib/sanitise";
+import { hasEmphasis, plainText } from "@/components/ui/emphasis";
 
 const mediaKeys = new Set(MEDIA.map((m) => m.key));
 
@@ -74,20 +75,24 @@ describe("link validation", () => {
 });
 
 describe("seed content", () => {
-  it("has the mandatory hero copy on the homepage, word for word", () => {
+  it("has the homepage hero copy from the November 2026 design, word for word", () => {
     const hero = PAGES.find((p) => p.path === "/")!.sections[0]!;
     expect(hero.type).toBe("hero");
     expect(hero.data.heading).toBe("Learning that stays.");
     expect(hero.data.headingAccent).toBe("Coaching that transforms.");
-    expect(hero.data.subheading).toBe("ICF-accredited coach training built on practice, spaced review and founder mentoring.");
-    expect(hero.data.primaryCta).toEqual({ label: "Book a discovery call", href: "booking" });
-    expect(hero.data.secondaryCta).toEqual({ label: "Explore programmes", href: "/coaching-certifications/" });
+    expect(plainText(String(hero.data.subheading))).toBe("Rooted in India. Recognised worldwide. ICF coach training built on practice, review and founder mentoring.");
+    expect(hero.data.primaryCta).toEqual({ label: "Reserve my seat", href: "/level-1-acc-coach-program/#enquire" });
+    expect(hero.data.secondaryCta).toEqual({ label: "Just browsing? See programmes and fees", href: "#programmes" });
+    expect(hero.data.guideForm).toBe(true);
   });
 
-  it("ends the homepage with the required call to action", () => {
-    const cta = PAGES.find((p) => p.path === "/")!.sections.at(-1)!;
-    expect(cta.data.heading).toBe("Ready to find your next step?");
-    expect(cta.data.secondaryCta).toEqual({ label: "WhatsApp us", href: "whatsapp" });
+  it("ends the homepage with the choices and the programme guide", () => {
+    const home = PAGES.find((p) => p.path === "/")!;
+    const [choices, guide] = home.sections.slice(-2);
+    expect(choices!.data.layout).toBe("choices");
+    expect(plainText(String(choices!.data.heading))).toBe("Where are you today?");
+    expect(guide!.type).toBe("newsletter");
+    expect(guide!.data).toMatchObject({ layout: "guide", anchor: "guide" });
   });
 
   it("includes every required public route", () => {
@@ -183,23 +188,57 @@ describe("seed content", () => {
   });
 });
 
-describe("homepage redesign content", () => {
+describe("homepage redesign content (November 2026 design)", () => {
   const home = PAGES.find((p) => p.path === "/")!;
   const block = (type: string) => home.sections.find((s) => s.type === type)!;
 
-  it("opens with the hero, then the overlapping pathway panel, then the figures", () => {
-    expect(home.sections.slice(0, 3).map((s) => s.type)).toEqual(["hero", "path_cards", "stats"]);
-    expect(block("path_cards").data.layout).toBe("panel");
+  it("follows the design's section order", () => {
+    expect(home.sections.map((s) => s.type)).toEqual([
+      "hero",
+      "trust_strip",
+      "path_cards",
+      "feature_list",
+      "comparison_table",
+      "community",
+      "testimonials",
+      "faq",
+      "path_cards",
+      "newsletter",
+    ]);
+    expect(block("trust_strip").data.layout).toBe("spotlight");
+    expect(block("path_cards").data.layout).toBe("numbered");
+    expect(block("feature_list").data.layout).toBe("bento");
+    expect(block("comparison_table").data.source).toBe("fees");
+    expect(block("testimonials").data).toMatchObject({ source: "featured", layout: "pair" });
   });
 
-  it("publishes no placeholder or unverified figure", () => {
+  it("publishes none of the design file's placeholders", () => {
     const text = JSON.stringify(home.sections);
-    expect(text).not.toMatch(/\[(DATE|X)\]/i);
-    const items = block("stats").data.items as { value: string; label: string }[];
-    const shown = items.filter((item) => /\d/.test(item.value)).map((item) => item.value);
-    expect(shown).toEqual(["4,100", "3", "24", "2022"]);
-    // Prepared for the owner, but empty (so hidden) until verified.
-    expect(items.find((item) => item.label === "Coaches trained")?.value).toBe("");
-    expect(items.find((item) => item.label === "Organisations partnered")?.value).toBe("");
+    // The design marked unknown facts as [DD Month], [X], [____] and so on: none may reach the page.
+    expect(text).not.toMatch(/\[(DATE|X|DD Month|_+|Name|Role|Country|Hero photo[^\]]*|e\.g\.[^\]]*|time IST)\]/i);
+    expect(text).not.toContain("[Second story");
+  });
+
+  it("links every in-page button to a section that exists", () => {
+    const anchors = new Set(home.sections.map((s) => s.data.anchor).filter(Boolean));
+    const hrefs = JSON.stringify(home.sections).match(/"href":"#[^"]+"/g) ?? [];
+    for (const href of hrefs) expect(anchors).toContain(href.slice(9, -1));
+  });
+
+  it("states only the mentor coaching hours every programme really includes", () => {
+    const figure = (block("feature_list").data.items as { visual: string; figure: string }[]).find((item) => item.visual === "figure")!;
+    for (const programme of PROGRAMMES.filter((p) => p.kind === "certification")) expect(programme.mentoringHours).toBe(figure.figure);
+  });
+});
+
+describe("emphasis markup", () => {
+  it("reduces marked-up text to its words", () => {
+    expect(plainText("Why learners choose ==BCA==")).toBe("Why learners choose BCA");
+    expect(plainText("A ((global)) learning ++community++, **bold** and __drawn__ [[tag]]")).toBe("A global learning community, bold and drawn tag");
+    expect(plainText("No markup at all")).toBe("No markup at all");
+  });
+  it("recognises text that carries effects", () => {
+    expect(hasEmphasis("Choose your __path__")).toBe(true);
+    expect(hasEmphasis("Choose your path")).toBe(false);
   });
 });

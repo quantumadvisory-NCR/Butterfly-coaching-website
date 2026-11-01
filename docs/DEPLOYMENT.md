@@ -94,9 +94,11 @@ Vercel serverless functions accept request bodies up to about 4.5 MB, which is w
 
 **Function region.** `vercel.json` pins the server functions to Mumbai (`bom1`), next to the Supabase project (`ap-south-1`). Keep the two in the same region: every admin screen makes a dozen or more sequential database and sign-in round trips, and with the functions in Washington (`iad1`, Vercel's default) each one crossed the globe, which made the admin take several seconds per click. If the Supabase project ever moves, change `regions` to the nearest Vercel region ([list](https://vercel.com/docs/edge-network/regions)).
 
-### Bringing an existing homepage up to the October 2026 layout
+### Bringing an existing homepage up to the November 2026 design
 
-The redesign's code works with the homepage content already in the database, but the new copy and sections (two-line headline, proof points, overlapping pathway panel, statistics strip, FAQ help card) are content, so they are added by a script rather than by deploying:
+The November 2026 design ("Butterfly Home Redesign") changes the header, footer and effects on every page as soon as the code is deployed. The homepage's new sections and copy are content, so they are added by a script rather than by deploying: the hero with the programme guide form, the accreditation spotlight, numbered pathway cards, "Why learners choose BCA" as picture cards, programmes and fees, the global community and student stories, the FAQ on lavender, "Where are you today?" and the programme guide. Sections the design leaves out (figures, programme cards, the learning loop, the founder, the closing call to action) are kept but hidden, so any can be switched back on. The hero keeps the photograph already chosen in the admin.
+
+Before publishing, confirm the design's claims listed in [CONTENT_APPROVAL_CHECKLIST.md](CONTENT_APPROVAL_CHECKLIST.md) (section 1d).
 
 ```bash
 npm run content:upgrade-home

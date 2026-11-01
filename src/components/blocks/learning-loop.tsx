@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { ButtonLink } from "@/components/ui/button-link";
 import { cn } from "@/lib/utils";
+import { Emphasis } from "@/components/ui/emphasis";
 
 export type LoopStep = { title: string; body: string; quote: string; quoteBy: string };
 
@@ -150,7 +151,7 @@ export function LearningLoop({ anchor, eyebrow, heading, intro, steps, outcome, 
         <div className="rounded-[var(--radius-panel)] border border-line bg-surface px-5 py-8 shadow-card sm:px-8 md:px-10 md:py-10 lg:px-12">
           {eyebrow && <p className="eyebrow mb-2">{eyebrow}</p>}
           <h2 id={headingId} className="text-h2">
-            {heading}
+            <Emphasis text={heading} auto />
           </h2>
           {intro && <p className="mt-3 max-w-2xl text-lead text-ink">{intro}</p>}
 

@@ -6,7 +6,8 @@ import { formatDate, readingMinutes } from "@/lib/utils";
 export function PostCard({ post, image, showExcerpt = false }: { post: PostView; image: MediaItem | null; showExcerpt?: boolean }) {
   return (
     <li className="group relative isolate flex flex-col">
-      <div className="relative aspect-[16/10] overflow-hidden rounded-card bg-tint-deep">
+      {/* The photograph lifts with a lavender edge on hover, like the cards of the homepage design. */}
+      <div className="fx-card relative aspect-[16/10] overflow-hidden rounded-card border border-transparent bg-tint-deep">
         {image && (
           <MediaImage
             media={image}
@@ -21,7 +22,7 @@ export function PostCard({ post, image, showExcerpt = false }: { post: PostView;
         <time dateTime={post.publishedAt ?? undefined}>{formatDate(post.publishedAt)}</time> <span aria-hidden>·</span> {readingMinutes(post.contentHtml)} min read
       </p>
       <h3 className="mt-2 text-h3">
-        <Link href={`/${post.slug}/`} className="outline-none after:absolute after:inset-0 after:z-10 group-hover:text-primary focus-visible:underline">
+        <Link href={`/${post.slug}/`} className="outline-none after:absolute after:inset-0 after:z-10 group-hover:text-lav-deep focus-visible:underline">
           {post.title}
         </Link>
       </h3>

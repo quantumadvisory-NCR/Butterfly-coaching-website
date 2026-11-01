@@ -2,6 +2,7 @@ import { CaretRightIcon, CheckCircleIcon, CompassIcon, EarIcon, HandshakeIcon, L
 import type { ComponentType } from "react";
 import type { ProgrammeView } from "@/lib/content/public";
 import { cn } from "@/lib/utils";
+import { Emphasis } from "@/components/ui/emphasis";
 
 /*
  * The redesigned sections of the ICF credential pages (design refresh,
@@ -162,10 +163,10 @@ export function CredentialJourney({ credential, modules }: { credential: string;
     <section id="journey" aria-labelledby="journey-heading" className="section-space bg-page">
       <div className="container-site">
         <div className="relative isolate overflow-hidden rounded-[var(--radius-panel)] bg-tint px-5 py-8 sm:px-8 md:px-10 md:py-10 lg:px-12 lg:py-12">
-          <div aria-hidden className="pointer-events-none absolute -right-24 -top-28 -z-10 size-80 rounded-full bg-accent/30 blur-3xl" />
+          <div aria-hidden className="fx-glow pointer-events-none absolute -right-24 -top-28 -z-10 size-80 rounded-full bg-lav/30 blur-3xl" />
           <p className="eyebrow mb-2">Your transformation</p>
           <h2 id="journey-heading" className="text-h2">
-            {journey.heading}
+            <Emphasis text={journey.heading} auto />
           </h2>
           <p className="mt-3 max-w-xl text-lead text-ink">{journey.intro}</p>
           <dl className="mt-6 flex flex-wrap gap-x-10 gap-y-4 max-sm:grid max-sm:grid-cols-3 max-sm:gap-x-4 md:mt-7">
@@ -304,7 +305,7 @@ export function AccWings({ outcomes }: { outcomes: string[] }) {
           <div className="mx-auto max-w-xl text-center">
             <p className="eyebrow mb-2">Your coaching wings</p>
             <h2 id="wings-heading" className="text-h2">
-              What you will build
+              <Emphasis text="What you will build" auto />
             </h2>
             <p className="mt-3 text-[1.0625rem] leading-relaxed">Three core skills on one wing, three foundations on the other. Together, they help you take flight as a coach.</p>
           </div>

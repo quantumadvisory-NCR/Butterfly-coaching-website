@@ -185,3 +185,46 @@ export async function subscribeNewsletter(_prev: FormState, formData: FormData):
   }
   return { status: "success", message: "Thank you. You are on the list." };
 }
+
+/**
+ * "Get the programme guide": an email address only. Saved in Enquiries as a
+ * "Programme guide request" and sent to the team like any enquiry, so someone
+ * can reply with the guide. Nothing is emailed to the visitor automatically,
+ * and the confirmation they see says so honestly.
+ */
+export async function requestGuide(_prev: FormState, formData: FormData): Promise<FormState> {
+  const values = echo(formData, ["email"]);
+  // Honeypot: real visitors never see or fill this field. Pretend it worked.
+  if (formData.get("website")) return { status: "success", values };
+
+  const parsed = newsletterSchema.safeParse(Object.fromEntries(formData));
+  if (!parsed.success) return { status: "error", errors: fieldErrors(parsed.error.issues), values };
+  if (!verifyFormToken(String(formData.get("token") ?? ""), 1)) {
+    return { status: "error", message: "We could not verify this request. Please try again.", values };
+  }
+  const { email, sourcePath } = parsed.data;
+  try {
+    if (!(await rateLimit("guide", 5, 15 * 60))) return { status: "error", message: TOO_MANY, values };
+    const settings = await getSettings();
+    const message = "Please send me the programme guide: fees, dates and session times.";
+    const [row] = await db()
+      .insert(enquiries)
+      // There is no name on this form; the address stands in for it in the inbox.
+      .values({ type: "guide", name: email, email, message, sourcePath })
+      .returning({ id: enquiries.id });
+    const adminLink = `${siteUrl()}/admin/enquiries/${row!.id}/`;
+    const to = (process.env.ENQUIRY_NOTIFY_TO || settings.contact.email).split(",").map((s) => s.trim()).filter(Boolean);
+    const result = await sendEmail({
+      to,
+      replyTo: email,
+      subject: `New ${ENQUIRY_LABELS.guide.toLowerCase()} from ${email}`,
+      text: `${email} asked for the programme guide (fees, dates and session times).\nSent from: ${sourcePath ?? "the website"}\n\nOpen in the admin: ${adminLink}`,
+      html: `<p style="font-family:sans-serif;font-size:14px"><b>${escapeHtml(email)}</b> asked for the programme guide (fees, dates and session times).<br>Sent from: ${escapeHtml(sourcePath ?? "the website")}</p><p style="font-family:sans-serif;font-size:14px"><a href="${adminLink}">Open in the admin</a></p>`,
+    });
+    await db().update(enquiries).set({ notificationStatus: result }).where(eq(enquiries.id, row!.id));
+  } catch (error) {
+    console.error("[guide] failed to store the request", error);
+    return { status: "error", message: GENERIC_ERROR, values };
+  }
+  return { status: "success", values: { email } };
+}

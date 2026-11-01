@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./effects.css";
 
 /* ==========================================================================
    Butterfly Coaching Academy design tokens: the single source of truth for
@@ -22,8 +23,12 @@
      text (2.8 to 1 on light gray); #8A6800 keeps the hue and passes AA (4.6 to 1). */
   --bca-label: #8a6800;
 
-  --font-heading: var(--font-jakarta);
-  --font-body: var(--font-jakarta);
+  /* The November 2026 homepage design adds lavender beside butterfly yellow. One
+     value; every shade below is mixed from it, exactly as in the design file. */
+  --lav: #a895ee;
+
+  --font-heading: var(--ff-bricolage);
+  --font-body: var(--ff-inter);
 
   /* Layout */
   --gutter: clamp(1rem, 0.25rem + 3.4vw, 2.5rem);
@@ -77,6 +82,28 @@
   --color-accent-soft: color-mix(in srgb, var(--bca-accent) 22%, #fff);
   --color-label: var(--bca-label);
 
+  /* November 2026 design: lavender shades, the deep ink and plum of its dark
+     sections, and its purple-gray text. Used by the homepage, the header and
+     footer, and the effects shared by every page. */
+  --color-lav: var(--lav);
+  --color-lav-50: color-mix(in srgb, var(--lav) 11%, #fff);
+  --color-lav-100: color-mix(in srgb, var(--lav) 24%, #fff);
+  --color-lav-200: color-mix(in srgb, var(--lav) 45%, #fff);
+  /* Lavender text on light backgrounds: 6.3 to 1 on white. */
+  --color-lav-deep: color-mix(in srgb, var(--lav) 52%, #1a1030);
+  --color-lav-dim: color-mix(in srgb, var(--lav) 42%, #1c1631);
+  --color-ink-deep: #16131d;
+  --color-plum: #1c1631;
+  --color-plum-card: #221d2c;
+  --color-plum-line: #3a3348;
+  /* Text: 6.6 to 1 (mauve) and 8.6 to 1 (mauve-deep) on the page. */
+  --color-mauve: #5d5868;
+  --color-mauve-deep: #4a4556;
+  --color-lilac-line: #e7e3ec;
+  /* Text on the dark sections: 10.1 and 6.1 to 1 on plum. */
+  --color-lilac: #c9c1e4;
+  --color-lilac-soft: #9d93c2;
+
   /* Backgrounds. The page colour sits behind every section. */
   --color-background: var(--bca-background);
   --color-page: var(--bca-background);
@@ -105,6 +132,10 @@
   /* Type */
   --font-sans: var(--font-body), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-display: var(--font-heading), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* The design's own typefaces, independent of the theme setting. */
+  --font-grotesk: var(--ff-bricolage), var(--ff-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-text: var(--ff-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-note: var(--ff-caveat), "Segoe Print", "Bradley Hand", cursive;
 
   --text-display: clamp(2.5rem, 1.55rem + 4.2vw, 4.75rem);
   --text-display--line-height: 1.02;
@@ -246,6 +277,9 @@
   }
 
   .btn {
+    position: relative;
+    /* Keeps the light sweep of the primary button inside its pill. */
+    overflow: hidden;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -263,9 +297,11 @@
     white-space: nowrap;
     cursor: pointer;
     transition:
-      background-color 0.2s var(--ease-out-soft),
-      color 0.2s var(--ease-out-soft),
-      border-color 0.2s var(--ease-out-soft),
+      background-color 0.25s var(--ease-out-soft),
+      color 0.25s var(--ease-out-soft),
+      border-color 0.25s var(--ease-out-soft),
+      box-shadow 0.25s var(--ease-out-soft),
+      translate 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
       transform 0.2s var(--ease-out-soft);
   }
 
@@ -285,10 +321,31 @@
     font-size: 0.9375rem;
   }
 
-  /* Primary: butterfly yellow with charcoal text, 8.0:1 contrast. */
+  /* Primary: butterfly yellow with charcoal text, 8.0:1 contrast. On hover it lifts,
+     brightens and a band of light sweeps across it (the November 2026 design). */
   .btn-primary {
     background: var(--color-accent);
     color: var(--color-navy);
+    box-shadow: 0 8px 20px -10px rgb(214 160 0 / 0.9);
+  }
+  .btn-primary::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 0.6) 50%, transparent 70%);
+    transform: translateX(-130%);
+    transition: transform 0.8s;
+    pointer-events: none;
+  }
+
+  /* Deep ink and soft lavender buttons from the design. */
+  .btn-ink {
+    background: var(--color-ink-deep);
+    color: #fff;
+  }
+  .btn-lav {
+    background: var(--color-lav-deep);
+    color: #fff;
   }
 
   .btn-secondary {
@@ -320,13 +377,24 @@
   /* Hover colours only where a pointer can hover: on a phone a tap would otherwise
      leave a yellow button charcoal until the next tap somewhere else. */
   @media (hover: hover) {
+    .btn:hover {
+      translate: 0 -2px;
+    }
     .btn-primary:hover {
-      background: var(--color-navy);
+      background: color-mix(in srgb, var(--color-accent) 80%, #fff);
+      color: var(--color-navy);
+      box-shadow: 0 14px 30px -12px rgb(214 160 0);
+    }
+    .btn-primary:hover::after {
+      transform: translateX(130%);
+    }
+    .btn-ink:hover {
+      background: #2e2840;
       color: #fff;
     }
-    .on-dark .btn-primary:hover {
-      background: #fff;
-      color: var(--color-navy);
+    .btn-lav:hover {
+      background: var(--color-ink-deep);
+      color: #fff;
     }
     .btn-secondary:hover {
       background: var(--color-navy);
@@ -470,8 +538,8 @@
   }
   .field-input:focus-visible {
     outline: none;
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 28%, transparent);
+    border-color: var(--color-lav-deep);
+    box-shadow: 0 0 0 4px var(--color-lav-100);
   }
   .field-input[aria-invalid="true"] {
     border-color: var(--color-danger);
@@ -493,9 +561,16 @@
   }
 }
 
-/* "Choose your path" card. On hover and keyboard focus its edge warms into a
-   soft pale-to-warm yellow gradient; the card lifts slightly using transform
-   only, so neighbouring cards never move. */
+/* The edge cards take on hover and keyboard focus: lavender with a touch of
+   yellow, the November 2026 design's card hover. Colour stays on the edge. */
+:root {
+  --fx-card-edge: linear-gradient(135deg, var(--color-lav-100) 0%, var(--color-lav) 45%, var(--color-lav-deep) 80%, var(--color-accent) 100%);
+  --fx-card-shadow: 0 28px 50px -28px rgb(70 45 160 / 0.45);
+}
+
+/* "Choose your path" card. On hover and keyboard focus its edge turns
+   lavender; the card lifts slightly using transform only, so neighbouring
+   cards never move. */
 .path-card {
   position: relative;
   isolation: isolate;
@@ -513,7 +588,7 @@
   z-index: -1;
   border-radius: inherit;
   padding: 2px;
-  background: linear-gradient(135deg, #fff6d6 0%, var(--color-accent-soft) 30%, var(--color-accent) 72%, #ffd65c 100%);
+  background: var(--fx-card-edge);
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
@@ -534,8 +609,8 @@
 }
 @media (hover: hover) {
   .path-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 18px 36px -20px rgb(245 186 0 / 0.55);
+    transform: translateY(-6px);
+    box-shadow: var(--fx-card-shadow);
   }
   .path-card:hover::before {
     opacity: 1;
@@ -571,7 +646,7 @@
   z-index: -1;
   border-radius: inherit;
   padding: 2px;
-  background: linear-gradient(135deg, #fff6d6 0%, var(--color-accent-soft) 30%, var(--color-accent) 72%, #ffd65c 100%);
+  background: var(--fx-card-edge);
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
@@ -593,9 +668,9 @@
 }
 @media (hover: hover) {
   .lift-card:hover {
-    translate: 0 -4px;
+    translate: 0 -6px;
     border-color: transparent;
-    box-shadow: var(--shadow-lift);
+    box-shadow: var(--fx-card-shadow);
   }
   .lift-card:hover::before {
     opacity: 1;

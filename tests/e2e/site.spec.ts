@@ -179,39 +179,42 @@ test.describe("navigation", () => {
   });
 });
 
-test.describe("learning journeys", () => {
-  test("the homepage loop works with clicks, Next step and the keyboard", async ({ page }) => {
+test.describe("homepage design (November 2026)", () => {
+  test("shows the design's sections, with the effects read as plain words", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto("/");
-    const section = page.locator("section", { has: page.getByRole("heading", { name: "How you'll grow, one loop at a time" }) });
-    await section.scrollIntoViewIfNeeded();
-    const panel = section.locator("[aria-live=polite]");
-    await expect(panel.getByText("Step 1 of 4")).toBeVisible();
-
-    await section.getByRole("button", { name: "Step 2, Practise" }).click();
-    await expect(panel.getByRole("heading", { name: "Practise" })).toBeVisible();
-    await expect(panel.getByText("Coach a peer in your first week.")).toBeVisible();
-
-    await section.getByRole("button", { name: "Next step" }).click();
-    await expect(panel.getByRole("heading", { name: "Receive feedback" })).toBeVisible();
-
-    await section.getByRole("button", { name: "Step 4, Reflect and revisit" }).press("Enter");
-    await expect(panel.getByText("Round 1 complete. Each loop goes deeper.")).toBeVisible();
-    await section.getByRole("button", { name: "Next step" }).click();
-    await expect(panel.getByText("Step 1 of 4")).toBeVisible();
-    await expect(section.getByRole("link", { name: "Book a discovery call" })).toBeVisible();
+    // Highlights, hand-drawn underlines and circles never change what a screen reader hears.
+    await expect(page.getByRole("heading", { name: "Why learners choose BCA" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Choose your path" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "A global learning community" })).toBeVisible();
+    const spotlight = page.locator("#accreditation");
+    for (const caption of ["Level 1 · ACC", "Level 2 · PCC", "Level 3 · MCC"]) await expect(spotlight.getByText(caption)).toBeVisible();
+    await expect(page.getByRole("list", { name: "Countries our learners join from" }).getByRole("listitem")).toHaveCount(7);
   });
 
-  test("on phones the loop is a vertical timeline with every step readable", async ({ page }) => {
+  test("the programmes and fees table comes from the programme records", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto("/");
+    await page.getByRole("link", { name: "Just browsing? See programmes and fees" }).click();
+    await expect(page).toHaveURL(/#programmes$/);
+    const table = page.locator("#programmes table");
+    for (const credential of ["ACC", "PCC", "MCC"]) await expect(table.getByRole("columnheader", { name: new RegExp(credential) })).toBeVisible();
+    await expect(table.getByRole("row", { name: /Coach education/ })).toContainText("77 hrs");
+    // No fee is published yet, so the table says so plainly.
+    await expect(table.getByRole("row", { name: /Fee/ })).toContainText("Ask us for the current fee");
+    await table.getByRole("link", { name: "Reserve: Level 2: PCC Coach Programme" }).click();
+    await expect(page).toHaveURL(/\/level-2-pcc-coach-program\/#enquire$/);
+  });
+
+  test("on phones the fees table becomes one card per level", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/");
-    const section = page.locator("section", { has: page.getByRole("heading", { name: "How you'll grow, one loop at a time" }) });
-    for (const title of ["Learn", "Practise", "Receive feedback", "Reflect and revisit"]) {
-      await expect(section.getByRole("heading", { name: title, exact: true })).toBeVisible();
-    }
-    await expect(section.getByText("Build capability").filter({ visible: true })).toBeVisible();
-    await expect(section.getByRole("button", { name: "Step 1, Learn" })).toBeHidden();
+    await expect(page.locator("#programmes table")).toBeHidden();
+    await expect(page.locator("#programmes").getByRole("heading", { name: /PCC/ })).toBeVisible();
   });
+});
+
+test.describe("learning journeys", () => {
 
   test("the PCC and MCC pages show their journeys and where the hours go", async ({ page }) => {
     await page.goto("/level-2-pcc-coach-program/");
