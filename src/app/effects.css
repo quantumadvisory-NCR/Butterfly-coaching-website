@@ -169,7 +169,8 @@
   transform-origin: 50% 50%;
 }
 
-/* A butterfly that flies along a path across its section. The section clips it. */
+/* A butterfly that flies along a path across its section. The section clips it.
+   Each path sets its flight: --fly (time), --fly-delay and --fly-ease. */
 .fx-flyer {
   position: absolute;
   top: 0;
@@ -182,16 +183,37 @@
 }
 .fx-flyer-hero {
   offset-path: path("M -60 520 C 120 380, 260 160, 520 260 S 900 520, 1120 230 S 1380 80, 1560 160");
+  --fly: 18s;
+  --fly-delay: 0s;
+  --fly-ease: linear;
 }
 .fx-flyer-wave {
+  offset-path: path("M -40 60 C 200 10, 420 120, 640 50 S 1000 0, 1300 70");
+  --fly: 22s;
+  --fly-delay: 3s;
+  --fly-ease: linear;
+}
+.fx-flyer.fx-flyer-wave {
   width: 36px;
   height: 26px;
-  offset-path: path("M -40 60 C 200 10, 420 120, 640 50 S 1000 0, 1300 70");
 }
 .fx-flyer-climb {
+  offset-path: path("M 70 126 C 140 126, 180 98, 250 98 S 360 70, 430 70");
+  --fly: 6s;
+  --fly-delay: 0s;
+  --fly-ease: ease-in-out;
+}
+.fx-flyer.fx-flyer-climb {
   width: 38px;
   height: 28px;
-  offset-path: path("M 70 126 C 140 126, 180 98, 250 98 S 360 70, 430 70");
+}
+
+/* The colour a flying butterfly shows on desktop: a hue that moves from monarch
+   orange through rose and violet to lavender and back. */
+@property --fly-hue {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 30;
 }
 
 /* ---- the "Live online" globe badge (components/site/globe-badge.tsx) ------------ */
@@ -215,6 +237,26 @@
   .bca-globe {
     --globe: 92px;
     gap: 10px;
+  }
+}
+
+/* On the homepage hero the globe hangs off the photograph's top-right corner:
+   the ball's centre on the frame's right edge, 14% of the way down (just outside
+   the arch's curve, clear of faces in the photo), with its label beneath it.
+   The label lines up under the ball's right side, so it never runs off screen;
+   on wide screens, where there is room, it is centred under the ball. */
+.bca-globe--edge {
+  position: absolute;
+  z-index: 4;
+  left: calc(100% - 5px);
+  top: 14%;
+  align-items: flex-end;
+  translate: calc(var(--globe) / 2 - 100%) calc(var(--globe) / -2);
+}
+@media (width >= 85rem) {
+  .bca-globe--edge {
+    align-items: center;
+    translate: -50% calc(var(--globe) / -2);
   }
 }
 .bca-globe__shadow {
@@ -435,14 +477,8 @@
   .fx-blob {
     animation: fx-morph 14s ease-in-out infinite;
   }
-  .fx-flyer-hero {
-    animation: fx-fly 18s linear infinite;
-  }
-  .fx-flyer-wave {
-    animation: fx-fly 22s 3s linear infinite;
-  }
-  .fx-flyer-climb {
-    animation: fx-fly 6s ease-in-out infinite;
+  .fx-flyer {
+    animation: fx-fly var(--fly) var(--fly-delay) var(--fly-ease) infinite;
   }
   .fx-live {
     animation: fx-live 1.6s ease-out infinite;
@@ -509,6 +545,17 @@
 @media (prefers-reduced-motion: reduce) {
   .fx-flyer {
     display: none;
+  }
+}
+
+/* Desktop only (phones and tablets keep the plain monarch): the flying butterfly
+   changes colour as it goes, with a soft glow in the same colour. */
+@media (prefers-reduced-motion: no-preference) and (width >= 64rem) {
+  .fx-flyer {
+    animation:
+      fx-fly var(--fly) var(--fly-delay) var(--fly-ease) infinite,
+      fx-hue 8s var(--fly-delay) ease-in-out infinite alternate;
+    filter: hue-rotate(calc((var(--fly-hue) - 30) * 1deg)) drop-shadow(0 0 7px hsl(var(--fly-hue) 95% 62% / 0.55));
   }
 }
 
@@ -588,6 +635,20 @@
   }
   to {
     offset-distance: 100%;
+  }
+}
+@keyframes fx-hue {
+  0% {
+    --fly-hue: 30;
+  }
+  30% {
+    --fly-hue: -12;
+  }
+  65% {
+    --fly-hue: -72;
+  }
+  100% {
+    --fly-hue: -108;
   }
 }
 @keyframes fx-live {

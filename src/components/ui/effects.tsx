@@ -37,7 +37,9 @@ export function Butterfly({
 
 /**
  * A butterfly that flies along a path across its section, wings beating. Place
- * it inside a positioned section that clips overflow.
+ * it inside a positioned section that clips overflow. On desktop (1024px and
+ * wider) it also changes colour as it flies; phones and tablets show the plain
+ * monarch.
  */
 export function Flyer({ path = "hero", className }: { path?: "hero" | "wave" | "climb"; className?: string }) {
   return (

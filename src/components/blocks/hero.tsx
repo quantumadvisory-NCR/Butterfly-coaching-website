@@ -143,14 +143,9 @@ function HomeHero({ data, ctx }: BlockProps<"hero">) {
           <div aria-hidden className="absolute aspect-square w-[min(35rem,100%)] rounded-full border-[1.5px] border-dashed border-lav-200" />
 
           <div className="fx-rise relative w-[min(25rem,82%)]" style={delay(0.3)}>
-            {/* The globe sits on the frame's edge: its centre on the top-right curve of the arch (85.4% across,
-                11.8% down), straddling the yellow border, with the line of text centred beneath it. */}
-            {data.stickerText && (
-              <GlobeBadge
-                label={data.stickerText}
-                className="absolute left-[85.4%] top-[11.8%] z-[4] -translate-x-1/2 -translate-y-[calc(var(--globe)/2)]"
-              />
-            )}
+            {/* The globe hangs off the photograph's top-right corner, its label across the right edge
+                (placement in effects.css, .bca-globe--edge). */}
+            {data.stickerText && <GlobeBadge label={data.stickerText} className="bca-globe--edge" />}
             <div className="relative flex aspect-[4/5] items-center justify-center overflow-hidden rounded-[12.5rem_12.5rem_2rem_2rem] border-[10px] border-accent bg-[linear-gradient(180deg,var(--color-lav-50),#fff)] shadow-[0_40px_70px_-40px_rgb(70_45_160/0.7)]">
               {image ? (
                 tall ? (
