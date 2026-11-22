@@ -3,12 +3,13 @@ import { cn } from "@/lib/utils";
 import { HOME, MAP, PLACES, mapPoint } from "./world-map-geometry";
 
 /**
- * The world map in the homepage hero's top-right corner (22 November 2026, the
- * owner's choice of four static designs): pale lavender continents, with
- * dotted routes curving out from India, in butterfly yellow, to the countries
- * in the community section. Static and decorative (aria-hidden); no script.
+ * The world map across the homepage hero on desktop (22 November 2026, the
+ * owner's choice: "B. Defined", full width, moving slowly from side to side):
+ * lavender continents with clear coastlines (Natural Earth), and dotted routes
+ * curving out from India, in butterfly yellow, to the countries in the community
+ * section. Decorative (aria-hidden); the sway is CSS only, no script.
  *
- * The continents are public/images/brand/world-map-v1.svg (drawn by
+ * The continents are public/images/brand/world-map-v2.svg (drawn by
  * scripts/make-world-map.ts); the routes are drawn here on the same 1400 x 640
  * frame (world-map-geometry.ts). Placement and fades are in effects.css
  * (.bca-worldmap). Desktop only: phones and tablets keep the globe badge.
@@ -25,7 +26,7 @@ export function WorldMap({ className }: { className?: string }) {
   return (
     <div aria-hidden className={cn("bca-worldmap", className)}>
       <Image
-        src="/images/brand/world-map-v1.svg"
+        src="/images/brand/world-map-v2.svg"
         alt=""
         width={MAP.width}
         height={MAP.height}

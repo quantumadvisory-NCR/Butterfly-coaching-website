@@ -5,15 +5,16 @@ import { EmptyState, PageHeader, RecordCell, RecordRow, RecordTable } from "@/co
 import { requireUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { auditLogs } from "@/lib/db/schema";
+import { pageNumber } from "@/lib/search-params";
 import { formatDateTime } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Audit log" };
 
 const PER_PAGE = 50;
 
-export default async function AuditPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
+export default async function AuditPage({ searchParams }: { searchParams: Promise<{ page?: string | string[] }> }) {
   await requireUser("owner");
-  const page = Math.max(1, Number((await searchParams).page) || 1);
+  const page = pageNumber((await searchParams).page);
   const [rows, [total]] = await Promise.all([
     db().select().from(auditLogs).orderBy(desc(auditLogs.createdAt)).limit(PER_PAGE).offset((page - 1) * PER_PAGE),
     db().select({ n: count() }).from(auditLogs),

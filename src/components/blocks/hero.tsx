@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { type CSSProperties, Fragment } from "react";
+import type { CSSProperties } from "react";
 import { Breadcrumbs } from "@/components/site/breadcrumbs";
 import { GlobeBadge } from "@/components/site/globe-badge";
 import { GuideForm } from "@/components/site/guide-form";
+import { LivePill } from "@/components/site/live-pill";
 import { HeroSlideshow } from "@/components/site/hero-slideshow";
 import { WorldMap } from "@/components/site/world-map";
 import { ButtonLink } from "@/components/ui/button-link";
@@ -48,32 +49,6 @@ function HeroPill({ text }: { text: string }) {
         </span>
       ))}
     </p>
-  );
-}
-
-/**
- * The small label beside the top of the homepage photograph, over the world
- * map, with a pulsing live dot. Where space is tight (phones, small laptops) it
- * breaks at its " · " into two centred lines.
- */
-function LivePill({ text }: { text: string }) {
-  return (
-    <span className="bca-live-pill max-sm:text-center lg:max-xl:text-center">
-      <LiveDot className="size-[7px]" />
-      <span>
-        {text.split(/\s+·\s+/).map((part, i) => (
-          <Fragment key={`${part}-${i}`}>
-            {i > 0 && (
-              <>
-                <span className="max-sm:hidden lg:max-xl:hidden"> · </span>
-                <br className="hidden max-sm:inline lg:max-xl:inline" />
-              </>
-            )}
-            {part}
-          </Fragment>
-        ))}
-      </span>
-    </span>
   );
 }
 
@@ -181,7 +156,7 @@ function HomeHero({ data, ctx }: BlockProps<"hero">) {
           <div className="fx-rise relative w-[min(25rem,82%)]" style={delay(0.3)}>
             {/* Phones and tablets: the turning globe badge on the frame's corner, as before. Desktop: the label beside the world map. */}
             {data.stickerText && <GlobeBadge label={data.stickerText} className="bca-globe--edge" />}
-            {data.stickerText && <LivePill text={data.stickerText} />}
+            {data.stickerText && <LivePill text={data.stickerText} breakOn="laptop" className="bca-live-pill" />}
             <div className="relative flex aspect-[4/5] items-center justify-center overflow-hidden rounded-[12.5rem_12.5rem_2rem_2rem] border-[10px] border-accent bg-[linear-gradient(180deg,var(--color-lav-50),#fff)] shadow-[0_40px_70px_-40px_rgb(70_45_160/0.7)]">
               {image ? (
                 slides.length > 0 ? (

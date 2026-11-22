@@ -1,4 +1,4 @@
-import { ArrowSquareOutIcon, CheckCircleIcon, InfoIcon, WarningIcon } from "@phosphor-icons/react/dist/ssr";
+import { CheckCircleIcon, InfoIcon, WarningIcon } from "@phosphor-icons/react/dist/ssr";
 import { AdminLink as Link } from "@/components/admin/admin-link";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
@@ -94,16 +94,6 @@ export function EmptyState({ title, children, action }: { title: string; childre
       {children && <p className="mx-auto mt-2 max-w-md text-[0.9375rem] text-muted">{children}</p>}
       {action && <div className="mt-5 flex justify-center">{action}</div>}
     </div>
-  );
-}
-
-export function ViewOnSite({ href, label = "View on site" }: { href: string; label?: string }) {
-  return (
-    <a href={href} target="_blank" rel="noopener noreferrer" className="btn btn-quiet btn-sm">
-      <ArrowSquareOutIcon aria-hidden weight="bold" className="size-4" />
-      {label}
-      <span className="sr-only"> (opens in a new tab)</span>
-    </a>
   );
 }
 

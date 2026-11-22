@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { BlogListing } from "@/components/site/blog-listing";
-import { getPosts, getSettings } from "@/lib/content/public";
+import { BlogListing, listingPageCount } from "@/components/site/blog-listing";
+import { getMediaMap, getPosts, getSettings } from "@/lib/content/public";
+import { pageNumber } from "@/lib/search-params";
 import { buildMetadata } from "@/lib/seo";
 
-type Props = { params: Promise<{ slug: string }>; searchParams: Promise<{ page?: string }> };
+type Props = { params: Promise<{ slug: string }>; searchParams: Promise<{ page?: string | string[] }> };
 
 async function findCategory(slug: string) {
   for (const post of await getPosts()) {
@@ -14,14 +15,19 @@ async function findCategory(slug: string) {
   return null;
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const [category, settings] = await Promise.all([findCategory(slug), getSettings()]);
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
+  const [{ slug }, { page }] = await Promise.all([params, searchParams]);
+  const [category, settings, media, posts] = await Promise.all([findCategory(slug), getSettings(), getMediaMap(), getPosts()]);
   if (!category) return {};
+  const n = pageNumber(page);
+  const pages = listingPageCount(posts.filter((p) => p.categories.some((c) => c.slug === category.slug)).length, false);
   return buildMetadata({
     title: `${category.name} articles`,
     description: `Articles filed under ${category.name} from Butterfly Coaching Academy.`,
     path: `/blog/category/${category.slug}/`,
+    page: n,
+    media,
+    noindex: n > pages,
     settings,
   });
 }
@@ -35,7 +41,7 @@ export default async function BlogCategoryPage({ params, searchParams }: Props) 
       heading={`${category.name} articles`}
       basePath={`/blog/category/${category.slug}/`}
       filter={(post) => post.categories.some((c) => c.slug === category.slug)}
-      page={Number(page) || 1}
+      page={pageNumber(page)}
       activeCategory={category.slug}
       crumbs={[
         { label: "Resources", href: "/blog/" },

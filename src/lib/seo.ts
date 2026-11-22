@@ -15,6 +15,10 @@ type Input = {
   description?: string | null;
   path: string;
   image?: MediaItem | null;
+  /** The media library: when the page has no image, the default sharing image (Settings > Brand) is used. */
+  media?: Record<string, MediaItem>;
+  /** Page of a paginated listing: from 2 up it gets its own canonical URL (?page=n) and "(page n)" in the title. */
+  page?: number;
   noindex?: boolean;
   type?: "website" | "article";
   publishedTime?: string | null;
@@ -23,17 +27,36 @@ type Input = {
   absoluteTitle?: boolean;
 };
 
+/** Longest title that still gets " | site name" added; longer ones are cut short in search results. */
+const SUFFIXED_TITLE_MAX = 60;
+
+/**
+ * The title as the layout's template should treat it. " | Butterfly Coaching
+ * Academy" is added only when the title does not already name the academy and
+ * the whole stays short enough to show in full in search results.
+ */
+function pageTitle(title: string, siteName: string, absolute?: boolean): Metadata["title"] {
+  if (absolute) return { absolute: title };
+  const namesBrand = title.toLowerCase().includes(siteName.toLowerCase());
+  const tooLong = `${title} | ${siteName}`.length > SUFFIXED_TITLE_MAX;
+  return namesBrand || tooLong ? { absolute: title } : title;
+}
+
 /** Unique title, description, canonical URL and Open Graph / Twitter tags for a page. */
 export function buildMetadata(input: Input): Metadata {
   const { settings } = input;
   const description = truncate((input.description || settings.brand.defaultDescription).trim(), 160);
-  const url = absoluteUrl(input.path);
-  const image = input.image && input.image.kind === "image" ? input.image : null;
+  const paged = input.page && input.page > 1 ? input.page : 0;
+  const title = paged ? `${input.title} (page ${paged})` : input.title;
+  const url = absoluteUrl(paged ? `${input.path}?page=${paged}` : input.path);
+  const fallback = input.media && settings.brand.defaultOgImage ? input.media[settings.brand.defaultOgImage] : null;
+  const chosen = input.image ?? fallback ?? null;
+  const image = chosen && chosen.kind === "image" ? chosen : null;
   const images = image
     ? [{ url: absoluteUrl(image.url), width: image.width ?? undefined, height: image.height ?? undefined, alt: image.alt }]
     : undefined;
   return {
-    title: input.absoluteTitle ? { absolute: input.title } : input.title,
+    title: pageTitle(title, settings.brand.siteName, input.absoluteTitle),
     description,
     alternates: { canonical: url },
     robots: input.noindex ? { index: false, follow: false } : undefined,
@@ -41,13 +64,13 @@ export function buildMetadata(input: Input): Metadata {
       type: input.type ?? "website",
       url,
       siteName: settings.brand.siteName,
-      title: input.title,
+      title,
       description,
       locale: "en_IN",
       images,
       ...(input.type === "article" && input.publishedTime ? { publishedTime: input.publishedTime } : {}),
     },
-    twitter: { card: image ? "summary_large_image" : "summary", title: input.title, description, images: images?.map((i) => i.url) },
+    twitter: { card: image ? "summary_large_image" : "summary", title, description, images: images?.map((i) => i.url) },
   };
 }
 

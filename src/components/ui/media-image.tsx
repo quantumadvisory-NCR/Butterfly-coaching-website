@@ -108,4 +108,3 @@ export function ArtDirectedImage({
   );
 }
 
-export { focal as focalPosition };

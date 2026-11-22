@@ -241,7 +241,8 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   },
   social: { linkedin: "", instagram: "", facebook: "", youtube: "", x: "" },
   header: {
-    // Off until the owner sets a confirmed cohort date: the bar never shows a placeholder.
+    // On by default. announcementState() hides the bar if the text uses {date} without a valid
+    // future date, or still holds a placeholder, so visitors never see one.
     announcementEnabled: true,
     announcementText: "Know about our next cohort · Limited seats",
     announcementDate: "",
@@ -306,10 +307,6 @@ export function parseSettingsGroup<K extends SettingsKey>(key: K, value: unknown
     }
   }
   return data as SiteSettings[K];
-}
-
-export function settingsSchema(key: SettingsKey) {
-  return objectSchema(SETTINGS_GROUPS[key].fields);
 }
 
 /* ---- derived helpers ------------------------------------------------------ */

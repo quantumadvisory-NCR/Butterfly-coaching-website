@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { ENQUIRY_TYPES, TEAM_SIZES } from "./form-constants";
 
-export { ENQUIRY_LABELS, IDLE, TEAM_SIZES, type FormState } from "./form-constants";
+export { ENQUIRY_LABELS, type FormState } from "./form-constants";
 
 const optionalText = (max: number) =>
   z
@@ -54,7 +54,6 @@ export const enquirySchema = z
     }
   });
 
-export type EnquiryInput = z.infer<typeof enquirySchema>;
 
 export const newsletterSchema = z.object({
   email: z.string().trim().toLowerCase().email("Enter a valid email address, like name@example.com.").max(200),

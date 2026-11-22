@@ -240,11 +240,10 @@
   }
 }
 
-/* On the homepage hero the globe hangs off the photograph's top-right corner:
-   the ball's centre on the frame's right edge, 14% of the way down (just outside
-   the arch's curve, clear of faces in the photo), with its label beneath it.
-   The label lines up under the ball's right side, so it never runs off screen;
-   on wide screens, where there is room, it is centred under the ball. */
+/* On the homepage hero (phones and tablets) the globe hangs off the photograph's
+   top-right corner: the ball's centre on the frame's right edge, 14% of the way
+   down (just outside the arch's curve, clear of faces in the photo), with its
+   label beneath it, lined up under the ball's right side so it never runs off screen. */
 .bca-globe--edge {
   position: absolute;
   z-index: 4;
@@ -252,12 +251,6 @@
   top: 14%;
   align-items: flex-end;
   translate: calc(var(--globe) / 2 - 100%) calc(var(--globe) / -2);
-}
-@media (width >= 85rem) {
-  .bca-globe--edge {
-    align-items: center;
-    translate: -50% calc(var(--globe) / -2);
-  }
 }
 .bca-globe__shadow {
   position: absolute;
@@ -329,21 +322,37 @@
   }
 }
 
-/* ---- the world map in the hero's top-right corner (components/site/world-map.tsx) ---- */
-/* 22 November 2026, the owner's choice of four static designs. It sits under the
-   header's "Book a discovery call", against the hero's top and right edges, and
-   melts into the page towards the heading and the bottom. Raised a little so
-   India and its routes show in the open band above the photograph. */
+/* ---- the world map across the hero (components/site/world-map.tsx) ------------- */
+/* 22 November 2026, the owner's choice ("B. Defined", full width, moving side to
+   side). It spans the whole hero under the header, a little wider than the screen
+   so its slow side-to-side sway never shows an edge, and fades out from the middle
+   to the bottom. It is placed so India (0.3855 of the map's height down, see
+   world-map-geometry.ts) sits 6.75rem below the hero's top at every width: in the
+   open band above the photograph, clear of the "1 of 4" sticker. */
 .bca-worldmap {
+  --map-height: calc(112vw * 640 / 1400);
   position: absolute;
   z-index: 0;
-  top: -4.5rem;
-  right: -3vw;
-  width: min(74vw, 70rem);
+  top: calc(6.75rem - 0.3855 * var(--map-height));
+  left: -6%;
+  width: 112%;
   aspect-ratio: 1400 / 640;
   pointer-events: none;
-  -webkit-mask-image: radial-gradient(ellipse 72% 100% at 70% 20%, #000 52%, transparent 100%);
-  mask-image: radial-gradient(ellipse 72% 100% at 70% 20%, #000 52%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 34%, transparent 94%);
+  mask-image: linear-gradient(to bottom, #000 34%, transparent 94%);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .bca-worldmap {
+    animation: bca-worldmap-sway 40s ease-in-out infinite alternate;
+  }
+}
+@keyframes bca-worldmap-sway {
+  from {
+    translate: -2.5% 0;
+  }
+  to {
+    translate: 2.5% 0;
+  }
 }
 .bca-worldmap__land,
 .bca-worldmap__routes {
@@ -360,28 +369,15 @@
   }
 }
 
-/* The label beside the top of the hero photograph ("Live online · join from
-   anywhere"). It sits across the frame's right edge on wide screens; where the
-   photograph is near the screen edge it tucks in so it never runs off. */
+/* Where the desktop hero's "Live online" label sits (its look is .bca-globe__pill):
+   across the photograph frame's right edge on wide screens; where the photograph
+   is near the screen edge it tucks in so it never runs off. */
 .bca-live-pill {
   position: absolute;
   z-index: 4;
   top: 36%;
   left: calc(100% - 5px);
   translate: calc(-100% + 2.25rem) 0;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 7px 14px;
-  border: 1px solid #e6e0f3;
-  border-radius: 999px;
-  background: #fff;
-  color: #2a2533;
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 1.2;
-  white-space: nowrap;
-  box-shadow: 0 12px 24px -18px rgb(70 45 160 / 0.6);
 }
 @media (width >= 85rem) {
   .bca-live-pill {
@@ -437,11 +433,6 @@
 /* Big figures in butterfly yellow; they shimmer when motion is welcome. */
 .fx-shine {
   color: var(--color-accent);
-}
-
-/* The soft, slowly changing shape behind the hero photograph. */
-.fx-blob {
-  border-radius: 58% 42% 50% 50% / 48% 56% 44% 52%;
 }
 
 /* Cards lift and take a lavender edge on hover. Uses the translate property,
@@ -557,12 +548,6 @@
   }
   .fx-bob {
     animation: fx-bob 5.5s ease-in-out infinite;
-  }
-  .fx-bob-slow {
-    animation: fx-bob 6.5s 1.2s ease-in-out infinite;
-  }
-  .fx-blob {
-    animation: fx-morph 14s ease-in-out infinite;
   }
   .fx-flyer {
     animation: fx-fly var(--fly) var(--fly-delay) var(--fly-ease) infinite;
@@ -705,17 +690,6 @@
     transform: translateY(-12px) rotate(2deg);
   }
 }
-@keyframes fx-morph {
-  0%,
-  100% {
-    border-radius: 58% 42% 50% 50% / 48% 56% 44% 52%;
-    transform: rotate(0) scale(1);
-  }
-  50% {
-    border-radius: 42% 58% 46% 54% / 56% 44% 56% 44%;
-    transform: rotate(16deg) scale(1.05);
-  }
-}
 @keyframes fx-fly {
   from {
     offset-distance: 0%;
@@ -803,23 +777,26 @@
   }
 }
 
-/* The student stories carousel's row scrolls sideways without a visible scrollbar
-   (it has arrows, and swipes on touch screens). */
-.bca-story-track {
-  scrollbar-width: none;
+/* The student stories carousel (components/site/story-carousel.tsx): the row glides
+   inside a clipped viewport. Touch screens can still scroll the page vertically over
+   it (the carousel handles sideways drags itself); on wider screens both edges fade. */
+.bca-story-viewport {
+  overflow: hidden;
+  border-radius: 1.75rem;
 }
-/* On wider screens the card cut off at the right edge fades out instead of ending sharply. */
+/* Sideways drags move the row; vertical scrolling and pinch-zoom stay with the browser. */
+.bca-story-track[data-loop] {
+  touch-action: pan-y pinch-zoom;
+  cursor: grab;
+  user-select: none;
+  will-change: transform;
+}
+.bca-story-track[data-loop]:active {
+  cursor: grabbing;
+}
 @media (width >= 48rem) {
-  .bca-story-track {
-    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 5rem), transparent);
-    mask-image: linear-gradient(to right, #000 calc(100% - 5rem), transparent);
+  .bca-story-viewport {
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 3rem, #000 calc(100% - 4rem), transparent);
+    mask-image: linear-gradient(to right, transparent, #000 3rem, #000 calc(100% - 4rem), transparent);
   }
-  /* Scrolled to the end: the last card shows in full. */
-  .bca-story-track[data-end] {
-    -webkit-mask-image: none;
-    mask-image: none;
-  }
-}
-.bca-story-track::-webkit-scrollbar {
-  display: none;
 }

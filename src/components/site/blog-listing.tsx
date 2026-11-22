@@ -5,12 +5,22 @@ import { JsonLd } from "@/components/site/json-ld";
 import { PostCard } from "@/components/site/post-card";
 import { MediaImage } from "@/components/ui/media-image";
 import { type PostView, type TermView, getMediaMap, getPosts, searchPosts } from "@/lib/content/public";
+import { pageCount } from "@/lib/search-params";
 import { breadcrumbJsonLd } from "@/lib/seo";
 import { cn, formatDate, readingMinutes } from "@/lib/utils";
 import { Emphasis } from "@/components/ui/emphasis";
 import { HeaderFlourish } from "@/components/ui/effects";
 
-const PER_PAGE = 9;
+/** Posts on each page of a listing (also used by the listings' metadata). */
+export const PER_PAGE = 9;
+
+/**
+ * How many pages a listing has. The main blog page (no search, no category or tag) opens page 1 with one large
+ * lead post above its cards, so that post is counted on page 1 and page 2 starts with the next one.
+ */
+export function listingPageCount(total: number, hasLead: boolean) {
+  return pageCount(total, PER_PAGE, hasLead ? 1 : 0);
+}
 
 type Props = {
   heading: string;
@@ -42,10 +52,13 @@ export async function BlogListing({ heading, intro, basePath, filter, query = ""
   const tags = uniqueTerms(all, (p) => p.tags);
   const filtered = searchPosts(filter ? all.filter(filter) : all, query);
 
-  const pageCount = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
+  const hasLead = !query && !filter && filtered.length > 0;
+  const pageCount = listingPageCount(filtered.length, hasLead);
   const current = Math.min(Math.max(1, page), pageCount);
-  const lead = current === 1 && !query && !filter ? filtered[0] : undefined;
-  const rest = (lead ? filtered.slice(1) : filtered).slice((current - 1) * PER_PAGE, current * PER_PAGE);
+  const lead = current === 1 && hasLead ? filtered[0] : undefined;
+  // After the lead post, every page shows the next PER_PAGE posts, so none appears on two pages.
+  const start = (hasLead ? 1 : 0) + (current - 1) * PER_PAGE;
+  const rest = filtered.slice(start, start + PER_PAGE);
   const pageHref = (n: number) => {
     const params = new URLSearchParams();
     if (query) params.set("q", query);

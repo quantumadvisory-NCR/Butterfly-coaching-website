@@ -79,6 +79,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: p.seoDescription || p.summary,
       path: p.path,
       image: media[p.heroImageId ?? ""] ?? null,
+      media,
       settings,
     });
   }
@@ -88,6 +89,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description: post.seoDescription || post.excerpt || stripHtml(post.contentHtml).slice(0, 160),
     path: `/${post.slug}/`,
     image: media[post.featuredImageId ?? ""] ?? null,
+    media,
     type: "article",
     publishedTime: post.publishedAt,
     settings,
@@ -130,7 +132,7 @@ export default async function CatchAllPage({ params }: Props) {
     <>
       <BlockRenderer sections={page.sections} ctx={{ ...ctx, breadcrumbs }} home={page.path === "/"} />
       {crumbData}
-      {page.path === "/" && <JsonLd data={organisationJsonLd(chrome.settings, chrome.logoDark.src)} />}
+      {page.path === "/" && <JsonLd data={organisationJsonLd(chrome.settings, chrome.logoLight.src)} />}
       {page.path === "/thank-you/" && <TrackEvent name="generate_lead" />}
     </>
   );

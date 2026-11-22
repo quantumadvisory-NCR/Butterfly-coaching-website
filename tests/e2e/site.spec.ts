@@ -64,6 +64,12 @@ test.describe("search engines", () => {
       ["/services/", "/coaching-certifications/"],
       ["/home-2/", "/"],
       ["/blog/page/2/", "/blog/"],
+      ["/tag/growth/", "/blog/tag/growth/"],
+      ["/tag/growth/page/2/", "/blog/tag/growth/?page=2"],
+      ["/category/general/", "/blog/category/general/"],
+      ["/category/general/page/3/", "/blog/category/general/?page=3"],
+      ["/author/admin/", "/blog/"],
+      ["/author/admin/page/2/", "/blog/"],
     ] as const) {
       const response = await request.get(from, { maxRedirects: 0 });
       expect([301, 302, 307, 308], `${from} status ${response.status()}`).toContain(response.status());
@@ -72,6 +78,21 @@ test.describe("search engines", () => {
     // Addresses without a trailing slash are normalised, and old blog posts still resolve.
     expect((await request.get("/about-us", { maxRedirects: 0 })).status()).toBe(308);
     expect((await request.get("/unleash-the-power-of-the-butterfly-effect-in-coaching/")).status()).toBe(200);
+  });
+
+  test("blog pages that are not whole numbers point search engines at the first page", async ({ request }) => {
+    for (const path of ["/blog/?page=1.5", "/blog/?page=abc", "/blog/tag/growth/?page=2.5"]) {
+      const html = await (await request.get(path)).text();
+      const canonical = html.match(/<link rel="canonical" href="([^"]*)"/)?.[1] ?? "";
+      expect(canonical, path).not.toContain("page=");
+      expect(html, path).not.toContain("(page ");
+    }
+    const second = await (await request.get("/blog/?page=2")).text();
+    expect(second).toMatch(/<link rel="canonical" href="[^"]*\/blog\/\?page=2"/);
+    // Search words given twice (a hand-edited link) still show results, from the first.
+    const twice = await request.get("/blog/?q=coaching&q=leadership");
+    expect(twice.status()).toBe(200);
+    expect(await twice.text()).toContain("Search results for &quot;coaching&quot;");
   });
 });
 
@@ -256,12 +277,24 @@ test.describe("homepage design (November 2026)", () => {
     const stories = page.getByRole("region", { name: "Student stories" });
     await stories.scrollIntoViewIfNeeded();
     const track = stories.getByRole("list", { name: "Student stories" });
+    // Each story once for assistive technology (the looping copy is hidden from it).
     expect(await track.getByRole("listitem").count()).toBeGreaterThan(2);
     // With reduced motion (as in these tests) the stories wait for the visitor to press play.
     await stories.getByRole("button", { name: "Play the stories" }).click();
     await expect(stories.getByRole("button", { name: "Pause the stories" })).toBeVisible();
+    await stories.getByRole("button", { name: "Pause the stories" }).click();
+    // An arrow moves the row along by one card.
+    const shift = () => track.evaluate((el) => -new DOMMatrixReadOnly(getComputedStyle(el).transform).m41);
+    const before = await shift();
     await stories.getByRole("button", { name: "Next story" }).click();
-    await expect.poll(() => track.evaluate((el) => el.scrollLeft)).toBeGreaterThan(100);
+    await expect.poll(async () => (await shift()) - before).toBeGreaterThan(100);
+    // A sideways trackpad swipe moves the row too, and the stories can still be pinch-zoomed on touch screens.
+    const view = await page.locator(".bca-story-viewport").boundingBox();
+    await page.mouse.move(view!.x + view!.width / 2, view!.y + view!.height / 2);
+    const beforeSwipe = await shift();
+    await page.mouse.wheel(120, 0);
+    await expect.poll(async () => Math.abs((await shift()) - beforeSwipe)).toBeGreaterThan(60);
+    expect(await track.evaluate((el) => getComputedStyle(el).touchAction)).toBe("pan-y pinch-zoom");
   });
 
   test("on phones the fees table becomes one card per level", async ({ page }) => {

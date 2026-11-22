@@ -21,6 +21,28 @@ function initials(name: string) {
     .join("");
 }
 
+/** A story's role line, e.g. "Executive Coach · Acme". */
+function storyRole(t: TestimonialView) {
+  return [t.roleTitle, t.organisation].filter(Boolean).join(" · ");
+}
+
+/** A story's round photograph, or the person's initials when there is none (pair and carousel designs). */
+function StoryAvatar({ t, dark, ctx }: { t: TestimonialView; dark: boolean; ctx: BlockContext }) {
+  const photo = pickMedia(ctx, t.photoId);
+  return photo ? (
+    <span className="relative size-[3.25rem] shrink-0 overflow-hidden rounded-full bg-lav-100">
+      <MediaImage media={photo} fill alt="" sizes="52px" className="!object-top" />
+    </span>
+  ) : (
+    <span
+      aria-hidden
+      className={cn("flex size-[3.25rem] shrink-0 items-center justify-center rounded-full text-[1.0625rem] font-extrabold", dark ? "bg-lav text-ink-deep" : "bg-lav-50 text-lav-deep")}
+    >
+      {initials(t.name)}
+    </span>
+  );
+}
+
 /**
  * Two student stories side by side, from the November 2026 design: the first
  * large on a deep ink card under an oversized lavender quote mark, the second
@@ -32,19 +54,6 @@ function StoryPair({ items, data, ctx }: { items: TestimonialView[]; data: Block
   const cta = usableLink(data.cta, ctx.settings);
   // Straight after the community chips the stories continue the same section, so they need little space above.
   const continues = ctx.prev?.type === "community";
-  const role = (t: TestimonialView) => [t.roleTitle, t.organisation].filter(Boolean).join(" · ");
-  const avatar = (t: TestimonialView, dark: boolean) => {
-    const photo = pickMedia(ctx, t.photoId);
-    return photo ? (
-      <span className="relative size-[3.25rem] shrink-0 overflow-hidden rounded-full bg-lav-100">
-        <MediaImage media={photo} fill alt="" sizes="52px" className="!object-top" />
-      </span>
-    ) : (
-      <span aria-hidden className={cn("flex size-[3.25rem] shrink-0 items-center justify-center rounded-full text-[1.0625rem] font-extrabold", dark ? "bg-lav text-ink-deep" : "bg-lav-50 text-lav-deep")}>
-        {initials(t.name)}
-      </span>
-    );
-  };
   const leadQuote = lead.excerpt || lead.quote;
   const secondQuote = second ? second.excerpt || second.quote : "";
   return (
@@ -72,10 +81,10 @@ function StoryPair({ items, data, ctx }: { items: TestimonialView[]; data: Block
               <p>&ldquo;{leadQuote}&rdquo;</p>
             </blockquote>
             <figcaption className="mt-auto flex items-center gap-3.5">
-              {avatar(lead, true)}
+              <StoryAvatar t={lead} dark ctx={ctx} />
               <span className="flex flex-col gap-0.5">
                 <strong className="text-base text-white">{lead.name}</strong>
-                {role(lead) && <span className="text-sm text-lilac">{role(lead)}</span>}
+                {storyRole(lead) && <span className="text-sm text-lilac">{storyRole(lead)}</span>}
               </span>
             </figcaption>
           </figure>
@@ -90,10 +99,10 @@ function StoryPair({ items, data, ctx }: { items: TestimonialView[]; data: Block
                 <p>&ldquo;{secondQuote}&rdquo;</p>
               </blockquote>
               <figcaption className="flex items-center gap-3.5">
-                {avatar(second, false)}
+                <StoryAvatar t={second} dark={false} ctx={ctx} />
                 <span className="flex flex-col gap-0.5">
                   <strong className="text-base text-ink-deep">{second.name}</strong>
-                  {role(second) && <span className="text-sm text-mauve">{role(second)}</span>}
+                  {storyRole(second) && <span className="text-sm text-mauve">{storyRole(second)}</span>}
                 </span>
               </figcaption>
             </figure>
@@ -309,12 +318,7 @@ function StoryCard({ t, credential, ctx, lead = false }: { t: TestimonialView; c
   const photo = pickMedia(ctx, t.photoId);
   const quote = t.excerpt || t.quote;
   const detail = [credential && `${credential} cohort`, [t.roleTitle, t.organisation].filter(Boolean).join(", ")].filter(Boolean).join(" · ");
-  const initials = t.name
-    .replace(/^(dr|mr|mrs|ms)\.?\s+/i, "")
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((word) => word.charAt(0))
-    .join("");
+  const monogram = initials(t.name);
   return (
     <figure
       className={cn(
@@ -340,7 +344,7 @@ function StoryCard({ t, credential, ctx, lead = false }: { t: TestimonialView; c
           </span>
         ) : (
           <span aria-hidden className={cn("grid size-11 shrink-0 place-items-center rounded-full text-sm font-bold", lead ? "bg-white/10 text-accent" : "bg-accent-soft text-label")}>
-            {initials}
+            {monogram}
           </span>
         )}
         <span className="min-w-0 text-sm">
@@ -402,7 +406,6 @@ function StoryCarouselSection({ items, data, ctx }: { items: TestimonialView[]; 
   const cta = usableLink(data.cta, ctx.settings);
   // Straight after the community chips the stories continue the same section, so they need little space above.
   const continues = ctx.prev?.type === "community";
-  const role = (t: TestimonialView) => [t.roleTitle, t.organisation].filter(Boolean).join(" · ");
   return (
     <Section
       background={data.background}
@@ -430,7 +433,7 @@ function StoryCarouselSection({ items, data, ctx }: { items: TestimonialView[]; 
           {items.map((t, i) => {
             const dark = i % 2 === 0;
             const quote = t.excerpt || t.quote;
-            const photo = pickMedia(ctx, t.photoId);
+            const role = storyRole(t);
             return (
               <figure
                 key={t.id}
@@ -454,21 +457,10 @@ function StoryCarouselSection({ items, data, ctx }: { items: TestimonialView[]; 
                   <p>&ldquo;{quote}&rdquo;</p>
                 </blockquote>
                 <figcaption className="flex items-center gap-3.5">
-                  {photo ? (
-                    <span className="relative size-[3.25rem] shrink-0 overflow-hidden rounded-full bg-lav-100">
-                      <MediaImage media={photo} fill alt="" sizes="52px" className="!object-top" />
-                    </span>
-                  ) : (
-                    <span
-                      aria-hidden
-                      className={cn("flex size-[3.25rem] shrink-0 items-center justify-center rounded-full text-[1.0625rem] font-extrabold", dark ? "bg-lav text-ink-deep" : "bg-lav-50 text-lav-deep")}
-                    >
-                      {initials(t.name)}
-                    </span>
-                  )}
+                  <StoryAvatar t={t} dark={dark} ctx={ctx} />
                   <span className="flex flex-col gap-0.5">
                     <strong className={cn("text-base", dark ? "text-white" : "text-ink-deep")}>{t.name}</strong>
-                    {role(t) && <span className={cn("text-sm", dark ? "text-lilac" : "text-mauve")}>{role(t)}</span>}
+                    {role && <span className={cn("text-sm", dark ? "text-lilac" : "text-mauve")}>{role}</span>}
                   </span>
                 </figcaption>
               </figure>

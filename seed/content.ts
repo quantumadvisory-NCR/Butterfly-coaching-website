@@ -607,8 +607,8 @@ const FOUNDER_FACTS = [
 
    Claims in the design that the owner must confirm before publishing (they are
    listed in docs/CONTENT_APPROVAL_CHECKLIST.md): "1 of 4 in India" and "about 46
-   academies worldwide", live online delivery, instalments, and the list of
-   countries learners join from. */
+   academies worldwide", live online delivery, and the list of countries
+   learners join from. */
 const RESERVE = link("Reserve my seat", "/level-1-acc-coach-program/#enquire");
 
 const ICF_LOGOS = [

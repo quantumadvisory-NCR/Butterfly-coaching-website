@@ -55,6 +55,13 @@ const nextConfig: NextConfig = {
     return [
       { source: "/images/brand/bca-logo-on-light.svg", destination: "/images/brand/bca-logo-mid-gray.svg", permanent: true },
       { source: "/images/brand/bca-mark.svg", destination: "/images/brand/bca-mark-mid-gray.svg", permanent: true },
+      // The old WordPress site's tag, category and author archives (in its sitemap), for when the
+      // domain moves here: each goes to the matching blog listing, page numbers included.
+      { source: "/tag/:slug/page/:n/", destination: "/blog/tag/:slug/?page=:n", permanent: true },
+      { source: "/tag/:slug/", destination: "/blog/tag/:slug/", permanent: true },
+      { source: "/category/:slug/page/:n/", destination: "/blog/category/:slug/?page=:n", permanent: true },
+      { source: "/category/:slug/", destination: "/blog/category/:slug/", permanent: true },
+      { source: "/author/:name/:rest*", destination: "/blog/", permanent: true },
     ];
   },
   async headers() {

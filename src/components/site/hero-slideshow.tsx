@@ -3,6 +3,7 @@
 import { PauseIcon, PlayIcon } from "@phosphor-icons/react";
 import { Children, type ReactNode, useEffect, useReducer, useRef, useState, useSyncExternalStore } from "react";
 import { cn } from "@/lib/utils";
+import { useAutoplay } from "./use-autoplay";
 
 /** How long each photograph stays before the next slides in. */
 const INTERVAL_MS = 5500;
@@ -48,49 +49,21 @@ export function HeroSlideshow({ children, label = "Photographs" }: { children: R
   const slides = Children.toArray(children);
   const count = slides.length;
   const [{ index, leaving, entering }, dispatch] = useReducer(reducer, { index: 0, leaving: null, entering: null });
-  // null until the visitor presses pause or play: then it plays unless they prefer reduced motion.
-  const [choice, setChoice] = useState<boolean | null>(null);
-  const [reduced, setReduced] = useState(false);
-  const [hovered, setHovered] = useState(false);
-  const [onScreen, setOnScreen] = useState(true);
+  const { playing, active, togglePlaying, rootProps } = useAutoplay<HTMLDivElement>({ initiallyOnScreen: true });
   // False on the server and until hydration, so the progress dot never runs ahead of the timer.
   const ready = useSyncExternalStore(noSubscription, () => true, () => false);
   const [loadRest, setLoadRest] = useState(false);
-  const root = useRef<HTMLDivElement>(null);
   const remaining = useRef(INTERVAL_MS);
 
+  // The other photographs load after the page has, well before the first change.
   useEffect(() => {
-    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setReduced(query.matches);
-    update();
-    query.addEventListener("change", update);
-    // The other photographs load after the page has, well before the first change.
-    const load = () => setLoadRest(true);
     let timer = 0;
-    const onLoad = () => (timer = window.setTimeout(load, 600));
+    const onLoad = () => (timer = window.setTimeout(() => setLoadRest(true), 600));
     if (document.readyState === "complete") onLoad();
     else window.addEventListener("load", onLoad, { once: true });
     return () => {
-      query.removeEventListener("change", update);
       window.removeEventListener("load", onLoad);
       window.clearTimeout(timer);
-    };
-  }, []);
-
-  useEffect(() => {
-    const el = root.current;
-    if (!el) return;
-    let intersecting = true;
-    const update = () => setOnScreen(intersecting && document.visibilityState === "visible");
-    const observer = new IntersectionObserver(([entry]) => {
-      intersecting = Boolean(entry?.isIntersecting);
-      update();
-    });
-    observer.observe(el);
-    document.addEventListener("visibilitychange", update);
-    return () => {
-      observer.disconnect();
-      document.removeEventListener("visibilitychange", update);
     };
   }, []);
 
@@ -113,8 +86,7 @@ export function HeroSlideshow({ children, label = "Photographs" }: { children: R
     dispatch({ type: "prepare", to });
   };
 
-  const playing = choice ?? !reduced;
-  const running = ready && count > 1 && playing && !hovered && onScreen;
+  const running = ready && count > 1 && playing && active;
 
   // A new photograph gets the full time.
   useEffect(() => {
@@ -139,19 +111,7 @@ export function HeroSlideshow({ children, label = "Photographs" }: { children: R
   if (count === 0) return null;
 
   return (
-    <div
-      ref={root}
-      role="region"
-      aria-roledescription="carousel"
-      aria-label={label}
-      className="absolute inset-0"
-      onPointerEnter={(e) => e.pointerType === "mouse" && setHovered(true)}
-      onPointerLeave={(e) => e.pointerType === "mouse" && setHovered(false)}
-      onFocus={(e) => {
-        // Keyboard focus stops the slideshow until the visitor presses play.
-        if (e.target.matches(":focus-visible") && choice === null) setChoice(false);
-      }}
-    >
+    <div {...rootProps} role="region" aria-roledescription="carousel" aria-label={label} className="absolute inset-0">
       <div aria-live={running ? "off" : "polite"} className="absolute inset-0">
         {slides.map((slide, i) => {
           const state = i === entering ? "entering" : i === index ? "current" : i === leaving ? "leaving" : "waiting";
@@ -184,7 +144,7 @@ export function HeroSlideshow({ children, label = "Photographs" }: { children: R
           <button
             type="button"
             aria-label={playing ? "Pause the slideshow" : "Play the slideshow"}
-            onClick={() => setChoice(!playing)}
+            onClick={togglePlaying}
             className="flex size-10 items-center justify-center rounded-full text-white hover:bg-white/15"
           >
             {playing ? <PauseIcon aria-hidden weight="fill" className="size-3.5" /> : <PlayIcon aria-hidden weight="fill" className="size-3.5" />}

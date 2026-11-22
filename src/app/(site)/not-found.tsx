@@ -4,9 +4,9 @@ import { ButtonLink, TextLink } from "@/components/ui/button-link";
 import { Emphasis } from "@/components/ui/emphasis";
 import { HeaderFlourish } from "@/components/ui/effects";
 
+// Next.js already marks 404 responses noindex, so no robots setting here (it would add a second tag).
 export const metadata: Metadata = {
   title: "Page not found",
-  robots: { index: false, follow: true },
 };
 
 const SUGGESTIONS = [

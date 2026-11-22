@@ -40,7 +40,7 @@ Only figures that already appear on the site are published: **4,100+** hours of 
 
 ### 1c. Announcement bar (added October 2026)
 
-The yellow strip above the menu reads "Next ACC cohort starts {date} · Limited seats · Reserve yours". It is switched off, and it stays hidden until a cohort date is entered, so visitors never see a placeholder. It also hides itself the day after that date.
+The dark strip above the menu reads "Know about our next cohort · Limited seats · Reserve yours" (since 22 November 2026) and is switched on. If its text uses {date}, it stays hidden until a cohort date is entered, so visitors never see a placeholder, and hides itself the day after that date.
 
 - [ ] When the next ACC cohort date is confirmed: **Settings > Header and announcement**, enter the **Cohort start date**, tick **Show the announcement bar**, save.
 
@@ -50,7 +50,7 @@ The new homepage design ("Butterfly Home Redesign") states facts that could not 
 
 - [ ] **"1 of 4 in India", "One of about 46 academies worldwide accredited by ICF at all three levels" .** The hero's dark sticker and the accreditation spotlight heading. The research in [RESEARCH.md](RESEARCH.md) left a similar claim out (item 3) because it could not be evidenced. The design cites "ICF's published data": keep it only if you have that source. To remove it: clear the **Dark sticker** fields in the hero, and edit the spotlight's heading.
 - [ ] **Live online, in English, join from anywhere.** The globe badge beside the hero photo, "Every level runs live online, in English." above the fees table, and the community introduction. The programme pages say "English, with Hindi support" and do not mention online delivery.
-- [ ] **"instalments available".** The handwritten note under the fees table.
+- [x] **"instalments available".** The handwritten note under the fees table. No longer shown: removed from the homepage on 22 November 2026.
 - [ ] **Countries learners join from.** India, UAE, Singapore, Indonesia, UK and USA in "A global learning community". List only places learners really join from.
 - [ ] **"takes 2 minutes".** The handwritten note beside "Reserve my seat".
 - [ ] **Fees, dates and session times.** The fees table shows these only when they are entered in **Programmes** (fee) and the programme's cohorts (dates and schedule); until then it says "Ask us for the current fee". The design file's placeholders (`[DD Month]`, `[____]`, `[X] countries`, a second story "from a learner outside India") were not carried over.

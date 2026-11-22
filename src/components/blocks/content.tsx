@@ -369,10 +369,10 @@ function shortLabel(name: string) {
 
 /**
  * The accreditation spotlight from the November 2026 design: a deep plum
- * section, the heading beside three medals that climb like steps, sun rays
- * turning behind each, and a butterfly flying up the dotted path between them.
- * (The design's yellow ribbon of moving phrases was taken out at the owner's
- * request on 1 November 2026.)
+ * section, the heading beside three medals that climb like steps, and a
+ * butterfly flying up the dotted path between them. (The design's yellow ribbon
+ * of moving phrases was taken out at the owner's request on 1 November 2026, and
+ * the sun rays behind the medals on 22 November 2026.)
  */
 function AccreditationSpotlight({ data, ctx }: BlockProps<"trust_strip">) {
   const logos = data.logos.map((logo) => ({ ...logo, media: pickMedia(ctx, logo.image) })).filter((logo) => logo.media);

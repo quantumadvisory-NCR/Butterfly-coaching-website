@@ -7,6 +7,7 @@ import { hasRole, requireUser } from "@/lib/auth";
 import { sourceName } from "@/lib/campaign";
 import { db } from "@/lib/db";
 import { ENQUIRY_STATUS, ENQUIRY_TYPES, enquiries } from "@/lib/db/schema";
+import { firstParam, pageNumber } from "@/lib/search-params";
 import { cn, formatDateTime } from "@/lib/utils";
 import { ENQUIRY_LABELS } from "@/lib/validation/forms";
 
@@ -15,15 +16,15 @@ export const metadata: Metadata = { title: "Enquiries" };
 const PER_PAGE = 25;
 const STATUS_LABELS: Record<string, string> = { new: "New", in_progress: "In progress", contacted: "Contacted", qualified: "Qualified", closed: "Closed", spam: "Spam" };
 
-type Search = { status?: string; type?: string; q?: string; page?: string };
+type Search = { status?: string | string[]; type?: string | string[]; q?: string | string[]; page?: string | string[] };
 
 export default async function EnquiriesPage({ searchParams }: { searchParams: Promise<Search> }) {
   const user = await requireUser();
   const search = await searchParams;
-  const status = (ENQUIRY_STATUS as readonly string[]).includes(search.status ?? "") ? (search.status as (typeof ENQUIRY_STATUS)[number]) : null;
-  const type = (ENQUIRY_TYPES as readonly string[]).includes(search.type ?? "") ? (search.type as (typeof ENQUIRY_TYPES)[number]) : null;
-  const q = (search.q ?? "").trim().slice(0, 80);
-  const page = Math.max(1, Number(search.page) || 1);
+  const status = (ENQUIRY_STATUS as readonly string[]).includes(firstParam(search.status)) ? (firstParam(search.status) as (typeof ENQUIRY_STATUS)[number]) : null;
+  const type = (ENQUIRY_TYPES as readonly string[]).includes(firstParam(search.type)) ? (firstParam(search.type) as (typeof ENQUIRY_TYPES)[number]) : null;
+  const q = firstParam(search.q).trim().slice(0, 80);
+  const page = pageNumber(search.page);
 
   const filters: SQL[] = [];
   if (status) filters.push(eq(enquiries.status, status));

@@ -4,8 +4,6 @@ import { databaseUrl } from "@/lib/env";
 import * as schema from "./schema";
 
 export type Database = PostgresJsDatabase<typeof schema>;
-/** A database handle or an open transaction: anything queries can run on. */
-export type Executor = Database | Parameters<Parameters<Database["transaction"]>[0]>[0];
 
 type Cache = { sql?: postgres.Sql; txSql?: postgres.Sql; db?: Database };
 const globalCache = globalThis as unknown as { __bcaDb?: Cache };

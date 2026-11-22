@@ -5,6 +5,7 @@ import { describeUtm, sourceName } from "@/lib/campaign";
 import { resolveAnnouncement } from "@/lib/content/chrome";
 import { hashPassword, verifyPassword } from "@/lib/auth/password";
 import { sanitisePlainText, sanitiseRichText } from "@/lib/sanitise";
+import { firstParam, pageCount, pageNumber } from "@/lib/search-params";
 import { DEFAULT_SETTINGS, DEFAULT_THEME, openMasterClasses, parseSettingsGroup, resolveHref, telHref, whatsappHref } from "@/lib/settings";
 import { formatHours, isReservedPath, normalisePath, readingMinutes, slugify, truncate, youtubeId } from "@/lib/utils";
 import { enquirySchema, newsletterSchema } from "@/lib/validation/forms";
@@ -227,5 +228,30 @@ describe("announcement bar", () => {
     expect(announcementState({ ...header, announcementDate: "2026-10-18" }, today).hidden).toMatch(/has passed/);
     expect(announcementState({ ...header, announcementText: "Starts [DATE]" }, today).hidden).toMatch(/placeholder/);
     expect(announcementState({ ...header, announcementDate: "2027-01-12" }, today)).toEqual({ text: "Next ACC cohort starts 12 January 2027 · Limited seats", hidden: null });
+  });
+});
+
+describe("page addresses and paging", () => {
+  it("takes the first value of a repeated parameter", () => {
+    expect(firstParam(undefined)).toBe("");
+    expect(firstParam("coaching")).toBe("coaching");
+    expect(firstParam(["coaching", "leadership"])).toBe("coaching");
+    expect(firstParam([])).toBe("");
+  });
+
+  it("reads only whole page numbers from 1", () => {
+    expect(pageNumber("2")).toBe(2);
+    expect(pageNumber(["3", "5"])).toBe(3);
+    for (const odd of [undefined, "", "0", "-2", "1.5", "abc", "1e400", "9007199254740993"]) expect(pageNumber(odd), String(odd)).toBe(1);
+  });
+
+  it("counts pages, with an extra item on page 1 when a listing opens with a lead post", () => {
+    expect(pageCount(0, 9)).toBe(1);
+    expect(pageCount(9, 9)).toBe(1);
+    expect(pageCount(10, 9)).toBe(2);
+    // The blog index: one lead post plus nine cards fit on page 1.
+    expect(pageCount(10, 9, 1)).toBe(1);
+    expect(pageCount(11, 9, 1)).toBe(2);
+    expect(pageCount(0, 9, 1)).toBe(1);
   });
 });
