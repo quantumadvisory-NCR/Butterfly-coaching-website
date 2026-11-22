@@ -209,7 +209,20 @@ describe("homepage redesign content (November 2026 design)", () => {
     expect(block("path_cards").data.layout).toBe("numbered");
     expect(block("feature_list").data.layout).toBe("bento");
     expect(block("comparison_table").data.source).toBe("fees");
-    expect(block("testimonials").data).toMatchObject({ source: "featured", layout: "pair" });
+    expect(block("testimonials").data).toMatchObject({ source: "all", layout: "carousel" });
+  });
+
+  it("carries the owner's 22 November 2026 changes", () => {
+    // Three photographs slide in the hero's arched frame: the main one and two more authentic BCA photographs.
+    expect(block("hero").data.image).toBe("@media:gallery.anup-with-table-group");
+    expect(block("hero").data.slides).toEqual([{ image: "@media:gallery.anup-engaging-audience" }, { image: "@media:gallery.bca-community-outdoors" }]);
+    // Programmes and fees: 100% online, no instalments note, "Enroll" buttons.
+    expect(block("comparison_table").data).toMatchObject({ format: "100% online · English", note: "", buttonLabel: "Enroll" });
+    // The tentative durations shown under the fee.
+    const duration = (slug: string) => PROGRAMMES.find((p) => p.slug === slug) as { duration?: string } | undefined;
+    expect(duration("level-1-acc")?.duration).toBe("22 to 26 weeks");
+    expect(duration("level-2-pcc")?.duration).toBe("42 to 46 weeks");
+    expect(duration("level-3-mcc")?.duration).toBe("40 to 44 weeks");
   });
 
   it("publishes none of the design file's placeholders", () => {

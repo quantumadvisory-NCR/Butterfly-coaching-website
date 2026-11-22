@@ -78,7 +78,15 @@ function AnnouncementPreview({ header }: { header: Record<string, unknown> }) {
         <>
           <p className="mt-0.5 text-sm text-muted">Visitors see this strip above the menu on every page once you save.</p>
           <p className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-0.5 rounded-lg bg-accent px-3 py-2 text-center text-sm font-semibold text-navy">
-            <span>{state.text}</span>
+            {link?.href && !link.label ? (
+              // No label: the whole announcement is the link.
+              <span className="inline-flex items-center gap-1 font-bold underline decoration-navy/40 decoration-2 underline-offset-4">
+                {state.text}
+                <ArrowRightIcon aria-hidden weight="bold" className="size-3.5" />
+              </span>
+            ) : (
+              <span>{state.text}</span>
+            )}
             {link?.label && link.href && (
               <span className="inline-flex items-center gap-1 font-bold underline decoration-navy/40 decoration-2 underline-offset-4">
                 {link.label}

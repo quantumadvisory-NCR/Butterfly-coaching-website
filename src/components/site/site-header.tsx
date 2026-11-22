@@ -188,7 +188,8 @@ function MobileNav({ nav, pathname, cta, tel, phoneDisplay, whatsapp, siteName }
 /**
  * The dark strip above the menu, with the pulsing "live" dot. Edited in Admin >
  * Settings > Header and announcement; parts separated by " · " are shown as
- * separate phrases, the later ones in bold.
+ * separate phrases, the later ones in bold. When the link has an address but no
+ * label, the whole announcement is the link.
  */
 function AnnouncementBar({ announcement }: { announcement: NonNullable<Props["announcement"]> }) {
   const external = announcement.link ? isExternalHref(announcement.link.href) : false;
@@ -198,16 +199,37 @@ function AnnouncementBar({ announcement }: { announcement: NonNullable<Props["an
       ·
     </span>
   );
+  const phrases = parts.map((part, i) => (
+    <Fragment key={`${part}-${i}`}>
+      {i > 0 && dot}
+      <span className={i > 0 ? "font-semibold text-white" : undefined}>{part}</span>
+    </Fragment>
+  ));
+  if (announcement.link && !announcement.link.label) {
+    return (
+      <div className="on-dark bg-ink-deep font-text text-[#f4f1fd]">
+        <p className="container-site flex items-center justify-center gap-x-2.5 py-2.5 text-center text-sm leading-snug max-sm:gap-x-2 max-sm:py-2 max-sm:text-[0.8125rem] max-sm:leading-tight">
+          <LiveDot />
+          <Link
+            href={announcement.link.href}
+            data-track="cta_click"
+            data-track-label={`Announcement: ${announcement.text}`}
+            target={external ? "_blank" : undefined}
+            rel={external ? "noopener noreferrer" : undefined}
+            className="inline-flex min-h-6 flex-wrap items-center justify-center gap-x-2 gap-y-0.5 font-semibold text-accent underline decoration-[1.5px] underline-offset-[5px] hover:text-[#ffd23f] [&_span]:text-inherit"
+          >
+            {phrases}
+            <Arrow />
+          </Link>
+        </p>
+      </div>
+    );
+  }
   return (
-    <div className="bg-ink-deep font-text text-[#f4f1fd]">
+    <div className="on-dark bg-ink-deep font-text text-[#f4f1fd]">
       <p className="container-site flex flex-wrap items-center justify-center gap-x-2.5 gap-y-0.5 py-2.5 text-center text-sm leading-snug max-sm:gap-x-2 max-sm:py-2 max-sm:text-[0.8125rem] max-sm:leading-tight">
         <LiveDot />
-        {parts.map((part, i) => (
-          <Fragment key={`${part}-${i}`}>
-            {i > 0 && dot}
-            <span className={i > 0 ? "font-semibold text-white" : undefined}>{part}</span>
-          </Fragment>
-        ))}
+        {phrases}
         {announcement.link && (
           <>
             {dot}
@@ -237,7 +259,8 @@ export function SiteHeader(props: Props) {
       {announcement && <AnnouncementBar announcement={announcement} />}
       <header className="sticky top-0 z-[var(--z-header)] border-b border-[#ece8f1] bg-[rgb(251_250_247/0.95)] backdrop-blur-[14px] supports-[backdrop-filter]:bg-[rgb(251_250_247/0.86)]">
         <div className="container-site flex h-[var(--header-height)] items-center justify-between gap-4">
-          <Link href="/" aria-label={`${props.siteName} home`} className="flex min-h-11 shrink-0 items-center rounded-lg">
+          {/* The logo is shown a little larger, with clear space before the menu. */}
+          <Link href="/" aria-label={`${props.siteName} home`} className="flex min-h-11 shrink-0 items-center rounded-lg lg:mr-3 xl:mr-6">
             <Image
               src={logo.src}
               alt={props.siteName}
@@ -245,7 +268,7 @@ export function SiteHeader(props: Props) {
               height={logo.height}
               unoptimized={logo.src.endsWith(".svg")}
               preload
-              className="h-8 w-auto sm:h-9 lg:h-10"
+              className="h-9 w-auto sm:h-10 lg:h-11 xl:h-[2.875rem]"
             />
           </Link>
           <DesktopNav nav={props.nav} pathname={pathname} />

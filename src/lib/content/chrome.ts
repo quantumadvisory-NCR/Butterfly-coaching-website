@@ -26,10 +26,10 @@ export async function getSiteChrome() {
   const announcement = announcementText
     ? {
         text: announcementText,
-        link:
-          settings.header.announcementLink.label && settings.header.announcementLink.href
-            ? { label: settings.header.announcementLink.label, href: resolveHref(settings.header.announcementLink.href, settings) }
-            : null,
+        // A link with an address but no label makes the whole announcement the link.
+        link: settings.header.announcementLink.href
+          ? { label: settings.header.announcementLink.label, href: resolveHref(settings.header.announcementLink.href, settings) }
+          : null,
       }
     : null;
   const supportLinks = settings.support.links

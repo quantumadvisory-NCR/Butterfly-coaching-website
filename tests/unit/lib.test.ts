@@ -198,7 +198,7 @@ describe("announcement bar", () => {
   const today = new Date("2026-10-19T06:00:00Z");
 
   it("shows the owner's chosen wording by default, with no date needed", () => {
-    expect(resolveAnnouncement(DEFAULT_SETTINGS.header, today)).toBe("Next ACC cohort enrolling now · Limited seats");
+    expect(resolveAnnouncement(DEFAULT_SETTINGS.header, today)).toBe("Know about our next cohort · Limited seats");
     expect(DEFAULT_SETTINGS.header.announcementLink).toEqual({ label: "Reserve yours", href: "/level-1-acc-coach-program/" });
   });
 

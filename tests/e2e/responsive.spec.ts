@@ -70,10 +70,11 @@ for (const viewport of VIEWPORTS) {
         );
         expect(broken, "broken images").toEqual([]);
 
-        // 7. Text and images never overlap inside the hero.
+        // 7. Text and images never overlap inside the hero. Decorative backgrounds (aria-hidden, such as the
+        //    faded world map behind the homepage hero since 22 November 2026) may sit behind the text.
         const overlap = await page.evaluate(() => {
           const heading = document.querySelector("main h1");
-          const image = heading?.closest("section")?.querySelector("img");
+          const image = [...(heading?.closest("section")?.querySelectorAll("img") ?? [])].find((img) => !img.closest('[aria-hidden="true"]'));
           if (!heading || !image) return false;
           const a = heading.getBoundingClientRect();
           const b = image.getBoundingClientRect();

@@ -202,8 +202,66 @@ test.describe("homepage design (November 2026)", () => {
     await expect(table.getByRole("row", { name: /Coach education/ })).toContainText("77 hrs");
     // No fee is published yet, so the table says so plainly.
     await expect(table.getByRole("row", { name: /Fee/ })).toContainText("Ask us for the current fee");
-    await table.getByRole("link", { name: "Reserve: Level 2: PCC Coach Programme" }).click();
+    await expect(table.getByRole("row", { name: /Format/ })).toContainText("100% online · English");
+    await expect(table.getByRole("row", { name: /Tentative duration/ })).toContainText("42 to 46 weeks");
+    await expect(page.locator("#programmes")).not.toContainText("instalments");
+    await table.getByRole("link", { name: "Enroll: Level 2: PCC Coach Programme" }).click();
     await expect(page).toHaveURL(/\/level-2-pcc-coach-program\/#enquire$/);
+  });
+
+  test("the hero photographs slide, and visitors can pause or pick one", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto("/");
+    const show = page.getByRole("region", { name: "Photographs from our programmes" });
+    const slides = show.locator('[aria-roledescription="slide"]');
+    await expect(slides).toHaveCount(3);
+    await expect(slides.first()).not.toHaveAttribute("aria-hidden", "true");
+    // These tests run with reduced motion, so the slideshow waits for the visitor to press play.
+    const toggle = show.getByRole("button", { name: "Play the slideshow" });
+    await expect(toggle).toBeVisible();
+    await show.getByRole("button", { name: "Show photograph 2 of 3" }).click();
+    await expect(show.getByRole("button", { name: "Show photograph 2 of 3" })).toHaveAttribute("aria-current", "true");
+    await expect(slides.nth(1)).not.toHaveAttribute("aria-hidden", "true");
+    await expect(slides.first()).toHaveAttribute("aria-hidden", "true");
+    await toggle.click();
+    await expect(show.getByRole("button", { name: "Pause the slideshow" })).toBeVisible();
+    // The world map in the corner is decoration, kept out of the accessibility tree.
+    await expect(page.locator(".bca-worldmap")).toHaveAttribute("aria-hidden", "true");
+  });
+
+  test("desktop has the world map; phones and tablets keep the turning globe badge", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/");
+    await expect(page.locator(".bca-worldmap")).toBeHidden();
+    await expect(page.locator(".bca-globe")).toBeVisible();
+    await expect(page.locator(".bca-globe")).toContainText("join from anywhere");
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await expect(page.locator(".bca-worldmap")).toBeVisible();
+    await expect(page.locator(".bca-globe")).toBeHidden();
+    await expect(page.locator(".bca-live-pill")).toBeVisible();
+  });
+
+  test("the three badges under the hero photograph are the same size", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto("/");
+    const badges = page.locator("section").first().locator(".fx-pop > .fx-bob > span");
+    await expect(badges).toHaveCount(3);
+    const sizes = await badges.evaluateAll((els) => els.map((el) => Math.round(el.getBoundingClientRect().width)));
+    expect(new Set(sizes).size).toBe(1);
+  });
+
+  test("student stories move along as a carousel with arrows and a pause button", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto("/");
+    const stories = page.getByRole("region", { name: "Student stories" });
+    await stories.scrollIntoViewIfNeeded();
+    const track = stories.getByRole("list", { name: "Student stories" });
+    expect(await track.getByRole("listitem").count()).toBeGreaterThan(2);
+    // With reduced motion (as in these tests) the stories wait for the visitor to press play.
+    await stories.getByRole("button", { name: "Play the stories" }).click();
+    await expect(stories.getByRole("button", { name: "Pause the stories" })).toBeVisible();
+    await stories.getByRole("button", { name: "Next story" }).click();
+    await expect.poll(() => track.evaluate((el) => el.scrollLeft)).toBeGreaterThan(100);
   });
 
   test("on phones the fees table becomes one card per level", async ({ page }) => {

@@ -321,9 +321,100 @@
   }
 }
 
+/* Since 22 November 2026 the globe badge shows on phones and tablets only, as
+   before; from 64rem up the hero has the world map and its own label instead. */
+@media (width >= 64rem) {
+  .bca-globe--edge {
+    display: none;
+  }
+}
+
+/* ---- the world map in the hero's top-right corner (components/site/world-map.tsx) ---- */
+/* 22 November 2026, the owner's choice of four static designs. It sits under the
+   header's "Book a discovery call", against the hero's top and right edges, and
+   melts into the page towards the heading and the bottom. Raised a little so
+   India and its routes show in the open band above the photograph. */
+.bca-worldmap {
+  position: absolute;
+  z-index: 0;
+  top: -4.5rem;
+  right: -3vw;
+  width: min(74vw, 70rem);
+  aspect-ratio: 1400 / 640;
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(ellipse 72% 100% at 70% 20%, #000 52%, transparent 100%);
+  mask-image: radial-gradient(ellipse 72% 100% at 70% 20%, #000 52%, transparent 100%);
+}
+.bca-worldmap__land,
+.bca-worldmap__routes {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+/* Desktop only: phones and tablets keep the hero as it was, with the globe badge. */
+@media (width < 64rem) {
+  .bca-worldmap {
+    display: none;
+  }
+}
+
+/* The label beside the top of the hero photograph ("Live online · join from
+   anywhere"). It sits across the frame's right edge on wide screens; where the
+   photograph is near the screen edge it tucks in so it never runs off. */
+.bca-live-pill {
+  position: absolute;
+  z-index: 4;
+  top: 36%;
+  left: calc(100% - 5px);
+  translate: calc(-100% + 2.25rem) 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border: 1px solid #e6e0f3;
+  border-radius: 999px;
+  background: #fff;
+  color: #2a2533;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  box-shadow: 0 12px 24px -18px rgb(70 45 160 / 0.6);
+}
+@media (width >= 85rem) {
+  .bca-live-pill {
+    translate: -50% 0;
+  }
+}
+/* Desktop only, beside the world map; phones and tablets show the label under the globe badge. */
+@media (width < 64rem) {
+  .bca-live-pill {
+    display: none;
+  }
+}
+
+/* The hero slideshow's progress: the active dot fills while its photograph shows. */
+.bca-slide-progress {
+  animation-name: bca-slide-progress;
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+}
+@keyframes bca-slide-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+
 /* ---- decorative pieces --------------------------------------------------------- */
 
-/* Sun rays behind an accreditation medal. */
+/* Slowly turning sun rays (behind the closing call to action). The accreditation
+   medals had them too until 22 November 2026. */
 .fx-rays {
   position: absolute;
   inset: -32px;
@@ -333,10 +424,6 @@
   mask-image: radial-gradient(circle, #000 32%, transparent 70%);
   opacity: 0.75;
   pointer-events: none;
-}
-.fx-rays-gold {
-  background: repeating-conic-gradient(rgb(246 195 28 / 0.8) 0deg 5deg, transparent 5deg 15deg);
-  opacity: 0.95;
 }
 
 /* A medal turns once on hover. */
@@ -714,4 +801,25 @@
   50% {
     transform: rotate(3deg);
   }
+}
+
+/* The student stories carousel's row scrolls sideways without a visible scrollbar
+   (it has arrows, and swipes on touch screens). */
+.bca-story-track {
+  scrollbar-width: none;
+}
+/* On wider screens the card cut off at the right edge fades out instead of ending sharply. */
+@media (width >= 48rem) {
+  .bca-story-track {
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 5rem), transparent);
+    mask-image: linear-gradient(to right, #000 calc(100% - 5rem), transparent);
+  }
+  /* Scrolled to the end: the last card shows in full. */
+  .bca-story-track[data-end] {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}
+.bca-story-track::-webkit-scrollbar {
+  display: none;
 }

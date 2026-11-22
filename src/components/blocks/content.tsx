@@ -429,7 +429,6 @@ function AccreditationSpotlight({ data, ctx }: BlockProps<"trust_strip">) {
                       </span>
                     )}
                     <div className="fx-medal relative flex size-[8.75rem] items-center justify-center">
-                      <span aria-hidden className={cn("fx-rays", last && "fx-rays-gold")} />
                       <span
                         aria-hidden
                         className={cn(

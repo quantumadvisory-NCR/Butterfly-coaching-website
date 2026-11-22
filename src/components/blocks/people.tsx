@@ -1,9 +1,10 @@
 import { LinkedinLogoIcon, QuotesIcon } from "@phosphor-icons/react/dist/ssr";
 import Link from "next/link";
+import { StoryCarousel } from "@/components/site/story-carousel";
 import { type Story, StoryShowcase } from "@/components/site/story-showcase";
 import { ButtonLink } from "@/components/ui/button-link";
 import { Arrow } from "@/components/ui/effects";
-import { Emphasis } from "@/components/ui/emphasis";
+import { Emphasis, plainText } from "@/components/ui/emphasis";
 import { MediaImage } from "@/components/ui/media-image";
 import { Section, SectionHeading } from "@/components/ui/section";
 import { type FacultyView, type TestimonialView, getFaculty, getTestimonials } from "@/lib/content/public";
@@ -391,6 +392,94 @@ function StorySpotlight({ t, ctx }: { t: TestimonialView; ctx: BlockContext }) {
   );
 }
 
+/**
+ * Student stories as a moving carousel (22 November 2026): cards in the pair
+ * design, alternately deep ink and white with a dashed lavender edge, that move
+ * along by themselves. Long stories are cut to six lines on the card; the link
+ * underneath leads to the full stories.
+ */
+function StoryCarouselSection({ items, data, ctx }: { items: TestimonialView[]; data: BlockProps<"testimonials">["data"]; ctx: BlockContext }) {
+  const cta = usableLink(data.cta, ctx.settings);
+  // Straight after the community chips the stories continue the same section, so they need little space above.
+  const continues = ctx.prev?.type === "community";
+  const role = (t: TestimonialView) => [t.roleTitle, t.organisation].filter(Boolean).join(" · ");
+  return (
+    <Section
+      background={data.background}
+      anchor={data.anchor}
+      flush
+      className={cn("pb-[var(--design-space)] font-text", continues ? "pt-4" : "pt-[var(--design-space)]")}
+    >
+      <div className="container-site">
+        <StoryCarousel
+          label={plainText(data.heading) || "Student stories"}
+          heading={
+            <h2 className={cn("reveal m-0 font-grotesk font-bold tracking-[-0.025em] text-ink-deep", continues ? "text-2xl" : "text-[clamp(2.125rem,4vw,3.5rem)] font-extrabold leading-[1.05]")}>
+              <Emphasis text={data.heading} auto={!continues} />
+            </h2>
+          }
+          footer={
+            cta && (
+              <Link href={cta.href} data-track="cta_click" data-track-label={`Stories: ${cta.label}`} className="fx-link self-start text-[0.9375rem] text-ink-deep">
+                {cta.label}
+                <Arrow />
+              </Link>
+            )
+          }
+        >
+          {items.map((t, i) => {
+            const dark = i % 2 === 0;
+            const quote = t.excerpt || t.quote;
+            const photo = pickMedia(ctx, t.photoId);
+            return (
+              <figure
+                key={t.id}
+                className={cn(
+                  "relative m-0 flex w-full flex-col justify-between gap-[1.625rem] overflow-hidden rounded-[1.75rem] p-[clamp(1.5rem,2.6vw,2.25rem)]",
+                  dark ? "on-dark border border-ink-deep bg-ink-deep text-[#f4f1fd]" : "border-[1.5px] border-dashed border-lav bg-white",
+                )}
+              >
+                {dark && (
+                  <span aria-hidden className="pointer-events-none absolute -top-8 right-4 font-grotesk text-[10rem] font-extrabold leading-none text-lav opacity-[0.22]">
+                    &ldquo;
+                  </span>
+                )}
+                <blockquote
+                  className={cn(
+                    "relative m-0 line-clamp-6 font-grotesk font-semibold leading-[1.3] tracking-[-0.015em]",
+                    dark ? "text-white" : "text-lav-deep",
+                    quote.length > 200 ? "text-[1.0625rem]" : "text-[clamp(1.125rem,1.6vw,1.375rem)]",
+                  )}
+                >
+                  <p>&ldquo;{quote}&rdquo;</p>
+                </blockquote>
+                <figcaption className="flex items-center gap-3.5">
+                  {photo ? (
+                    <span className="relative size-[3.25rem] shrink-0 overflow-hidden rounded-full bg-lav-100">
+                      <MediaImage media={photo} fill alt="" sizes="52px" className="!object-top" />
+                    </span>
+                  ) : (
+                    <span
+                      aria-hidden
+                      className={cn("flex size-[3.25rem] shrink-0 items-center justify-center rounded-full text-[1.0625rem] font-extrabold", dark ? "bg-lav text-ink-deep" : "bg-lav-50 text-lav-deep")}
+                    >
+                      {initials(t.name)}
+                    </span>
+                  )}
+                  <span className="flex flex-col gap-0.5">
+                    <strong className={cn("text-base", dark ? "text-white" : "text-ink-deep")}>{t.name}</strong>
+                    {role(t) && <span className={cn("text-sm", dark ? "text-lilac" : "text-mauve")}>{role(t)}</span>}
+                  </span>
+                </figcaption>
+              </figure>
+            );
+          })}
+        </StoryCarousel>
+      </div>
+    </Section>
+  );
+}
+
 export async function TestimonialsBlock({ data, ctx }: BlockProps<"testimonials">) {
   const approved = await getTestimonials();
   const pool = data.source === "featured" ? approved.filter((t) => t.isFeatured) : approved;
@@ -398,6 +487,7 @@ export async function TestimonialsBlock({ data, ctx }: BlockProps<"testimonials"
   if (items.length === 0) return null;
   const cta = usableLink(data.cta, ctx.settings);
 
+  if (data.layout === "carousel") return <StoryCarouselSection items={items} data={data} ctx={ctx} />;
   if (data.source === "featured" && data.layout === "pair") return <StoryPair items={items} data={data} ctx={ctx} />;
 
   // Featured: an editorial showcase, one story told large with the others to choose from.

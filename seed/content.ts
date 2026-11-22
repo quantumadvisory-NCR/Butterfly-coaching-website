@@ -150,6 +150,8 @@ export const PROGRAMMES = [
     educationHours: "77",
     mentoringHours: "10",
     experienceHours: 75,
+    // Tentative: the owner's figures for a cohort (22 November 2026).
+    duration: "22 to 26 weeks",
     languages: LANGUAGES,
     accreditationStatus: "accredited" as const,
     badge: "icf.level-1",
@@ -207,6 +209,8 @@ export const PROGRAMMES = [
     educationHours: "140",
     mentoringHours: "10",
     experienceHours: 500,
+    // Tentative: the owner's figures for a cohort (22 November 2026).
+    duration: "42 to 46 weeks",
     languages: LANGUAGES,
     accreditationStatus: "accredited" as const,
     badge: "icf.level-2",
@@ -264,6 +268,8 @@ export const PROGRAMMES = [
     educationHours: "95",
     mentoringHours: "10",
     experienceHours: 2500,
+    // Tentative: the owner's figures for a cohort (22 November 2026).
+    duration: "40 to 44 weeks",
     languages: LANGUAGES,
     // The old site was inconsistent about Level 3 accreditation. The owner
     // confirmed on 10 October 2026 that BCA holds it. See docs/CONTENT_APPROVAL_CHECKLIST.md.
@@ -625,6 +631,8 @@ export const HOME_HERO = {
   // Authentic BCA photograph: Anup Mittal with learners around a practice table.
   image: m("gallery.anup-with-table-group"),
   imageTall: null,
+  // The arched frame is a slideshow (22 November 2026): two more authentic BCA photographs after the main one.
+  slides: [{ image: m("gallery.anup-engaging-audience") }, { image: m("gallery.bca-community-outdoors") }],
   imageFocus: "left",
   badges: ICF_LOGOS.map(({ image, name }) => ({ image, name })),
   credentialValue: "1 of 4",
@@ -731,9 +739,9 @@ export const HOME_FEES = {
   anchor: "programmes",
   heading: "Programmes and fees",
   intro: "Every level runs ++live online, in English.++",
-  format: "Live online · English",
-  note: "instalments available",
-  buttonLabel: "Reserve",
+  format: "100% online · English",
+  note: "",
+  buttonLabel: "Enroll",
   columns: [],
   rows: [],
   footnote: "",
@@ -749,9 +757,10 @@ export const HOME_COMMUNITY = {
 export const HOME_STORIES = {
   heading: "Student stories",
   intro: "",
-  source: "featured",
-  layout: "pair",
-  limit: 2,
+  // A moving carousel of every approved story (22 November 2026).
+  source: "all",
+  layout: "carousel",
+  limit: 12,
   cta: link("Read more stories", "/testimonial/"),
 };
 

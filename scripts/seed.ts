@@ -189,6 +189,7 @@ export async function seed(options: { reset?: boolean; quiet?: boolean } = {}) {
         educationHours: p.educationHours,
         mentoringHours: p.mentoringHours,
         experienceHours: p.experienceHours,
+        duration: "duration" in p ? p.duration : null,
         languages: p.languages,
         accreditationStatus: p.accreditationStatus,
         badgeId: mediaId(p.badge),

@@ -272,6 +272,23 @@ function feeRows(programmes: ProgrammeView[], format: string): FeeRow[] {
       ),
     ),
   });
+  // Each programme's Duration (Admin > Programmes), e.g. "22 to 26 weeks". Cohorts vary, so it is called tentative.
+  if (programmes.some((p) => p.duration)) {
+    rows.push({
+      label: "Tentative duration",
+      cells: programmes.map((p) =>
+        p.duration ? (
+          <span key={p.id} className="font-semibold text-ink-deep">
+            {p.duration}
+          </span>
+        ) : (
+          <span key={p.id} className="text-mauve">
+            Ask us
+          </span>
+        ),
+      ),
+    });
+  }
   return rows;
 }
 

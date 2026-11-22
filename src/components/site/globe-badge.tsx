@@ -16,16 +16,27 @@ export function GlobeBadge({ label, className }: { label: string; className?: st
   useEffect(() => {
     let stop = () => {};
     let cancelled = false;
-    import("./globe-mask")
-      .then(({ GLOBE_MASK }) => {
-        // Drawn at the size the stylesheet gives the ball (smaller on phones).
-        if (!cancelled && canvas.current) stop = startGlobe(canvas.current, GLOBE_MASK);
-      })
-      .catch(() => {
-        // Without the map the badge simply shows its label.
-      });
+    let started = false;
+    // Since 22 November 2026 the badge shows on phones and tablets only (effects.css):
+    // on desktop the land map is never fetched and nothing is drawn.
+    const query = window.matchMedia("(width < 64rem)");
+    const start = () => {
+      if (started || !query.matches) return;
+      started = true;
+      import("./globe-mask")
+        .then(({ GLOBE_MASK }) => {
+          // Drawn at the size the stylesheet gives the ball (smaller on phones).
+          if (!cancelled && canvas.current) stop = startGlobe(canvas.current, GLOBE_MASK);
+        })
+        .catch(() => {
+          // Without the map the badge simply shows its label.
+        });
+    };
+    start();
+    query.addEventListener("change", start);
     return () => {
       cancelled = true;
+      query.removeEventListener("change", start);
       stop();
     };
   }, []);

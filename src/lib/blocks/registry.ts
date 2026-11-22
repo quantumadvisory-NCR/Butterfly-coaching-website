@@ -88,6 +88,15 @@ const hero = [
     help: "Optional portrait crop shown beside the heading on laptops and desktops. Leave empty to reuse the main image.",
   },
   {
+    type: "list",
+    name: "slides",
+    label: "More photographs for a slideshow (homepage)",
+    help: "Optional. Add one or more and the arched frame becomes a slideshow: it starts with the Image above and slides to the next photograph every few seconds. Visitors can pause it or pick a photograph.",
+    itemLabel: "Photograph",
+    max: 4,
+    fields: [{ type: "image", name: "image", label: "Photograph" }],
+  },
+  {
     type: "select",
     name: "imageFocus",
     label: "Photo crop (homepage)",
@@ -102,7 +111,7 @@ const hero = [
     type: "list",
     name: "badges",
     label: "Badges under the photograph (homepage)",
-    help: "Up to three, e.g. the ICF accreditation marks. The middle one is shown larger.",
+    help: "Up to three, e.g. the ICF accreditation marks, all shown the same size.",
     itemLabel: "Badge",
     titleField: "name",
     max: 3,
@@ -123,8 +132,8 @@ const hero = [
   {
     type: "text",
     name: "stickerText",
-    label: "Globe badge text (homepage)",
-    help: 'Optional. Shows a turning globe with India marked beside the photograph, above this text, e.g. "Live online · join from anywhere". Leave empty for no globe.',
+    label: "Live online label (homepage)",
+    help: 'Optional, e.g. "Live online · join from anywhere". On phones and tablets it sits under a turning globe on the corner of the photograph; on desktop it is a small label with a live dot beside the photograph, over the world map. Leave empty for neither.',
     maxLength: 60,
   },
 ] as const satisfies readonly Field[];
@@ -321,7 +330,7 @@ const comparisonTable = [
     type: "text",
     name: "buttonLabel",
     label: "Button under each programme (programmes and fees)",
-    help: 'e.g. "Reserve". Opens the programme\'s enquiry form. Leave empty for no buttons.',
+    help: 'e.g. "Enroll". Opens the programme\'s enquiry form. Leave empty for no buttons.',
     maxLength: 24,
   },
   { type: "stringList", name: "columns", label: "Column headings (custom table)", itemLabel: "Column" },
@@ -355,10 +364,12 @@ const testimonials = [
   {
     type: "select",
     name: "layout",
-    label: "Layout (featured testimonials)",
+    label: "Layout",
+    help: "The carousel works with either choice above; the other two layouts are for featured testimonials.",
     options: [
       { value: "showcase", label: "One story told large, with the others to choose from" },
       { value: "pair", label: "Two stories side by side, the first on a dark card (homepage design)" },
+      { value: "carousel", label: "A moving carousel of story cards (homepage)" },
     ],
   },
   { type: "number", name: "limit", label: "Maximum to show", min: 1, max: 60 },

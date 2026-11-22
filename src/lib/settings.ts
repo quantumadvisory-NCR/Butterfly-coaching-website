@@ -56,7 +56,7 @@ const header = [
     label: "Cohort start date",
     help: "Shown in place of {date}, written out in full (for example 12 January 2027).",
   },
-  { type: "link", name: "announcementLink", label: "Announcement link", help: 'For example "Reserve yours" linking to /level-1-acc-coach-program/.' },
+  { type: "link", name: "announcementLink", label: "Announcement link", help: 'For example "Reserve yours" linking to /level-1-acc-coach-program/. Leave the label empty to make the whole announcement the link.' },
   { type: "link", name: "cta", label: "Header button" },
 ] as const satisfies readonly Field[];
 
@@ -243,7 +243,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   header: {
     // Off until the owner sets a confirmed cohort date: the bar never shows a placeholder.
     announcementEnabled: true,
-    announcementText: "Next ACC cohort enrolling now · Limited seats",
+    announcementText: "Know about our next cohort · Limited seats",
     announcementDate: "",
     announcementLink: { label: "Reserve yours", href: "/level-1-acc-coach-program/" },
     cta: { label: "Book a discovery call", href: "booking" },

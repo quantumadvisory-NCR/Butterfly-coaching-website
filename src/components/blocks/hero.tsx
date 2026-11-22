@@ -1,8 +1,10 @@
 import Link from "next/link";
-import type { CSSProperties } from "react";
+import { type CSSProperties, Fragment } from "react";
 import { Breadcrumbs } from "@/components/site/breadcrumbs";
 import { GlobeBadge } from "@/components/site/globe-badge";
 import { GuideForm } from "@/components/site/guide-form";
+import { HeroSlideshow } from "@/components/site/hero-slideshow";
+import { WorldMap } from "@/components/site/world-map";
 import { ButtonLink } from "@/components/ui/button-link";
 import { Arrow, Butterfly, Flyer, HandArrow, LiveDot, Twinkle } from "@/components/ui/effects";
 import { Emphasis, plainText } from "@/components/ui/emphasis";
@@ -49,12 +51,47 @@ function HeroPill({ text }: { text: string }) {
   );
 }
 
+/**
+ * The small label beside the top of the homepage photograph, over the world
+ * map, with a pulsing live dot. Where space is tight (phones, small laptops) it
+ * breaks at its " · " into two centred lines.
+ */
+function LivePill({ text }: { text: string }) {
+  return (
+    <span className="bca-live-pill max-sm:text-center lg:max-xl:text-center">
+      <LiveDot className="size-[7px]" />
+      <span>
+        {text.split(/\s+·\s+/).map((part, i) => (
+          <Fragment key={`${part}-${i}`}>
+            {i > 0 && (
+              <>
+                <span className="max-sm:hidden lg:max-xl:hidden"> · </span>
+                <br className="hidden max-sm:inline lg:max-xl:inline" />
+              </>
+            )}
+            {part}
+          </Fragment>
+        ))}
+      </span>
+    </span>
+  );
+}
+
 /** Homepage hero, from the November 2026 design. */
 function HomeHero({ data, ctx }: BlockProps<"hero">) {
   const image = pickMedia(ctx, data.image);
   const tall = pickMedia(ctx, data.imageTall);
   const primary = usableLink(data.primaryCta, ctx.settings);
   const secondary = usableLink(data.secondaryCta, ctx.settings);
+  const mainPhoto = image ? (
+    tall ? (
+      <ArtDirectedImage wide={image} tall={tall} />
+    ) : (
+      <MediaImage media={image} fill preload={ctx.index === 0} sizes="(min-width: 64rem) 400px, 82vw" position={FOCUS[data.imageFocus]} />
+    )
+  ) : null;
+  // More photographs turn the arched frame into a slideshow that starts with the main image.
+  const slides = (data.slides ?? []).map((slide) => pickMedia(ctx, slide.image)).filter((m): m is NonNullable<typeof m> => Boolean(m));
   const badges = (data.badges ?? []).map((badge) => ({ ...badge, media: pickMedia(ctx, badge.image) })).filter((badge) => badge.media);
   // The second line is gray, with its last word set apart in lavender over a hand-drawn yellow stroke.
   const accent = data.headingAccent.trim();
@@ -64,6 +101,8 @@ function HomeHero({ data, ctx }: BlockProps<"hero">) {
 
   return (
     <section id={data.anchor || "top"} className="relative isolate overflow-hidden pb-[clamp(4.25rem,3.25rem+2vw,5.5rem)] pt-[clamp(1.25rem,0.5rem+2vw,2.5rem)] font-text text-ink-deep">
+      {/* Desktop: a static world map in the top-right corner, against the hero's top and right edges, with routes from India. */}
+      <WorldMap />
       <Flyer path="hero" />
       <CornerGlow />
 
@@ -139,19 +178,21 @@ function HomeHero({ data, ctx }: BlockProps<"hero">) {
         </div>
 
         <div className="relative flex min-h-[38.75rem] min-w-0 flex-[1_1_25rem] items-center justify-center pb-10 max-sm:min-h-[32rem]">
-          <div aria-hidden className="fx-blob absolute aspect-square w-[min(31.25rem,92%)] bg-lav-100" />
-          <div aria-hidden className="absolute aspect-square w-[min(35rem,100%)] rounded-full border-[1.5px] border-dashed border-lav-200" />
-
           <div className="fx-rise relative w-[min(25rem,82%)]" style={delay(0.3)}>
-            {/* The globe hangs off the photograph's top-right corner, its label across the right edge
-                (placement in effects.css, .bca-globe--edge). */}
+            {/* Phones and tablets: the turning globe badge on the frame's corner, as before. Desktop: the label beside the world map. */}
             {data.stickerText && <GlobeBadge label={data.stickerText} className="bca-globe--edge" />}
+            {data.stickerText && <LivePill text={data.stickerText} />}
             <div className="relative flex aspect-[4/5] items-center justify-center overflow-hidden rounded-[12.5rem_12.5rem_2rem_2rem] border-[10px] border-accent bg-[linear-gradient(180deg,var(--color-lav-50),#fff)] shadow-[0_40px_70px_-40px_rgb(70_45_160/0.7)]">
               {image ? (
-                tall ? (
-                  <ArtDirectedImage wide={image} tall={tall} />
+                slides.length > 0 ? (
+                  <HeroSlideshow label="Photographs from our programmes">
+                    {mainPhoto}
+                    {slides.map((slide) => (
+                      <MediaImage key={slide.id} media={slide} fill sizes="(min-width: 64rem) 400px, 82vw" />
+                    ))}
+                  </HeroSlideshow>
                 ) : (
-                  <MediaImage media={image} fill preload={ctx.index === 0} sizes="(min-width: 64rem) 400px, 82vw" position={FOCUS[data.imageFocus]} />
+                  mainPhoto
                 )
               ) : (
                 <>
@@ -168,31 +209,18 @@ function HomeHero({ data, ctx }: BlockProps<"hero">) {
               )}
             </div>
 
+            {/* The badges under the photograph, all the same size, slightly overlapping. */}
             {badges.length > 0 && (
-              <div className="absolute -bottom-[3.375rem] left-1/2 z-[3] flex -translate-x-1/2 items-end">
-                {badges.map((badge, i) => {
-                  const big = badges.length === 3 ? i === 1 : false;
-                  return (
-                    <span
-                      key={`${badge.name}-${i}`}
-                      className={cn("fx-pop block", big && "relative z-[2] mb-3.5", badges.length === 3 && i === 0 && "-mr-3", badges.length === 3 && i === 2 && "-ml-3")}
-                      style={delay(1 + i * 0.15)}
-                    >
-                      <span className="fx-bob block" style={delay(0.2 + i * 0.9)}>
-                        <span
-                          className={cn(
-                            "flex items-center justify-center rounded-full bg-white",
-                            big
-                              ? "size-[7.25rem] shadow-[0_0_0_5px_var(--color-accent),0_22px_36px_-12px_rgb(28_22_49/0.6)] max-sm:size-24"
-                              : "size-24 shadow-[0_0_0_4px_var(--color-accent),0_18px_30px_-12px_rgb(28_22_49/0.55)] max-sm:size-20",
-                          )}
-                        >
-                          <MediaImage media={badge.media} alt={badge.name} sizes={big ? "98px" : "80px"} className={cn("object-contain", big ? "!size-[6.125rem] max-sm:!size-20" : "!size-20 max-sm:!size-16")} />
-                        </span>
+              <div className="absolute -bottom-[3.25rem] left-1/2 z-[3] flex -translate-x-1/2 items-end">
+                {badges.map((badge, i) => (
+                  <span key={`${badge.name}-${i}`} className={cn("fx-pop block", i > 0 && "-ml-2.5")} style={delay(1 + i * 0.15)}>
+                    <span className="fx-bob block" style={delay(0.2 + i * 0.9)}>
+                      <span className="flex size-[6.5rem] items-center justify-center rounded-full bg-white shadow-[0_0_0_4px_var(--color-accent),0_18px_30px_-12px_rgb(28_22_49/0.55)] max-sm:size-[5.25rem]">
+                        <MediaImage media={badge.media} alt={badge.name} sizes="86px" className="!size-[5.375rem] object-contain max-sm:!size-[4.25rem]" />
                       </span>
                     </span>
-                  );
-                })}
+                  </span>
+                ))}
               </div>
             )}
           </div>
