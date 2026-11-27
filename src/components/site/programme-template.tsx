@@ -376,7 +376,7 @@ function ProfilesFallback({ ctx }: { ctx: BlockContext }) {
   return (
     <ProfilesBlock
       ctx={ctx}
-      data={{ heading: "Meet the founder", intro: "", source: "founder", facts: [], cta: { label: "About BCA", href: "/about-us/" }, background: "cream", anchor: "" }}
+      data={{ heading: "Meet the founder", intro: "", source: "founder", facts: [], cta: { label: "About BCA", href: "/about-us/" }, background: "cream", anchor: "", layout: "feature", videoUrl: "", videoPoster: "", videoLabel: "" }}
     />
   );
 }

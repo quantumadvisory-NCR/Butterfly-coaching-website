@@ -17,6 +17,8 @@ const csp = [
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https://*.supabase.co https://i.ytimg.com https://www.google-analytics.com https://www.googletagmanager.com",
   "font-src 'self' data:",
+  // Videos: files on this site (public/videos) and the media library's storage.
+  "media-src 'self' https://*.supabase.co",
   `connect-src 'self' https://*.supabase.co https://www.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com${isDev ? " ws: http://localhost:*" : ""}`,
   "frame-src 'self' https://www.youtube-nocookie.com https://www.google.com https://calendly.com https://cal.com https://app.cal.com",
   "frame-ancestors 'self'",

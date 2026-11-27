@@ -1,6 +1,7 @@
 import { CheckIcon } from "@phosphor-icons/react/dist/ssr";
 import type { ReactNode } from "react";
 import { CountUp } from "@/components/ui/count-up";
+import { Butterfly, Flyer } from "@/components/ui/effects";
 import { Breadcrumbs } from "@/components/site/breadcrumbs";
 import { ButtonLink } from "@/components/ui/button-link";
 import { Emphasis } from "@/components/ui/emphasis";
@@ -67,16 +68,22 @@ export function ImageTextBlock({ data, ctx }: BlockProps<"image_text">) {
             </div>
           )}
         </div>
-        {image && (
-          <div
-            className={cn(
-              "reveal fx-card relative aspect-[16/11] overflow-hidden rounded-card lg:aspect-[5/4]",
-              imageLeft ? "lg:order-1 lg:rounded-tr-[var(--radius-wing)]" : "lg:rounded-tl-[var(--radius-wing)]",
-            )}
-          >
-            <MediaImage media={image} fill sizes="(min-width: 64rem) 46vw, 100vw" />
-          </div>
-        )}
+        {image &&
+          (data.imageFit === "whole" ? (
+            // Certificates and documents show whole, at their own shape, never cropped.
+            <div className={cn("reveal", imageLeft && "lg:order-1")}>
+              <MediaImage media={image} sizes="(min-width: 64rem) 46vw, 100vw" className="h-auto w-full rounded-[1rem] border border-line bg-white shadow-card" />
+            </div>
+          ) : (
+            <div
+              className={cn(
+                "reveal fx-card relative aspect-[16/11] overflow-hidden rounded-card lg:aspect-[5/4]",
+                imageLeft ? "lg:order-1 lg:rounded-tr-[var(--radius-wing)]" : "lg:rounded-tl-[var(--radius-wing)]",
+              )}
+            >
+              <MediaImage media={image} fill sizes="(min-width: 64rem) 46vw, 100vw" />
+            </div>
+          ))}
       </div>
     </Section>
   );
@@ -106,7 +113,9 @@ type Item = BlockProps<"feature_list">["data"]["items"][number];
 /** The pictures inside the "Why learners choose BCA" cards. */
 function BentoVisual({ item, sequence }: { item: Item; sequence: string[] }): ReactNode {
   if (item.visual === "loop" && sequence.length > 0) {
-    // Up to four words around a dashed circle.
+    // Up to four words around a dashed circle. A monarch rests at the centre, and a small butterfly flies
+    // round the loop through each step in turn (the owner's request of 27 November 2026); both keep still
+    // for anyone who prefers reduced motion.
     const spots = [
       "left-1/2 top-[1.125rem] -translate-x-1/2 bg-ink-deep text-white",
       "right-0 top-1/2 -translate-y-1/2 border border-lav-200 bg-white",
@@ -116,8 +125,11 @@ function BentoVisual({ item, sequence }: { item: Item; sequence: string[] }): Re
     return (
       <div aria-hidden className="relative mx-auto mt-3 size-60 shrink-0">
         <div className="absolute inset-9 rounded-full border-2 border-dashed border-lav-200" />
+        <div className="absolute inset-[4.75rem] rounded-full bg-[radial-gradient(circle,color-mix(in_srgb,var(--color-accent)_30%,transparent)_0%,color-mix(in_srgb,var(--color-accent)_8%,transparent)_62%,transparent_72%)]" />
+        <Butterfly flap="slow" sizes="72px" className="absolute left-1/2 top-1/2 w-[4.5rem] -translate-x-1/2 -translate-y-1/2" />
+        <Flyer path="loop" />
         {sequence.slice(0, 4).map((word, i) => (
-          <span key={`${word}-${i}`} className={cn("absolute rounded-full px-3 py-1.5 text-[0.8125rem] font-semibold leading-tight", spots[i])}>
+          <span key={`${word}-${i}`} className={cn("absolute z-[2] rounded-full px-3 py-1.5 text-[0.8125rem] font-semibold leading-tight", spots[i])}>
             {word}
           </span>
         ))}
@@ -355,22 +367,24 @@ function shortLabel(name: string) {
 }
 
 /**
- * The accreditation spotlight from the November 2026 design, calm since the
- * owner's brief of 25 November 2026: a dark section with a small label, one
- * statement in white and a source line. The staircase of ICF badges that sat
- * beside it is gone (they already show in the hero and the fees table), and so
- * are its glow, dotted path, butterfly and handwritten note.
+ * The accreditation spotlight from the November 2026 design: a dark section with
+ * a small label, one statement in white and a source line, and the ICF badges in
+ * one still row beside it (white circles, the captions underneath). Calm since
+ * the owner's brief of 25 November 2026: no glow, staircase, dotted path or
+ * handwritten note; the badges came back at the owner's request on 27 November
+ * 2026 to fill the space on the right.
  */
-function AccreditationSpotlight({ data }: BlockProps<"trust_strip">) {
+function AccreditationSpotlight({ data, ctx }: BlockProps<"trust_strip">) {
   const headingId = `accreditation-${data.anchor || "title"}`;
+  const logos = data.logos.map((logo) => ({ ...logo, media: pickMedia(ctx, logo.image) })).filter((logo) => logo.media);
   return (
     <section
       id={data.anchor || "accreditation"}
       aria-labelledby={data.heading ? headingId : undefined}
       className="on-dark bg-plum py-[var(--design-space)] font-text text-[#f2f2f2]"
     >
-      <div className="container-site">
-        <div className="reveal flex max-w-[52rem] flex-col gap-5">
+      <div className="container-site flex flex-wrap items-center justify-between gap-x-14 gap-y-9">
+        <div className="reveal flex min-w-0 max-w-[40rem] flex-[1_1_26rem] flex-col gap-5">
           {data.eyebrow && (
             <span className="inline-flex items-center gap-3 self-start text-[0.8125rem] font-bold uppercase tracking-[0.14em] text-lilac">
               <span aria-hidden className="inline-block h-0.5 w-7 bg-accent" />
@@ -384,6 +398,18 @@ function AccreditationSpotlight({ data }: BlockProps<"trust_strip">) {
           )}
           {data.intro && <p className="m-0 text-sm text-lilac-soft">{data.intro}</p>}
         </div>
+        {logos.length > 0 && (
+          <ul aria-label="ICF accreditation" className="reveal m-0 flex list-none flex-wrap gap-x-5 gap-y-4 p-0 max-sm:gap-x-3">
+            {logos.map((logo, i) => (
+              <li key={`${logo.name}-${i}`} className="flex flex-col items-center gap-2.5">
+                <span className="fx-medal grid size-[6.5rem] place-items-center rounded-full bg-white shadow-[0_0_0_4px_var(--color-accent),0_18px_30px_-14px_rgb(0_0_0/0.6)] max-sm:size-[5.25rem]">
+                  <MediaImage media={logo.media} alt={logo.name} sizes="86px" className="fx-medal-img !size-[5.375rem] object-contain max-sm:!size-[4.25rem]" />
+                </span>
+                <span className="text-center text-[0.8125rem] font-semibold text-white">{logo.caption || shortLabel(logo.name)}</span>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </section>
   );
@@ -429,7 +455,7 @@ export function TrustStripBlock(props: BlockProps<"trust_strip">) {
                     media={logo.media}
                     alt={logo.name}
                     sizes="160px"
-                    className={cn("fx-medal-img !w-auto object-contain", badges ? "!h-20 sm:!h-24" : "!h-12 max-w-[8.5rem] sm:!h-14")}
+                    className={cn("fx-medal-img !w-auto object-contain", badges ? "!h-20 sm:!h-24" : "!h-12 max-w-full sm:!h-14")}
                   />
                   {badges && (
                     <span aria-hidden className="text-[0.8125rem] font-bold leading-tight text-navy">

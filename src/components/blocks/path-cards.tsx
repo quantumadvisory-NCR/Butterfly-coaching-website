@@ -35,10 +35,10 @@ export function PathCardsBlock(props: BlockProps<"path_cards">) {
 }
 
 /**
- * "Choose your path" from the November 2026 design: white cards with a small
- * label, a title, a button and an optional text link. A coloured card is light
- * gray with a dark button (the owner's brief of 25 November 2026, which also
- * took out the big outline numbers).
+ * "Choose your path" from the November 2026 design, as the owner laid it out on
+ * 27 November 2026: white cards, each with a small gold label, a title, a line
+ * and one button (an optional text link can follow it). A coloured card has a
+ * dark button.
  */
 function NumberedCards({ data, ctx }: BlockProps<"path_cards">) {
   const items = data.items.filter((item) => item.title);
@@ -66,24 +66,22 @@ function NumberedCards({ data, ctx }: BlockProps<"path_cards">) {
                 key={`${item.title}-${i}`}
                 className={cn(
                   "fx-card reveal relative flex min-h-80 min-w-0 flex-[1_1_18.75rem] flex-col gap-3.5 overflow-hidden rounded-[1.75rem] border p-[1.875rem] max-sm:min-h-0 max-sm:p-6",
-                  item.accent ? "border-lav-100 bg-lav-50" : "border-lilac-line bg-white",
+                  "border-lilac-line bg-white",
                 )}
               >
                 {item.tag && (
-                  <span className={cn("self-start rounded-lg px-2.5 py-1.5 text-xs font-bold uppercase tracking-[0.1em] text-lav-deep", item.accent ? "bg-white" : "bg-lav-50")}>
-                    {item.tag}
-                  </span>
+                  <p className="m-0 text-[0.9375rem] font-medium text-label">{item.tag}</p>
                 )}
-                <h3 className="relative mb-0 mt-3.5 font-grotesk text-[1.625rem] leading-[1.12] text-ink-deep max-sm:text-[1.4375rem]">
+                <h3 className="relative mb-0 mt-1.5 font-grotesk text-[1.75rem] leading-[1.12] text-ink-deep max-sm:text-[1.5rem]">
                   {item.title}
                 </h3>
                 {item.body && (
-                  <p className="relative m-0 grow text-base leading-normal text-mauve">
+                  <p className="relative m-0 grow text-[1.0625rem] leading-normal text-mauve">
                     <Emphasis text={item.body} strong />
                   </p>
                 )}
                 {(link || second) && (
-                  <div className="flex flex-wrap items-center gap-[1.125rem]">
+                  <div className="mt-4 flex flex-wrap items-center gap-[1.125rem]">
                     {link && (
                       <ButtonLink href={link.href} variant={item.accent ? "ink" : "primary"} trackLabel={`Path: ${item.title}`} className="font-text text-[0.9375rem]">
                         {link.label}

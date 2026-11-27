@@ -193,4 +193,14 @@ export const MEDIA: MediaSeed[] = [
   event("leadership-workshop-group", "Workshop participants gathered for a group photograph", "Workshop participants", "WhatsApp-Image-2026-01-29-at-3.57.16-PM-1.jpeg"),
   event("workshop-cohort-celebrating", "A cheerful group of participants posing after a session", "Participants after a session", "4.jpeg"),
   event("young-professionals-cohort", "A group of young professionals with Anup Mittal outside a campus building", "With a group of young professionals", "WhatsApp-Image-2026-01-29-at-3.57.10-PM.jpeg"),
+
+  /* ---- recognition ---- */
+  {
+    key: "recognition.icf-foundation-2026",
+    url: "/images/recognition/icf-foundation-scholarship-certificate-2026.webp",
+    source: "bca",
+    alt: "ICF Foundation Certificate of Participation presented to Butterfly Coaching Academy for providing 10 scholarships to the 2026 ICF Foundation Scholarship Program, signed by Coura Badiane, Vice President",
+    licence: "BCA's own certificate from the ICF Foundation, supplied by the owner on 27 November 2026.",
+    usedOn: "About BCA",
+  },
 ];

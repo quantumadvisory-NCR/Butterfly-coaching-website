@@ -1,11 +1,13 @@
 /* ==========================================================================
    Effects shared by every page. Since the owner's brief of 25 November 2026 the
-   site is calm and still: a gray, white and yellow palette, no playful
-   decorations, no looping movement. What stays is the yellow highlighter on
-   marked body text, the yellow underline drawn under "transforms." in the hero,
-   entrance animations as sections come into view, the pulsing "live" dots, the
-   hero photo slideshow and the student stories carousel, and the card and
-   button hovers. Every movement stops for anyone who prefers reduced motion.
+   site is calm: a gray, white and yellow palette and no playful decorations.
+   What moves is the yellow highlighter on marked body text, the yellow
+   underline drawn under "transforms." in the hero, entrance animations as
+   sections come into view, the pulsing "live" dots, the hero photo slideshow,
+   the student stories carousel, the card and button hovers, and (brought back
+   by the owner on 27 November 2026) the flying butterflies in the hero, the
+   global community and round the "Learning that lasts" loop. Every movement
+   stops for anyone who prefers reduced motion.
    Components: src/components/ui/effects.tsx and emphasis.tsx. Imported by
    globals.css.
    ========================================================================== */
@@ -63,6 +65,61 @@
 }
 .section-lav + .section-lav {
   border-radius: 0;
+}
+
+/* ---- butterflies ------------------------------------------------------------- */
+
+/* The monarch's wings beat by squeezing the picture around its body. */
+.fx-wing-img {
+  transform-origin: 50% 50%;
+}
+
+/* A butterfly that flies along a path across its section. The section clips it.
+   Each path sets its flight: --fly (time), --fly-delay and --fly-ease. */
+.fx-flyer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  width: 44px;
+  height: 32px;
+  offset-rotate: auto 90deg;
+  pointer-events: none;
+}
+.fx-flyer-hero {
+  offset-path: path("M -60 520 C 120 380, 260 160, 520 260 S 900 520, 1120 230 S 1380 80, 1560 160");
+  --fly: 18s;
+  --fly-delay: 0s;
+  --fly-ease: linear;
+}
+.fx-flyer-wave {
+  offset-path: path("M -40 60 C 200 10, 420 120, 640 50 S 1000 0, 1300 70");
+  --fly: 22s;
+  --fly-delay: 3s;
+  --fly-ease: linear;
+}
+.fx-flyer.fx-flyer-wave {
+  width: 36px;
+  height: 26px;
+}
+/* Round the "Learning that lasts" loop, clockwise from Learn: the circle of radius 84px in its 240px box. */
+.fx-flyer-loop {
+  offset-path: path("M 120 36 A 84 84 0 0 1 120 204 A 84 84 0 0 1 120 36");
+  --fly: 14s;
+  --fly-delay: 0s;
+  --fly-ease: linear;
+}
+.fx-flyer.fx-flyer-loop {
+  width: 30px;
+  height: 22px;
+}
+
+/* The colour a flying butterfly shows on desktop: a hue that moves from monarch
+   orange through rose and back. */
+@property --fly-hue {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 30;
 }
 
 /* ---- the "Live online" globe badge (components/site/globe-badge.tsx) ------------ */
@@ -339,6 +396,15 @@
   .fx-pop {
     animation: fx-popin 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
   }
+  .fx-flap .fx-wing-img {
+    animation: fx-flap 0.3s ease-in-out infinite alternate;
+  }
+  .fx-flap-slow .fx-wing-img {
+    animation: fx-flap 0.55s ease-in-out infinite alternate;
+  }
+  .fx-flyer {
+    animation: fx-fly var(--fly) var(--fly-delay) var(--fly-ease) infinite;
+  }
 
   /* Where the browser can tie animation to scrolling, highlights draw in as they
      come into view; ones already on screen ("fx-now") draw in shortly after the
@@ -352,6 +418,23 @@
     .fx-mark.fx-now {
       animation: fx-mark 1.1s 0.75s cubic-bezier(0.6, 0, 0.2, 1) both;
     }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fx-flyer {
+    display: none;
+  }
+}
+
+/* Desktop only (phones and tablets keep the plain monarch): the flying butterfly
+   changes colour as it goes, with a soft glow in the same colour. */
+@media (prefers-reduced-motion: no-preference) and (width >= 64rem) {
+  .fx-flyer {
+    animation:
+      fx-fly var(--fly) var(--fly-delay) var(--fly-ease) infinite,
+      fx-hue 8s var(--fly-delay) ease-in-out infinite alternate;
+    filter: hue-rotate(calc((var(--fly-hue) - 30) * 1deg)) drop-shadow(0 0 7px hsl(var(--fly-hue) 95% 62% / 0.55));
   }
 }
 
@@ -387,6 +470,34 @@
   }
   100% {
     box-shadow: 0 0 0 9px rgb(46 158 107 / 0);
+  }
+}
+@keyframes fx-flap {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0.3);
+  }
+}
+@keyframes fx-fly {
+  from {
+    offset-distance: 0%;
+  }
+  to {
+    offset-distance: 100%;
+  }
+}
+/* Monarch orange to rose and back: warm colours only, so nothing turns purple. */
+@keyframes fx-hue {
+  0% {
+    --fly-hue: 30;
+  }
+  50% {
+    --fly-hue: 0;
+  }
+  100% {
+    --fly-hue: -24;
   }
 }
 /* Pops up into place, upright (no tilt). */

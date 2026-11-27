@@ -4,30 +4,49 @@ import { cn } from "@/lib/utils";
 
 /*
  * Small pieces shared by the page designs. Every decorative one is aria-hidden.
- * Since the owner's brief of 25 November 2026 nothing loops or plays: the flying
- * butterflies, sparkles, hand-drawn arrows and handwritten notes are gone.
- * Styles in src/app/effects.css.
+ * The owner's brief of 25 November 2026 took out the sparkles, hand-drawn arrows
+ * and handwritten notes; the flying butterflies came back at the owner's request
+ * on 27 November 2026. Styles in src/app/effects.css; every movement stops for
+ * anyone who prefers reduced motion.
  */
 
 /**
  * The site's butterfly: a monarch, supplied by the owner on 1 November 2026
- * (public/images/brand/butterfly-monarch.webp, background removed). Shown still.
+ * (public/images/brand/butterfly-monarch.webp, background removed). Its wings
+ * can beat by squeezing the picture in and out around the body.
  */
 const BUTTERFLY = { src: "/images/brand/butterfly-monarch.webp", width: 320, height: 226 };
 
 export function Butterfly({
   className,
   style,
+  flap,
   sizes = "48px",
 }: {
   className?: string;
   style?: CSSProperties;
+  /** Wings beat quickly ("fast") or gently ("slow"); still when left out. */
+  flap?: "fast" | "slow";
   /** How wide it shows, so the browser downloads a small enough file. */
   sizes?: string;
 }) {
   return (
-    <span aria-hidden className={cn("inline-block", className)} style={style}>
-      <Image src={BUTTERFLY.src} alt="" width={BUTTERFLY.width} height={BUTTERFLY.height} sizes={sizes} className="block size-full object-contain" />
+    <span aria-hidden className={cn("inline-block", flap === "fast" && "fx-flap", flap === "slow" && "fx-flap-slow", className)} style={style}>
+      <Image src={BUTTERFLY.src} alt="" width={BUTTERFLY.width} height={BUTTERFLY.height} sizes={sizes} className="fx-wing-img block size-full object-contain" />
+    </span>
+  );
+}
+
+/**
+ * A butterfly that flies along a path, wings beating: across the hero ("hero"),
+ * across a section ("wave"), or round the "Learning that lasts" loop ("loop").
+ * Place it inside a positioned box that clips overflow. On desktop it also
+ * changes colour, from monarch orange to rose and back.
+ */
+export function Flyer({ path = "hero", className }: { path?: "hero" | "wave" | "loop"; className?: string }) {
+  return (
+    <span aria-hidden className={cn("fx-flyer fx-flap", `fx-flyer-${path}`, className)}>
+      <Butterfly sizes="40px" className="block size-full" />
     </span>
   );
 }

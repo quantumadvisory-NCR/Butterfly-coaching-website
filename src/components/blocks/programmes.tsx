@@ -1,4 +1,4 @@
-import { ArrowRightIcon } from "@phosphor-icons/react/dist/ssr";
+import { ArrowRightIcon, DownloadSimpleIcon } from "@phosphor-icons/react/dist/ssr";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { todayInIndia } from "@/lib/announcement";
@@ -305,13 +305,32 @@ async function FeesTable({ data, ctx }: BlockProps<"comparison_table">) {
   const headingId = `fees-${data.anchor || "programmes"}`;
   const button = data.buttonLabel.trim();
   const badge = (p: ProgrammeView) => (p.accreditationStatus === "accredited" ? pickMedia(ctx, p.badgeId) : null);
-  const reserve = (p: ProgrammeView) =>
-    button ? (
-      <ButtonLink href={`${p.path}#enquire`} trackLabel={`Fees: ${button} ${p.credential ?? p.name}`} aria-label={`${button}: ${p.name}`} className="font-text text-[0.9375rem]">
-        {button}
-        <Arrow />
-      </ButtonLink>
-    ) : null;
+  // The button, with the programme's brochure under it once one is uploaded (Admin > Programmes > Images and brochure).
+  const reserve = (p: ProgrammeView) => {
+    if (!button) return null;
+    const brochure = pickMedia(ctx, p.brochureId);
+    return (
+      <div className="flex flex-col items-start gap-2.5">
+        <ButtonLink href={`${p.path}#enquire`} trackLabel={`Fees: ${button} ${p.credential ?? p.name}`} aria-label={`${button}: ${p.name}`} className="font-text text-[0.9375rem]">
+          {button}
+          <Arrow />
+        </ButtonLink>
+        {brochure && (
+          <a
+            href={brochure.url}
+            download
+            data-track="download"
+            data-track-label={`Brochure: ${p.name}`}
+            aria-label={`Download the ${p.credential ?? p.name} brochure (PDF)`}
+            className="inline-flex min-h-10 items-center gap-1.5 text-sm font-medium text-mauve underline-offset-4 hover:text-ink-deep hover:underline"
+          >
+            <DownloadSimpleIcon aria-hidden weight="bold" className="size-4" />
+            Brochure (PDF)
+          </a>
+        )}
+      </div>
+    );
+  };
 
   // Straight after the picture cards on the same band, the table continues that section with little space above.
   const continues = ctx.prev?.type === "feature_list" && ctx.prev.layout === "bento";
@@ -349,7 +368,7 @@ async function FeesTable({ data, ctx }: BlockProps<"comparison_table">) {
                       <span className="flex items-center gap-3">
                         {media && <MediaImage media={media} alt="" sizes="56px" className="!size-14 shrink-0 object-contain" />}
                         <span className="flex flex-col gap-0.5">
-                          {p.levelLabel && <span className="text-xs font-bold uppercase tracking-[0.1em] text-lav-deep">{p.levelLabel}</span>}
+                          {p.levelLabel && <span className="text-[0.9375rem] font-semibold leading-tight text-label">{p.levelLabel}</span>}
                           <span className="font-grotesk text-[1.625rem] leading-none">{p.credential ?? p.name}</span>
                         </span>
                       </span>
@@ -394,7 +413,7 @@ async function FeesTable({ data, ctx }: BlockProps<"comparison_table">) {
                 <h3 className="m-0 flex items-center gap-3 border-b border-[#ececec] px-5 py-4">
                   {media && <MediaImage media={media} alt="" sizes="48px" className="!size-12 shrink-0 object-contain" />}
                   <span className="flex flex-col gap-0.5 font-text">
-                    {p.levelLabel && <span className="text-xs font-bold uppercase tracking-[0.1em] text-lav-deep">{p.levelLabel}</span>}
+                    {p.levelLabel && <span className="text-[0.9375rem] font-semibold leading-tight text-label">{p.levelLabel}</span>}
                     <span className="font-grotesk text-2xl leading-none text-ink-deep">{p.credential ?? p.name}</span>
                   </span>
                 </h3>

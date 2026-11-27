@@ -65,7 +65,11 @@ function mediaRef(value: unknown, existing: Set<string>): unknown {
  */
 const REPLACES: Record<string, (section: Section) => boolean> = {
   hero: (section) => section.type === "hero",
-  trust_strip: (section) => section.type === "trust_strip",
+  "trust_strip:spotlight": (section) => section.type === "trust_strip" && section.data.layout === "spotlight",
+  // The partners card under the FAQ (27 November 2026).
+  "trust_strip:card": (section) => section.type === "trust_strip" && section.data.layout !== "spotlight",
+  // The founder with a video (27 November 2026); takes the place of the hidden founder section from the launch homepage.
+  profiles: (section) => section.type === "profiles",
   // Taken before the choices, so it gets the first pathway section: the old charcoal panel, or the numbered cards on a re-run.
   "path_cards:numbered": (section) => section.type === "path_cards" && section.data.layout !== "choices",
   feature_list: (section) => section.type === "feature_list",
@@ -155,7 +159,7 @@ async function main() {
 
   const designed: Section[] = HOME_SECTIONS.map((seed) => {
     const data = mediaRef(seed.data, mediaIds) as Record<string, unknown>;
-    const key = seed.type === "path_cards" ? `path_cards:${String(data.layout)}` : seed.type;
+    const key = seed.type === "path_cards" || seed.type === "trust_strip" ? `${seed.type}:${String(data.layout)}` : seed.type;
     const old = take(key);
     if (seed.type === "hero" && old) {
       // Keep the photograph chosen in the admin.

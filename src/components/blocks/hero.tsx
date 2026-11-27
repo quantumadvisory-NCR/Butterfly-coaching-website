@@ -1,4 +1,3 @@
-import Link from "next/link";
 import type { CSSProperties } from "react";
 import { Breadcrumbs } from "@/components/site/breadcrumbs";
 import { GlobeBadge } from "@/components/site/globe-badge";
@@ -7,7 +6,7 @@ import { LivePill } from "@/components/site/live-pill";
 import { HeroSlideshow } from "@/components/site/hero-slideshow";
 import { WorldMap } from "@/components/site/world-map";
 import { ButtonLink } from "@/components/ui/button-link";
-import { Arrow, Butterfly, LiveDot } from "@/components/ui/effects";
+import { Arrow, Butterfly, Flyer, LiveDot } from "@/components/ui/effects";
 import { Emphasis, plainText } from "@/components/ui/emphasis";
 import { ArtDirectedImage, MediaImage } from "@/components/ui/media-image";
 import { cn } from "@/lib/utils";
@@ -78,6 +77,7 @@ function HomeHero({ data, ctx }: BlockProps<"hero">) {
     <section id={data.anchor || "top"} className="relative isolate overflow-hidden pb-[clamp(4.25rem,3.25rem+2vw,5.5rem)] pt-[clamp(1.25rem,0.5rem+2vw,2.5rem)] font-text text-ink-deep">
       {/* Desktop: a static world map in the top-right corner, against the hero's top and right edges, with routes from India. */}
       <WorldMap />
+      <Flyer path="hero" />
       <CornerGlow />
 
       <div className="container-site relative flex flex-wrap items-center gap-[clamp(3rem,5vw,4.5rem)]">
@@ -114,24 +114,21 @@ function HomeHero({ data, ctx }: BlockProps<"hero">) {
             </p>
           )}
 
-          {primary && (
-            <div className="fx-rise flex flex-wrap items-center gap-x-[1.375rem] gap-y-3.5" style={delay(0.62)}>
-              <ButtonLink href={primary.href} trackLabel={`Hero: ${primary.label}`} className="min-h-14 px-[1.875rem] font-text text-base">
-                {primary.label}
-                <Arrow />
-              </ButtonLink>
+          {/* The two buttons side by side (27 November 2026): the main one in yellow, the second outlined. */}
+          {(primary || secondary) && (
+            <div className="fx-rise flex flex-wrap items-center gap-3.5" style={delay(0.62)}>
+              {primary && (
+                <ButtonLink href={primary.href} trackLabel={`Hero: ${primary.label}`} className="min-h-14 px-[1.875rem] font-text text-base">
+                  {primary.label}
+                  <Arrow />
+                </ButtonLink>
+              )}
+              {secondary && (
+                <ButtonLink href={secondary.href} variant="secondary" trackLabel={`Hero: ${secondary.label}`} className="min-h-14 border-[1.5px] px-[1.625rem] font-text text-base">
+                  {secondary.label}
+                </ButtonLink>
+              )}
             </div>
-          )}
-          {secondary && (
-            <Link
-              href={secondary.href}
-              data-track="cta_click"
-              data-track-label={`Hero: ${secondary.label}`}
-              className="fx-rise fx-link -mt-3 self-start text-[0.9375rem] text-[#16131d]"
-              style={delay(0.68)}
-            >
-              {secondary.label}
-            </Link>
           )}
 
           {data.guideForm && (

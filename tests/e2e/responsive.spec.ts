@@ -118,8 +118,8 @@ for (const viewport of VIEWPORTS) {
       const hero = page.locator("main section").first();
       // The heading starts on the first screen; as in the design, the large type can push the button just below it.
       expect((await h1.boundingBox())!.y, "the heading starts below the first screen").toBeLessThan(viewport.height);
-      for (const label of ["Find your ICF level", "Just browsing? See programmes and fees", "Get the programme guide"]) {
-        await expect(hero.getByRole(label.startsWith("Get") ? "button" : "link", { name: label })).toBeVisible();
+      for (const label of ["Find your ICF level", "Get a programme guide", "Get the programme guide"]) {
+        await expect(hero.getByRole(label === "Get the programme guide" ? "button" : "link", { name: label, exact: true })).toBeVisible();
       }
       await expect(hero.getByText("takes 2 minutes")).toHaveCount(0);
       // At most four lines from tablet width up (exactly as in the design file), five on phones.

@@ -211,11 +211,13 @@ test.describe("homepage design (November 2026)", () => {
     // "A rare distinction": one statement, without the staircase of badges (they show in the hero and the fees table).
     const spotlight = page.locator("#accreditation");
     await expect(spotlight.getByRole("heading", { level: 2 })).toHaveText("One of about 46 academies worldwide accredited by ICF at all three levels, and one of only 4 in India.");
-    await expect(spotlight.locator("img")).toHaveCount(0);
+    // The three ICF badges beside it, in one row (back on 27 November 2026).
+    await expect(spotlight.locator("img")).toHaveCount(3);
+    for (const caption of ["Level 1 · ACC", "Level 2 · PCC", "Level 3 · MCC"]) await expect(spotlight.getByText(caption)).toBeVisible();
     await expect(page.getByRole("list", { name: "Countries our learners join from" }).getByRole("listitem")).toHaveCount(7);
   });
 
-  test("is calm, as the owner's brief of 25 November 2026 asks: two typefaces, nothing looping, no purple", async ({ page }) => {
+  test("is calm, as the owner's brief of 25 November 2026 asks: two typefaces, only the butterflies looping, no purple", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "no-preference" });
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto("/");
@@ -238,7 +240,8 @@ test.describe("homepage design (November 2026)", () => {
       };
       for (const el of document.querySelectorAll<HTMLElement>("body *")) {
         const style = getComputedStyle(el);
-        families.add(style.fontFamily.split(",")[0]!.replace(/["']/g, "").trim());
+        // Elements with no text of their own (a video's <source>) report no font at all.
+        if (style.fontFamily) families.add(style.fontFamily.split(",")[0]!.replace(/["']/g, "").trim());
         for (const prop of ["color", "backgroundColor", "borderTopColor"] as const) {
           const hsl = toHsl(style[prop]);
           // Violet and lavender hues with real saturation (the ink #16131D is near-black, so it is let through).
@@ -249,22 +252,60 @@ test.describe("homepage design (November 2026)", () => {
         .getAnimations()
         .filter((a) => a.effect?.getTiming().iterations === Infinity)
         .map((a) => ((a.effect as KeyframeEffect).target as Element | null)?.className ?? "")
-        .filter((cls) => !/fx-live|bca-globe__live/.test(String(cls)));
+        // The live dots, and the flying butterflies the owner asked to keep (27 November 2026).
+        .filter((cls) => !/fx-live|bca-globe__live|fx-flyer|fx-wing-img/.test(String(cls)));
       return { families: [...families], purple: purple.slice(0, 10), looping };
     });
     expect(report.families.filter((f) => !/Playfair|Jakarta|Georgia|ui-sans-serif|system-ui/.test(f)), "only two typefaces").toEqual([]);
     expect(report.families.some((f) => /Playfair/.test(f))).toBe(true);
     expect(report.families.some((f) => /Jakarta/.test(f))).toBe(true);
     expect(report.purple, "no purple or lavender left").toEqual([]);
-    expect(report.looping, "nothing loops except the live dots").toEqual([]);
-    // The hero headline is one colour, with no sparkles, flying butterflies or handwritten notes on the page.
-    await expect(page.locator(".fx-flyer, .fx-twinkle, .fx-note")).toHaveCount(0);
+    expect(report.looping, "nothing loops except the live dots and the butterflies").toEqual([]);
+    // No sparkles or handwritten notes; the three flying butterflies are back (hero, the loop, the community).
+    await expect(page.locator(".fx-twinkle, .fx-note")).toHaveCount(0);
+    await expect(page.locator(".fx-flyer")).toHaveCount(3);
+  });
+
+  test("has the founder with a video, the partners under the FAQ, and the paths as the owner gave them (27 November 2026)", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto("/");
+    const founder = page.locator("#founder");
+    await expect(founder.getByRole("heading", { level: 2, name: "Anup Mittal" })).toBeVisible();
+    for (const fact of ["4,100+", "24+", "2022"]) await expect(founder.getByText(fact, { exact: true })).toBeVisible();
+    const video = founder.locator("video");
+    await expect(video).toHaveAttribute("poster", "/videos/anup-mittal-who-we-are.jpg");
+    const src = await video.locator("source").getAttribute("src");
+    const response = await page.request.get(src!);
+    expect(response.headers()["content-type"]).toContain("video/mp4");
+    await expect(founder.getByRole("link", { name: /Meet the faculty/ })).toHaveAttribute("href", "/about-us/#team");
+    // "Choose your path": one button each.
+    for (const [label, href] of [["Compare the levels", "#programmes"], ["See master classes", "/enquire/"], ["Send an enquiry", "/contact-us/?intent=corporate#enquire"]] as const) {
+      await expect(page.getByRole("link", { name: label, exact: true })).toHaveAttribute("href", href);
+    }
+    // The partners, under the FAQ.
+    const partners = page.locator("#partners");
+    await expect(partners.getByRole("heading", { name: "Organisations our founder has worked with" })).toBeVisible();
+    for (const name of ["Axis Bank", "upGrad", "Vi (Vodafone Idea)", "Amazon"]) await expect(partners.getByRole("img", { name })).toBeVisible();
+    // The hero's two buttons.
+    const hero = page.locator("main section").first();
+    await expect(hero.getByRole("link", { name: "Get a programme guide" })).toHaveAttribute("href", "#programme-guide");
+  });
+
+  test("the About page shows the ICF Foundation certificate whole", async ({ page }) => {
+    await page.goto("/about-us/");
+    const section = page.locator("#icf-foundation");
+    await expect(section.getByRole("heading", { name: "Recognised by the ICF Foundation" })).toBeVisible();
+    const img = section.getByRole("img", { name: /ICF Foundation Certificate of Participation/ });
+    await expect(img).toBeVisible();
+    // Shown at its own shape (about 1.54 to 1), never cropped to a frame.
+    const box = (await img.boundingBox())!;
+    expect(box.width / box.height).toBeGreaterThan(1.45);
   });
 
   test("the programmes and fees table comes from the programme records", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto("/");
-    await page.getByRole("link", { name: "Just browsing? See programmes and fees" }).click();
+    await page.locator("main section").first().getByRole("link", { name: "Find your ICF level" }).click();
     await expect(page).toHaveURL(/#programmes$/);
     const table = page.locator("#programmes table");
     for (const credential of ["ACC", "PCC", "MCC"]) await expect(table.getByRole("columnheader", { name: new RegExp(credential) })).toBeVisible();

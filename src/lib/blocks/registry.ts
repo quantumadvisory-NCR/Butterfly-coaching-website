@@ -64,7 +64,7 @@ const hero = [
   },
   { type: "textarea", name: "subheading", label: "Supporting statement", help: EFFECTS, maxLength: 320, rows: 3 },
   link("primaryCta", "Primary button"),
-  link("secondaryCta", "Secondary button", "On the homepage this is a text link under the button."),
+  link("secondaryCta", "Secondary button", 'On the homepage an outlined button beside the main one, e.g. "Get the programme guide" linking to #programme-guide (the form below).'),
   {
     type: "boolean",
     name: "guideForm",
@@ -156,6 +156,15 @@ const imageText = [
       { value: "left", label: "Left" },
     ],
   },
+  {
+    type: "select",
+    name: "imageFit",
+    label: "How the picture shows",
+    options: [
+      { value: "cover", label: "Fill a rounded frame (photographs)" },
+      { value: "whole", label: "Show the whole picture (certificates, documents)" },
+    ],
+  },
 ] as const satisfies readonly Field[];
 
 const pathCards = [
@@ -197,7 +206,7 @@ const pathCards = [
         type: "boolean",
         name: "accent",
         label: "Colour this card",
-        help: "Numbered cards: light gray with a dark button. Choices: butterfly yellow with a dark button.",
+        help: "Numbered cards: a dark button. Choices: butterfly yellow with a dark button.",
       },
       {
         type: "select",
@@ -393,6 +402,24 @@ const profiles = [
     ],
   },
   link("cta", "Button"),
+  {
+    type: "select",
+    name: "layout",
+    label: "Founder layout",
+    options: [
+      { value: "feature", label: "Large portrait beside the story (About page)" },
+      { value: "compact", label: "Compact row with a video (homepage design)" },
+    ],
+  },
+  {
+    type: "text",
+    name: "videoUrl",
+    label: "Video (compact layout)",
+    help: 'An MP4 file on this site, e.g. "/videos/anup-mittal-who-we-are.mp4", or a file in the media library (its supabase.co address). Leave empty for none.',
+    maxLength: 300,
+  },
+  { type: "text", name: "videoPoster", label: "Picture shown before the video plays", help: 'e.g. "/videos/anup-mittal-who-we-are.jpg".', maxLength: 300 },
+  { type: "text", name: "videoLabel", label: "Video caption", help: 'e.g. "Video: who we are".', maxLength: 80 },
 ] as const satisfies readonly Field[];
 
 const faq = [

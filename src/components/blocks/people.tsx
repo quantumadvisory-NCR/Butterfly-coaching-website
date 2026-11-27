@@ -158,9 +158,88 @@ function FacultyCard({ person, ctx }: { person: FacultyView; ctx: BlockContext }
   );
 }
 
+/** A video or picture address editors may use: a file on this site ("/videos/...") or in the media library's storage. */
+const safeVideoUrl = (url: string) => (/^\/(?!\/)|^https:\/\/[a-z0-9-]+\.supabase\.co\//i.test(url.trim()) ? url.trim() : "");
+
+/**
+ * "Meet the founder" in the homepage design (27 November 2026): a round portrait,
+ * the name and credentials, a row of figures, and a short video beside them with
+ * a link to the faculty. Phones stack the video under the founder.
+ */
+function FounderCompact({ data, ctx, founder }: { data: BlockProps<"profiles">["data"]; ctx: BlockContext; founder: FacultyView }) {
+  const photo = pickMedia(ctx, founder.photoId);
+  const facts = data.facts.filter((f) => f.value && f.label);
+  const cta = usableLink(data.cta, ctx.settings);
+  const video = safeVideoUrl(data.videoUrl ?? "");
+  const poster = safeVideoUrl(data.videoPoster ?? "");
+  const headingId = `founder-${data.anchor || "home"}`;
+  return (
+    <section id={data.anchor || undefined} aria-labelledby={headingId} className="bg-page py-[var(--design-space)] font-text">
+      <div className="container-site flex flex-wrap items-center gap-x-14 gap-y-9">
+        <div className="reveal flex min-w-0 flex-[1.15_1_28rem] flex-wrap items-center gap-x-7 gap-y-5">
+          <span className="relative size-[8.5rem] shrink-0 overflow-hidden rounded-full bg-tint-deep shadow-[0_0_0_4px_var(--color-accent)] max-sm:size-28">
+            {photo && (
+              <MediaImage
+                media={photo}
+                fill
+                alt={`${founder.name}${founder.credential ? `, ${founder.credential}` : ""}, founder of Butterfly Coaching Academy`}
+                sizes="136px"
+                className="!object-top"
+              />
+            )}
+          </span>
+          <div className="flex min-w-0 flex-[1_1_16rem] flex-col gap-1.5">
+            <p className="m-0 text-sm font-semibold text-label">{plainText(data.heading)}</p>
+            <h2 id={headingId} className="m-0 font-grotesk text-[clamp(1.75rem,3vw,2.25rem)] leading-[1.1] text-ink-deep">
+              {founder.name}
+            </h2>
+            <p className="m-0 text-[0.9375rem] text-mauve">{[founder.credential, founder.roleTitle].filter(Boolean).join(" · ")}</p>
+            {facts.length > 0 && (
+              <dl className="m-0 mt-4 flex flex-wrap gap-x-6 gap-y-3">
+                {facts.map((fact) => (
+                  <div key={fact.label} className="flex flex-col-reverse">
+                    <dt className="text-[0.8125rem] leading-snug text-mauve">{fact.label}</dt>
+                    <dd className="m-0 font-grotesk text-[1.625rem] leading-tight text-ink-deep">{fact.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            )}
+          </div>
+        </div>
+        {(video || cta) && (
+          <figure className="reveal m-0 flex min-w-0 flex-[1_1_22rem] flex-col gap-3">
+            {video && (
+              <video
+                controls
+                playsInline
+                preload="none"
+                poster={poster || undefined}
+                aria-label={data.videoLabel || `A video of ${founder.name}`}
+                className="aspect-video w-full rounded-[1.5rem] bg-ink-deep object-cover shadow-[0_24px_48px_-28px_rgb(22_19_29/0.6)]"
+              >
+                <source src={video} type="video/mp4" />
+              </video>
+            )}
+            <figcaption className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+              {data.videoLabel && <span className="text-sm text-mauve">{data.videoLabel}</span>}
+              {cta && (
+                <Link href={cta.href} data-track="cta_click" data-track-label={`Founder: ${cta.label}`} className="fx-link text-[0.9375rem] text-ink-deep">
+                  {cta.label}
+                  <Arrow />
+                </Link>
+              )}
+            </figcaption>
+          </figure>
+        )}
+      </div>
+    </section>
+  );
+}
+
 export async function ProfilesBlock({ data, ctx }: BlockProps<"profiles">) {
   const everyone = await getFaculty();
   const founder = everyone.find((p) => p.isFounder) ?? null;
+  if (data.layout === "compact" && data.source === "founder" && founder) return <FounderCompact data={data} ctx={ctx} founder={founder} />;
   const team = everyone.filter((p) => !p.isFounder);
   const cta = usableLink(data.cta, ctx.settings);
   const showFounder = data.source !== "faculty" && founder;

@@ -593,6 +593,24 @@ type PageSeed = {
   sections: Section[];
 };
 
+/** The owner's ICF Foundation certificate (27 November 2026), shown whole on the About page. */
+export const ABOUT_ICF_FOUNDATION: Section = {
+  type: "image_text",
+  data: {
+    background: "cream",
+    anchor: "icf-foundation",
+    heading: "Recognised by the ICF Foundation",
+    body:
+      "<p>The ICF Foundation has presented Butterfly Coaching Academy with a Certificate of Participation for providing 10 scholarships to the 2026 ICF Foundation Scholarship Program.</p>" +
+      "<p>The programme widens access to coaching education for underrepresented communities around the world.</p>",
+    bullets: [],
+    cta: NO_LINK,
+    image: m("recognition.icf-foundation-2026"),
+    imageSide: "left",
+    imageFit: "whole",
+  },
+};
+
 const FOUNDER_FACTS = [
   { value: "MCC", label: "Master Certified Coach, ICF" },
   { value: "4,100+", label: "hours of one-to-one coaching" },
@@ -625,7 +643,8 @@ export const HOME_HERO = {
   subheading: "==Rooted in India. Recognised worldwide.== ICF coach training built on practice, review and founder mentoring.",
   // The owner's brief of 25 November 2026: the main button leads to the programmes and fees table.
   primaryCta: link("Find your ICF level", "#programmes"),
-  secondaryCta: link("Just browsing? See programmes and fees", "#programmes"),
+  // Beside the main button (27 November 2026); it leads to the guide form under the buttons.
+  secondaryCta: link("Get a programme guide", "#programme-guide"),
   guideForm: true,
   guideLabel: "Free programme guide: fees, dates and session times",
   // Authentic BCA photograph: Anup Mittal with learners around a practice table.
@@ -645,44 +664,64 @@ export const HOME_ACCREDITATION = {
   layout: "spotlight",
   anchor: "accreditation",
   eyebrow: "A rare distinction",
-  // One statement in white (the owner's brief of 25 November 2026); the ICF badges show in the hero and the fees table.
+  // One statement in white (the owner's brief of 25 November 2026), with the three ICF badges beside it (27 November 2026).
   heading: "One of about 46 academies worldwide accredited by ICF at all three levels, and one of only 4 in India.",
   intro: "As per ICF's published data.",
-  logos: [],
+  logos: ICF_LOGOS,
   facts: [],
+};
+
+/** The founder, with a short video, under the accreditation spotlight (27 November 2026). */
+export const HOME_FOUNDER = {
+  anchor: "founder",
+  heading: "Meet the founder",
+  intro: "",
+  source: "founder",
+  layout: "compact",
+  facts: [
+    { value: "4,100+", label: "coaching hours" },
+    { value: "24+", label: "years' experience" },
+    { value: "2022", label: "founded BCA" },
+  ],
+  cta: link("Meet the faculty", "/about-us/#team"),
+  // Anup Mittal on who we are: the owner's WhatsApp video of 27 November 2026, compressed to 720p for the web.
+  videoUrl: "/videos/anup-mittal-who-we-are.mp4",
+  videoPoster: "/videos/anup-mittal-who-we-are.jpg",
+  videoLabel: "Video: who we are",
 };
 
 export const HOME_PATHS = {
   layout: "numbered",
   heading: "Choose your path",
   intro: "Three ways to work with us, depending on where you are headed.",
+  // Labels, titles, lines and buttons as the owner gave them on 27 November 2026.
   items: [
     {
       tag: "For aspiring coaches",
-      title: "Become a Coach",
-      body: "Earn your credential: **ACC, PCC and MCC**",
-      link: RESERVE,
-      secondaryLink: link("Fees", "#programmes"),
+      title: "Become a coach",
+      body: "ACC, PCC and MCC credentials",
+      link: link("Compare the levels", "#programmes"),
+      secondaryLink: NO_LINK,
       accent: false,
       icon: "cap",
       image: m("photo.path-become-a-coach"),
     },
     {
       tag: "For people leaders",
-      title: "Grow as a Leader",
-      body: "Coaching skills for **HR, L&D and managers**",
-      link: RESERVE,
-      secondaryLink: link("Fees", "#programmes"),
+      title: "Grow as a leader",
+      body: "1-day master classes for HR, L&D and managers",
+      link: link("See master classes", "/enquire/"),
+      secondaryLink: NO_LINK,
       accent: false,
       icon: "trend",
       image: m("photo.path-grow-as-a-leader"),
     },
     {
       tag: "For organisations",
-      title: "Develop your Organisation",
-      body: "**Corporate coaching** programmes",
-      link: link("Talk to us", "/contact-us/?intent=corporate#enquire"),
-      secondaryLink: link("Details", "/services/corporate-programs/"),
+      title: "Develop your organisation",
+      body: "Corporate coaching programmes",
+      link: link("Send an enquiry", "/contact-us/?intent=corporate#enquire"),
+      secondaryLink: NO_LINK,
       accent: true,
       icon: "buildings",
       image: m("photo.path-develop-your-organisation"),
@@ -772,6 +811,23 @@ export const HOME_FAQ = {
   cta: BOOK,
 };
 
+/** Organisations the founder has worked with, under the FAQ (27 November 2026), on the FAQ's light gray band. */
+export const HOME_PARTNERS = {
+  layout: "card",
+  background: "lavender",
+  anchor: "partners",
+  eyebrow: "Partners",
+  heading: "Organisations our founder has worked with",
+  intro: "",
+  logos: [
+    { image: m("logo.axis-bank"), name: "Axis Bank", caption: "" },
+    { image: m("logo.upgrad"), name: "upGrad", caption: "" },
+    { image: m("logo.vi"), name: "Vi (Vodafone Idea)", caption: "" },
+    { image: m("logo.amazon"), name: "Amazon", caption: "" },
+  ],
+  facts: [],
+};
+
 export const HOME_CHOICES = {
   layout: "choices",
   heading: "Where are you today?",
@@ -806,12 +862,14 @@ export const HOME_CHOICES = {
 export const HOME_SECTIONS: Section[] = [
   { type: "hero", data: HOME_HERO },
   { type: "trust_strip", data: HOME_ACCREDITATION },
+  { type: "profiles", data: HOME_FOUNDER },
   { type: "path_cards", data: HOME_PATHS },
   { type: "feature_list", data: HOME_WHY },
   { type: "comparison_table", data: HOME_FEES },
   { type: "community", data: HOME_COMMUNITY },
   { type: "testimonials", data: HOME_STORIES },
   { type: "faq", data: HOME_FAQ },
+  { type: "trust_strip", data: HOME_PARTNERS },
   { type: "path_cards", data: HOME_CHOICES },
 ];
 
@@ -1252,6 +1310,7 @@ export const PAGES: PageSeed[] = [
             "<p>Programme certificates are awarded by BCA. ICF credentials (ACC, PCC and MCC) are awarded by ICF once you meet its requirements and pass its credentialing exam.</p>",
         },
       },
+      ABOUT_ICF_FOUNDATION,
       {
         type: "gallery",
         data: {

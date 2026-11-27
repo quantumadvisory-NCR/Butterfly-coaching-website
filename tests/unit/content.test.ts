@@ -87,7 +87,8 @@ describe("seed content", () => {
     expect(hero.data.primaryCta).toEqual({ label: "Find your ICF level", href: "#programmes" });
     expect(hero.data).not.toHaveProperty("ctaNote");
     expect(hero.data.eyebrow).toBe("ICF-accredited at all 3 levels");
-    expect(hero.data.secondaryCta).toEqual({ label: "Just browsing? See programmes and fees", href: "#programmes" });
+    // The guide button beside the main one (27 November 2026), leading to the guide form under the buttons.
+    expect(hero.data.secondaryCta).toEqual({ label: "Get a programme guide", href: "#programme-guide" });
     expect(hero.data.guideForm).toBe(true);
   });
 
@@ -202,12 +203,14 @@ describe("homepage redesign content (November 2026 design)", () => {
     expect(home.sections.map((s) => s.type)).toEqual([
       "hero",
       "trust_strip",
+      "profiles",
       "path_cards",
       "feature_list",
       "comparison_table",
       "community",
       "testimonials",
       "faq",
+      "trust_strip",
       "path_cards",
     ]);
     expect(block("trust_strip").data.layout).toBe("spotlight");
@@ -215,6 +218,30 @@ describe("homepage redesign content (November 2026 design)", () => {
     expect(block("feature_list").data.layout).toBe("bento");
     expect(block("comparison_table").data.source).toBe("fees");
     expect(block("testimonials").data).toMatchObject({ source: "all", layout: "carousel" });
+  });
+
+  it("carries the owner's 27 November 2026 changes", () => {
+    // The ICF badges beside "A rare distinction".
+    expect((block("trust_strip").data.logos as unknown[]).length).toBe(3);
+    // The founder with figures and the video, straight after it.
+    const founder = home.sections[2]!;
+    expect(founder).toMatchObject({ type: "profiles", data: { source: "founder", layout: "compact", videoUrl: "/videos/anup-mittal-who-we-are.mp4" } });
+    expect(existsSync(`public${String(founder.data.videoUrl)}`) && existsSync(`public${String(founder.data.videoPoster)}`)).toBe(true);
+    // "Choose your path" as the owner gave it: one button per card.
+    const paths = block("path_cards").data.items as { title: string; link: { label: string; href: string }; secondaryLink: { label: string } }[];
+    expect(paths.map((p) => [p.title, p.link.label])).toEqual([
+      ["Become a coach", "Compare the levels"],
+      ["Grow as a leader", "See master classes"],
+      ["Develop your organisation", "Send an enquiry"],
+    ]);
+    expect(paths.every((p) => !p.secondaryLink.label)).toBe(true);
+    // The partners card under the FAQ.
+    const partners = home.sections.at(-2)!;
+    expect(partners).toMatchObject({ type: "trust_strip", data: { layout: "card" } });
+    expect((partners.data.logos as { name: string }[]).map((l) => l.name)).toEqual(["Axis Bank", "upGrad", "Vi (Vodafone Idea)", "Amazon"]);
+    // The ICF Foundation certificate on the About page, shown whole.
+    const about = PAGES.find((p) => p.path === "/about-us/")!;
+    expect(about.sections.find((x) => x.data.anchor === "icf-foundation")).toMatchObject({ type: "image_text", data: { imageFit: "whole", image: "@media:recognition.icf-foundation-2026" } });
   });
 
   it("carries the owner's 22 November 2026 changes", () => {
