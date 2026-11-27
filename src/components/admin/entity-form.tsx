@@ -104,7 +104,7 @@ export function EntityForm({ entityKey, id, initial, refOptions, media, canDelet
         ))}
 
         {/* Sticky action bar: always reachable, including on a phone. */}
-        <div className="fixed inset-x-0 bottom-0 z-[var(--z-sticky)] border-t border-line bg-surface/95 backdrop-blur-sm lg:left-[17rem]">
+        <div className="fixed inset-x-0 bottom-0 z-[var(--z-sticky)] border-t border-line bg-surface/95 backdrop-blur-md shadow-[0_-12px_30px_-20px_rgb(0_0_0/0.25)] lg:left-[17.5rem]">
           <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-6 lg:px-10">
             <button type="submit" disabled={pending} className="btn btn-primary btn-sm">
               <FloppyDiskIcon weight="bold" className="size-4" />

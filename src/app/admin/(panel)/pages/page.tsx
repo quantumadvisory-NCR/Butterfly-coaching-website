@@ -1,6 +1,7 @@
 import { PlusIcon } from "@phosphor-icons/react/dist/ssr";
 import type { Metadata } from "next";
 import { AdminLink as Link } from "@/components/admin/admin-link";
+import { ListFilter } from "@/components/admin/list-filter";
 import { PageHeader, RecordCell, RecordRow, RecordTable, StatusBadge } from "@/components/admin/ui";
 import { listPages } from "@/lib/admin/page-store";
 import { requireUser } from "@/lib/auth";
@@ -14,6 +15,7 @@ export default async function PagesListPage() {
   return (
     <>
       <PageHeader
+        eyebrow="Content"
         title="Pages"
         description="Build and edit pages from sections. Save drafts and preview them on phone and desktop sizes before you publish."
         actions={
@@ -23,7 +25,8 @@ export default async function PagesListPage() {
           </Link>
         }
       />
-      <RecordTable columns={["Page", "Address", "Status", "Last changed", ""]}>
+      <ListFilter target="pages-list" noun="pages" />
+      <RecordTable id="pages-list" columns={["Page", "Address", "Status", "Last changed", ""]}>
         {pages.map((page) => (
           <RecordRow key={page.id}>
             <RecordCell label="Page" primary>

@@ -41,6 +41,11 @@ const nextConfig: NextConfig = {
   trailingSlash: true,
   poweredByHeader: false,
   reactStrictMode: true,
+  experimental: {
+    // The proxy (session refresh on /api/admin) buffers request bodies up to this size. Local
+    // development uploads videos through the server; production sends them straight to storage.
+    proxyClientMaxBodySize: "60mb",
+  },
   images: {
     formats: ["image/avif", "image/webp"],
     qualities: [70, 75, 85],

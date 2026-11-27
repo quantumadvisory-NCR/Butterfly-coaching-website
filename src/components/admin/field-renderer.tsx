@@ -1,11 +1,18 @@
 "use client";
 
 import { ArrowDownIcon, ArrowUpIcon, CaretDownIcon, PlusIcon, TrashIcon } from "@phosphor-icons/react";
+import dynamic from "next/dynamic";
 import { useId, useState } from "react";
 import { type Field, type LinkValue, type Option, type ReferenceTarget, defaultsFor } from "@/lib/blocks/fields";
 import { cn } from "@/lib/utils";
-import { MediaPicker } from "./media-picker";
-import { RichTextEditor } from "./rich-text-editor";
+import { LibraryAddressButton, MediaPicker } from "./media-picker";
+
+// The rich-text editor (TipTap) is about half the admin's script, so it loads
+// only on screens that show a rich-text field, with a placeholder meanwhile.
+const RichTextEditor = dynamic(() => import("./rich-text-editor").then((m) => m.RichTextEditor), {
+  ssr: false,
+  loading: () => <div aria-hidden className="admin-skeleton h-52 rounded-[var(--radius-field)]" />,
+});
 
 export type RefOptions = Partial<Record<ReferenceTarget, Option[]>>;
 type Data = Record<string, unknown>;
@@ -108,6 +115,11 @@ function FieldControl({ id, field, value, onChange, error, errors, path, refOpti
             aria-describedby={describedBy}
             className="field-input"
           />
+          {field.type === "url" && field.library && (
+            <div className="mt-2">
+              <LibraryAddressButton id={id} kind={field.library} value={text} onChange={onChange} />
+            </div>
+          )}
           {footer}
         </div>
       );

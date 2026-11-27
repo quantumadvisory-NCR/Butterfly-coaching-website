@@ -59,11 +59,6 @@ export function sessionSecret(): string {
   return secret;
 }
 
-export function maxUploadBytes(): number {
-  const mb = Number(process.env.MAX_UPLOAD_MB ?? 4);
-  return (Number.isFinite(mb) && mb > 0 ? mb : 4) * 1024 * 1024;
-}
-
 /** What is and is not wired up, for the admin "Integrations" panel. */
 export function integrationStatus() {
   return {

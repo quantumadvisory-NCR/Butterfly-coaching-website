@@ -412,13 +412,19 @@ const profiles = [
     ],
   },
   {
-    type: "text",
+    type: "url",
     name: "videoUrl",
     label: "Video (compact layout)",
-    help: 'An MP4 file on this site, e.g. "/videos/anup-mittal-who-we-are.mp4", or a file in the media library (its supabase.co address). Leave empty for none.',
-    maxLength: 300,
+    library: "video",
+    help: "Upload or choose an MP4 video from the media library. Leave empty for none.",
   },
-  { type: "text", name: "videoPoster", label: "Picture shown before the video plays", help: 'e.g. "/videos/anup-mittal-who-we-are.jpg".', maxLength: 300 },
+  {
+    type: "url",
+    name: "videoPoster",
+    label: "Picture shown before the video plays",
+    library: "image",
+    help: "Optional. Without one, the video's opening frame shows.",
+  },
   { type: "text", name: "videoLabel", label: "Video caption", help: 'e.g. "Video: who we are".', maxLength: 80 },
 ] as const satisfies readonly Field[];
 

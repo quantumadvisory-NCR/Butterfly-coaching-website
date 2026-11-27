@@ -9,6 +9,9 @@ import { firstParam, pageCount, pageNumber } from "@/lib/search-params";
 import { DEFAULT_SETTINGS, DEFAULT_THEME, openMasterClasses, parseSettingsGroup, resolveHref, telHref, whatsappHref } from "@/lib/settings";
 import { brochureFile, downloadHref, formatHours, isReservedPath, normalisePath, readingMinutes, slugify, truncate, youtubeId } from "@/lib/utils";
 import { isPlayableVideo, videoFileUrl } from "@/lib/video";
+import { UPLOAD_LIMITS, formatBytes, uploadKindFor } from "@/lib/media-kinds";
+import { sniff } from "@/lib/admin/media-store";
+import { preflight } from "@/components/admin/uploader";
 import { enquirySchema, newsletterSchema } from "@/lib/validation/forms";
 
 describe("paths and slugs", () => {
@@ -280,5 +283,41 @@ describe("brochure downloads and story videos", () => {
     for (const bad of [null, "", "https://example.com/story.mp4", "//evil.test/x.mp4", "/videos/notes.pdf", "javascript:alert(1)"]) {
       expect(isPlayableVideo(bad), String(bad)).toBe(false);
     }
+  });
+});
+
+describe("media uploads", () => {
+  const mp4 = Buffer.concat([Buffer.from([0, 0, 0, 0x20]), Buffer.from("ftypisom"), Buffer.alloc(52)]);
+  const mov = Buffer.concat([Buffer.from([0, 0, 0, 0x14]), Buffer.from("ftypqt  "), Buffer.alloc(52)]);
+  const heic = Buffer.concat([Buffer.from([0, 0, 0, 0x18]), Buffer.from("ftypheic"), Buffer.alloc(52)]);
+  const webm = Buffer.concat([Buffer.from([0x1a, 0x45, 0xdf, 0xa3]), Buffer.from("....B\u0082\u0084webm"), Buffer.alloc(40)]);
+
+  it("recognises files by their contents, not their names", () => {
+    expect(sniff(Buffer.from("%PDF-1.7 ..."))).toEqual({ kind: "file", ext: "pdf", mime: "application/pdf" });
+    expect(sniff(mp4)).toEqual({ kind: "video", ext: "mp4", mime: "video/mp4" });
+    expect(sniff(webm)).toEqual({ kind: "video", ext: "webm", mime: "video/webm" });
+    expect(sniff(heic)).toEqual({ kind: "image" });
+    expect(sniff(mov)).toMatchObject({ error: expect.stringContaining("QuickTime") });
+    expect(sniff(Buffer.from("<script>alert(1)</script>"))).toEqual({ kind: "image" });
+  });
+
+  it("knows what each upload claims to be and its limit", () => {
+    expect(uploadKindFor({ name: "a.JPG" })).toBe("image");
+    expect(uploadKindFor({ name: "story.mp4", type: "video/mp4" })).toBe("video");
+    expect(uploadKindFor({ name: "brochure.pdf", type: "" })).toBe("file");
+    expect(uploadKindFor({ name: "notes.docx" })).toBeNull();
+    expect(UPLOAD_LIMITS.video).toBeGreaterThan(UPLOAD_LIMITS.file);
+    expect(formatBytes(1536)).toBe("2 KB");
+    expect(formatBytes(11_278_041)).toBe("10.8 MB");
+  });
+
+  it("refuses unsupported or oversized files before sending them", () => {
+    const file = (name: string, type: string, size = 10) => new File([new Uint8Array(size)], name, { type });
+    expect(preflight(file("photo.jpg", "image/jpeg"))).toBeNull();
+    expect(preflight(file("talk.mp4", "video/mp4"))).toBeNull();
+    expect(preflight(file("IMG_1.heic", "image/heic"))).toMatch(/HEIC/);
+    expect(preflight(file("clip.mov", "video/quicktime"))).toMatch(/QuickTime/);
+    expect(preflight(file("logo.svg", "image/svg+xml"))).toMatch(/not supported/);
+    expect(preflight(file("big.pdf", "application/pdf", UPLOAD_LIMITS.file + 1))).toMatch(/larger than 25 MB/);
   });
 });

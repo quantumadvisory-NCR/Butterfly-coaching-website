@@ -4,6 +4,8 @@ A practical guide to running the Butterfly Coaching Academy website from the adm
 
 Sign in at `/admin/`.
 
+**Find anything fast.** Press **Ctrl K** (on a Mac, **⌘ K**), or click the search bar at the top of every screen, and type: a page, a programme, a person, an enquiry, a file, or what you want to do ("new page", "upload"). Use the arrow keys and **Enter** to open it.
+
 ## The five things you will do most
 
 | I want to... | Go to |
@@ -18,13 +20,15 @@ Sign in at `/admin/`.
 
 The first screen after signing in.
 
-- **The welcome panel** says what is waiting for you, in one sentence, and opens the website in a new tab.
+- **The welcome panel** says what is waiting for you, in one sentence, and opens the website in a new tab. It shows new enquiries, this week's enquiries and subscribers, marked **Live** with the time they were last updated: the dashboard refreshes itself every two minutes while it is open (and the moment you come back to the tab). The arrow beside the time refreshes it at once.
+- **Enquiries chart**: forms submitted on the website per day over the last 30 days (the last 7 days in yellow), with the change on the 15 days before. Point at a bar to see the day and count. Beside it, **What people ask about** splits them by type.
+- **Media library**: how many images have alt text (the ring), and how many images, videos and PDFs there are.
 - **Six figures**: new enquiries, published pages, programmes and articles, approved testimonials and newsletter subscribers. Each is a link; a yellow edge means something needs action.
 - **Quick actions** for the jobs you do most, including **Add a new course** and **Create a page**.
 - **Latest enquiries** and **Recent activity** (the latest changes made in the admin, and who made them).
 - **Needs your attention** lists only what really needs doing, such as testimonials to approve or pages with unpublished changes.
 
-Every figure is read from the website's own records each time you open the dashboard.
+Every figure is read from the website's own records. The bell at the top right of every screen shows new enquiries; it checks every minute, and a message pops up when a new one arrives.
 
 ## How saving and publishing work
 
@@ -170,7 +174,7 @@ Want to design the page yourself instead? Create a page at the same address unde
 - Set **Approval** to **Approved** to show one.
 - **Feature on the homepage** puts it in the homepage's "Student stories".
 - **Short extract** is optional: one or two sentences copied exactly from the testimonial. The system will not accept an extract that changes the person's words.
-- **Video link** is optional: a YouTube link (e.g. `https://www.youtube.com/watch?v=...`) or a video file on the site (e.g. `/videos/name.mp4`). The story then shows in **Student stories** as a dark video card: the video's picture with a yellow play button, a short quote, and "Video story" with the name. It plays only when a visitor presses play, and the moving stories stop while it plays. (Video files are too large to upload through the admin; put them on YouTube, or send them to the developer to add under `public/videos/`.)
+- **Video** is optional: press **Choose or upload a video** to upload an MP4 (up to 50 MB) or pick one already in the Media library, or paste a YouTube link (e.g. `https://www.youtube.com/watch?v=...`). The story then shows in **Student stories** as a dark video card: the video's picture with a yellow play button, a short quote, and "Video story" with the name. It plays only when a visitor presses play, and the moving stories stop while it plays.
 - Use the **Internal note** to record who gave consent and when.
 
 Only publish genuine testimonials, with the person's agreement. Never edit their wording.
@@ -192,9 +196,13 @@ Each question belongs to a **Group** (`home`, `programmes`, `mentoring`, `corpor
 
 ## Media library
 
-Every image and file on the site lives here.
+Every image, video and PDF on the site lives here.
 
-- **Upload** JPG, PNG, WebP, AVIF, GIF or PDF. Images are optimised automatically and location data is removed.
+- **Upload**: drag files onto the library, or press **Upload files** and choose several at once. Each file shows its own progress bar and then **Uploaded**, or the reason it was refused.
+  - Images: JPG, PNG, WebP, AVIF or GIF, up to 20 MB. They are resized and optimised automatically and location data is removed. (iPhone HEIC photos: save them as JPG first.)
+  - Videos: MP4 or WebM, up to 50 MB. (A .mov from an iPhone: share or export it as MP4 first.)
+  - PDFs, such as brochures: up to 25 MB.
+  - Every file is checked for what it really is, so a renamed file is refused.
 - Select an item to edit it:
   - **Alt text**: describe the picture in a sentence, for people who cannot see it. Items without it are flagged.
   - **Focal point**: click the most important part of the picture. Every crop, on every screen, keeps that part in view. The three previews show the result.
@@ -203,7 +211,7 @@ Every image and file on the site lives here.
   - **Where is this used?** lists every page that uses it.
 - **Delete** is refused for anything used on the live site. Replace it there first.
 
-Filters at the top find items quickly, including **Missing alt text**.
+Filters at the top (with how many items each holds) find items quickly: **Images**, **Videos**, **PDFs**, **Missing alt text** and more. Sort by newest, oldest, name or size. Select a video to watch it, or a PDF to open it.
 
 Real people (founder, faculty, students) must always be shown in real photographs, with their consent.
 

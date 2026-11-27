@@ -22,7 +22,7 @@ export default async function AuditPage({ searchParams }: { searchParams: Promis
   const pageCount = Math.max(1, Math.ceil((total?.n ?? 0) / PER_PAGE));
   return (
     <>
-      <PageHeader title="Audit log" description="A record of sign-ins and every change made in this admin: who did what, and when." />
+      <PageHeader eyebrow="Team" title="Audit log" description="A record of sign-ins and every change made in this admin: who did what, and when." />
       {rows.length === 0 ? (
         <EmptyState title="Nothing recorded yet" />
       ) : (

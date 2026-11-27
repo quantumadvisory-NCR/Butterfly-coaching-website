@@ -293,11 +293,12 @@ test.describe("media library", () => {
     await page.goto("/admin/media/");
 
     // A text file pretending to be an image is refused.
+    const uploads = page.getByRole("region", { name: "Uploads" });
     await page.locator("#media-upload").setInputFiles({ name: "fake.png", mimeType: "image/png", buffer: Buffer.from("<script>alert(1)</script>") });
-    await expect(page.getByText(/fake\.png: This file could not be read as an image/)).toBeVisible();
+    await expect(uploads.locator(".upload-row", { hasText: "fake.png" })).toContainText("This file could not be read as an image");
 
     await page.locator("#media-upload").setInputFiles({ name, mimeType: "image/png", buffer: png });
-    await expect(page.getByText(`${name} uploaded.`)).toBeVisible();
+    await expect(uploads.locator(".upload-row", { hasText: name })).toContainText("Uploaded");
     const [row] = await sql`select * from media where source = 'upload' order by created_at desc limit 1`;
     expect(row).toMatchObject({ kind: "image", width: 900, height: 600, mime_type: "image/png", storage: "local" });
     // The stored file is served, with a long cache lifetime and a locked content type.
@@ -326,6 +327,56 @@ test.describe("media library", () => {
     expect((await page.request.get(row!.url)).status()).toBe(404);
   });
 
+  test("videos and PDFs upload with progress; disguised files are refused", async ({ page }) => {
+    const video = readFileSync("public/videos/anup-mittal-who-we-are.mp4");
+    const pdf = Buffer.from("%PDF-1.4\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj 2 0 obj<</Type/Pages/Kids[]/Count 0>>endobj\ntrailer<</Root 1 0 R>>\n%%EOF\n");
+    await page.goto("/admin/media/");
+    await page.locator("#media-upload").setInputFiles([
+      { name: `e2e-video-${run}.mp4`, mimeType: "video/mp4", buffer: video },
+      { name: `e2e-brochure-${run}.pdf`, mimeType: "application/pdf", buffer: pdf },
+      { name: `e2e-fake-${run}.mp4`, mimeType: "video/mp4", buffer: Buffer.from("plain text, not a video") },
+      { name: `e2e-fake-${run}.pdf`, mimeType: "application/pdf", buffer: Buffer.from("plain text, not a PDF") },
+    ]);
+    const uploads = page.getByRole("region", { name: "Uploads" });
+    await expect(uploads.getByText("4 uploads finished")).toBeVisible({ timeout: 60_000 });
+    await expect(uploads.locator(".upload-row", { hasText: `e2e-video-${run}.mp4` })).toContainText("Uploaded");
+    await expect(uploads.locator(".upload-row", { hasText: `e2e-brochure-${run}.pdf` })).toContainText("Uploaded");
+    await expect(uploads.locator(".upload-row", { hasText: `e2e-fake-${run}.mp4` })).toContainText("not a playable MP4 or WebM video");
+    await expect(uploads.locator(".upload-row", { hasText: `e2e-fake-${run}.pdf` })).toContainText("not a real PDF");
+
+    const [movie] = await sql`select * from media where kind = 'video' and filename like ${`e2e-video-${run}%`}`;
+    expect(movie).toMatchObject({ mime_type: "video/mp4", size_bytes: video.length, storage: "local" });
+    const [brochure] = await sql`select * from media where kind = 'file' and filename like ${`e2e-brochure-${run}%`}`;
+    expect(brochure).toMatchObject({ mime_type: "application/pdf" });
+
+    // Videos are served in ranges, which browsers need to seek and Safari needs to play.
+    const part = await page.request.get(movie!.url, { headers: { Range: "bytes=0-99" } });
+    expect(part.status()).toBe(206);
+    expect(part.headers()["content-range"]).toBe(`bytes 0-99/${video.length}`);
+    expect(part.headers()["content-type"]).toBe("video/mp4");
+
+    // The video filter lists it, and its dialog plays it.
+    await page.getByRole("button", { name: /^Videos/ }).click();
+    await page.getByRole("button", { name: new RegExp(`e2e-video-${run}`) }).click();
+    await expect(page.getByRole("dialog").locator("video[controls]")).toHaveAttribute("src", movie!.url);
+    await page.keyboard.press("Escape");
+
+    await sql`delete from media where id in ${sql([movie!.id, brochure!.id])}`;
+  });
+
+  test("a testimonial's video can be chosen from the media library", async ({ page }) => {
+    const [story] = await sql`select id from testimonials where status = 'approved' order by name limit 1`;
+    const [clip] = await sql`
+      insert into media (kind, source, storage, url, filename, mime_type)
+      values ('video', 'upload', 'static', '/videos/anup-mittal-who-we-are.mp4', ${`e2e-pick-${run}.mp4`}, 'video/mp4')
+      returning id`;
+    await page.goto(`/admin/testimonials/${story!.id}/`);
+    await page.getByRole("button", { name: "Choose or upload a video" }).click();
+    await page.getByRole("dialog").getByRole("button", { name: new RegExp(`e2e-pick-${run}`) }).click();
+    await expect(page.getByLabel("Video", { exact: true })).toHaveValue("/videos/anup-mittal-who-we-are.mp4");
+    await sql`delete from media where id = ${clip!.id}`;
+  });
+
   test("an image used on the live site cannot be deleted", async ({ page }) => {
     await page.goto("/admin/media/");
     // The homepage hero's photograph: Anup Mittal with learners at a practice table.
@@ -336,6 +387,29 @@ test.describe("media library", () => {
     await expect(dialog.getByText("This item is used on the live site.")).toBeVisible();
     await expect(dialog.getByText(/Page: Home \(published version\)/)).toBeVisible();
     expect((await sql`select 1 from media where url = '/images/gallery/anup-with-table-group.jpg'`).length).toBe(1);
+  });
+});
+
+test.describe("dashboard and search", () => {
+  test("the dashboard charts enquiries and Ctrl+K finds and opens content", async ({ page }) => {
+    await page.goto("/admin/");
+    await expect(page.getByText("in the last 30 days", { exact: true })).toBeVisible();
+    await expect(page.getByText(/^Live · updated/)).toBeVisible();
+    await page.keyboard.press("Control+k");
+    await page.getByRole("combobox", { name: /Search pages/ }).fill("Level 1");
+    const option = page.getByRole("option", { name: /Level 1: ACC Coach Programme/ }).first();
+    await expect(option).toBeVisible();
+    await option.click();
+    await expect(page).toHaveURL(/\/admin\/programmes\/[0-9a-f-]{36}\/$/);
+  });
+
+  test("list screens filter as you type", async ({ page }) => {
+    await page.goto("/admin/pages/");
+    const rows = page.locator("#pages-list [data-filter-row]");
+    const total = await rows.count();
+    await page.getByLabel("Search pages").fill("privacy");
+    await expect(rows.filter({ visible: true })).toHaveCount(1);
+    await expect(page.getByText(`1 of ${total} pages`)).toBeVisible();
   });
 });
 

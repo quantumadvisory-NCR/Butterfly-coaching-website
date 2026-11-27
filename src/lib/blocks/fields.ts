@@ -17,7 +17,7 @@ export type Field =
   | (Base & { type: "text"; maxLength?: number; placeholder?: string })
   | (Base & { type: "textarea"; maxLength?: number; rows?: number })
   | (Base & { type: "richtext" })
-  | (Base & { type: "url"; placeholder?: string })
+  | (Base & { type: "url"; placeholder?: string; /** Offer a media-library button that fills in a file's address. */ library?: "image" | "video" })
   | (Base & { type: "number"; min?: number; max?: number })
   | (Base & { type: "boolean" })
   | (Base & { type: "select"; options: readonly Option[] })

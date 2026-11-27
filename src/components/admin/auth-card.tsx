@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
+import { Flyer } from "@/components/ui/effects";
 
 /** The butterfly photograph from the brand library. Decorative here, so it carries no alt text. */
 const PHOTO = "/images/photography/butterfly-on-leaf-charcoal.jpg";
@@ -15,8 +16,19 @@ export function AuthCard({ title, intro, children, footer }: { title: string; in
   return (
     <main className="grid min-h-dvh bg-page lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
       <div className="hidden p-4 pr-0 lg:sticky lg:top-0 lg:block lg:h-dvh">
-        <div className="relative size-full overflow-hidden rounded-[1.75rem] bg-line">
-          <Image src={PHOTO} alt="" fill sizes="45vw" className="object-cover" style={PHOTO_FOCUS} />
+        <div className="on-dark relative isolate size-full overflow-hidden rounded-[1.75rem] bg-line">
+          <Image src={PHOTO} alt="" fill sizes="45vw" className="-z-10 object-cover" style={PHOTO_FOCUS} />
+          <div aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgb(0_0_0/0)_45%,rgb(0_0_0/0.65)_100%)]" />
+          <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+            <Flyer path="hero" />
+          </div>
+          <div className="absolute inset-x-0 bottom-0 p-8 xl:p-10">
+            <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-accent">
+              <span aria-hidden className="h-px w-6 bg-accent" />
+              Website studio
+            </p>
+            <p className="mt-3 max-w-sm font-display text-[1.75rem] leading-tight text-white">Every page, programme and story, in one calm place.</p>
+          </div>
         </div>
       </div>
 

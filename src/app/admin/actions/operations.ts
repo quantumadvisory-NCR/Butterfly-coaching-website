@@ -3,6 +3,7 @@
 import { count, eq, ne, sql } from "drizzle-orm";
 import { z } from "zod";
 import { type ActionResult, UUID_RE, guarded } from "@/lib/admin/action-helpers";
+import { toMediaView } from "@/lib/admin/editor-data";
 import { type MediaRow, type MediaUsage, deleteMedia, findMediaUsage, listMedia } from "@/lib/admin/media-store";
 import { refresh } from "next/cache";
 import { logAudit, revalidateContent } from "@/lib/audit";
@@ -21,31 +22,8 @@ export type MediaView = Pick<
   "id" | "kind" | "source" | "storage" | "url" | "filename" | "mimeType" | "sizeBytes" | "width" | "height" | "alt" | "caption" | "credit" | "licence" | "sourceUrl" | "focalX" | "focalY"
 > & { createdAt: string };
 
-function toView(m: MediaRow): MediaView {
-  return {
-    id: m.id,
-    kind: m.kind,
-    source: m.source,
-    storage: m.storage,
-    url: m.url,
-    filename: m.filename,
-    mimeType: m.mimeType,
-    sizeBytes: m.sizeBytes,
-    width: m.width,
-    height: m.height,
-    alt: m.alt,
-    caption: m.caption,
-    credit: m.credit,
-    licence: m.licence,
-    sourceUrl: m.sourceUrl,
-    focalX: m.focalX,
-    focalY: m.focalY,
-    createdAt: m.createdAt.toISOString(),
-  };
-}
-
 export async function listMediaAction(): Promise<ActionResult<{ items: MediaView[] }>> {
-  return guarded("editor", async () => ({ ok: true, items: (await listMedia()).map(toView) }));
+  return guarded("editor", async () => ({ ok: true, items: (await listMedia()).map(toMediaView) }));
 }
 
 const mediaMeta = z.object({
@@ -85,7 +63,7 @@ export async function updateMediaAction(id: string, input: unknown): Promise<Act
     if (!row) return { ok: false, message: "That media item no longer exists." };
     await logAudit({ user, action: "media.update", entityType: "media", entityId: id, summary: `Updated media "${row.filename}"` });
     revalidateContent();
-    return { ok: true, item: toView(row), message: "Saved." };
+    return { ok: true, item: toMediaView(row), message: "Saved." };
   });
 }
 

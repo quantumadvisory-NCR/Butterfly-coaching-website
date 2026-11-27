@@ -65,6 +65,7 @@ export default async function EnquiriesPage({ searchParams }: { searchParams: Pr
   return (
     <>
       <PageHeader
+        eyebrow="Leads"
         title="Enquiries"
         description="Every form submitted on the website. Open one to update its status and add internal notes."
         actions={

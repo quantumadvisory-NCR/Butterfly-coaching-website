@@ -26,7 +26,7 @@ export default async function NavigationPage() {
   }
   return (
     <>
-      <PageHeader title="Navigation" description="The header menu, its dropdowns and the footer link columns." />
+      <PageHeader eyebrow="Site" title="Navigation" description="The header menu, its dropdowns and the footer link columns." />
       <Notice className="mb-5">
         Keep the header to five or six short items so it fits on one line on laptops. On phones the same menu opens as a drawer.
       </Notice>

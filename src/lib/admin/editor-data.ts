@@ -1,10 +1,10 @@
 import "server-only";
 import type { MediaView } from "@/app/admin/actions/operations";
-import { listMedia } from "./media-store";
+import { type MediaRow, listMedia } from "./media-store";
 
-/** The media library in the client-safe shape the pickers use. */
-export async function mediaViews(): Promise<MediaView[]> {
-  return (await listMedia()).map((m) => ({
+/** A media item in the client-safe shape the library and pickers use. */
+export function toMediaView(m: MediaRow): MediaView {
+  return {
     id: m.id,
     kind: m.kind,
     source: m.source,
@@ -23,5 +23,10 @@ export async function mediaViews(): Promise<MediaView[]> {
     focalX: m.focalX,
     focalY: m.focalY,
     createdAt: m.createdAt.toISOString(),
-  }));
+  };
+}
+
+/** The whole media library, newest first. */
+export async function mediaViews(): Promise<MediaView[]> {
+  return (await listMedia()).map(toMediaView);
 }

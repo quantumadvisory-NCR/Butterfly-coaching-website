@@ -161,8 +161,9 @@ const testimonialFields = [
   {
     type: "url",
     name: "videoUrl",
-    label: "Video link",
-    help: "Optional. A YouTube link (e.g. https://www.youtube.com/watch?v=...) or an MP4 file on this site (e.g. /videos/name.mp4). The story then shows as a video card in Student stories, with a play button; it never plays on its own.",
+    label: "Video",
+    library: "video",
+    help: "Optional. Upload an MP4 video (or choose one) from the media library, or paste a YouTube link. The story then shows as a video card in Student stories, with a play button; it never plays on its own.",
   },
   { type: "reference", name: "programmeId", label: "Related programme", to: "programme" },
   {

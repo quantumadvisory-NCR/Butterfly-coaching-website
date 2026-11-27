@@ -14,7 +14,7 @@ export default async function UsersPage() {
   const rows = await db().select().from(profiles).orderBy(asc(profiles.createdAt));
   return (
     <>
-      <PageHeader title="Users" description="Who can sign in to this admin, and what they are allowed to do." />
+      <PageHeader eyebrow="Team" title="Users" description="Who can sign in to this admin, and what they are allowed to do." />
       <UsersManager
         currentUserId={user.id}
         users={rows.map((row) => ({

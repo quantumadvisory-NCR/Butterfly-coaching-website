@@ -9,7 +9,7 @@ export default async function AccountPage() {
   const user = await requireUser();
   return (
     <>
-      <PageHeader title="Your account" />
+      <PageHeader eyebrow="Account" title="Your account" />
       <div className="grid gap-6">
         <Card title="Profile">
           <NameForm fullName={user.fullName} />

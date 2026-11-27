@@ -90,7 +90,7 @@ After seeding a site that is already running, save any setting in the admin (or 
 4. Under **Settings > Domains**, add your domain and follow the DNS instructions.
 5. Set `NEXT_PUBLIC_SITE_URL` to the final `https://` address and redeploy.
 
-Vercel serverless functions accept request bodies up to about 4.5 MB, which is why `MAX_UPLOAD_MB` defaults to 4. Web images should be well under that; compress larger PDFs before uploading.
+**Uploads.** Vercel serverless functions accept request bodies up to about 4.5 MB, so the admin sends files straight from the browser to Supabase Storage with a one-time signed address, then the server checks each file's real contents before adding it to the media library (images are re-encoded, PDFs and videos must really be PDF, MP4 or WebM). Limits: images 20 MB, PDFs 25 MB, videos 50 MB. Migration `0006_media_videos.sql` lets the `media` bucket take MP4 and WebM files up to 50 MB; run `npm run db:migrate` against the live database after deploying it.
 
 **Function region.** `vercel.json` pins the server functions to Mumbai (`bom1`), next to the Supabase project (`ap-south-1`). Keep the two in the same region: every admin screen makes a dozen or more sequential database and sign-in round trips, and with the functions in Washington (`iad1`, Vercel's default) each one crossed the globe, which made the admin take several seconds per click. If the Supabase project ever moves, change `regions` to the nearest Vercel region ([list](https://vercel.com/docs/edge-network/regions)).
 

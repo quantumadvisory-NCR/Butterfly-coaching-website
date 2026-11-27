@@ -15,15 +15,18 @@ import {
   PlusCircleIcon,
   QuotesIcon,
   TrayIcon,
+  UploadSimpleIcon,
   WarningCircleIcon,
 } from "@phosphor-icons/react/dist/ssr";
 import { desc } from "drizzle-orm";
-import Image from "next/image";
 import type { ComponentType, ReactNode } from "react";
 import { AdminLink as Link } from "@/components/admin/admin-link";
+import { AutoRefresh } from "@/components/admin/auto-refresh";
+import { EnquiryChart, EnquiryMix, Ring } from "@/components/admin/dashboard-charts";
 import { Card, Notice, StatusBadge } from "@/components/admin/ui";
+import { Flyer } from "@/components/ui/effects";
 import { ENTITIES, type EntityKey } from "@/lib/admin/entities";
-import { contentCounts, recentActivity } from "@/lib/admin/entity-store";
+import { contentCounts, enquiryTrend, recentActivity } from "@/lib/admin/entity-store";
 import { announcementState } from "@/lib/announcement";
 import { type SessionUser, hasRole, requireUser } from "@/lib/auth";
 import { getSettings } from "@/lib/content/public";
@@ -56,6 +59,7 @@ function ago(date: Date, now = Date.now()) {
 }
 
 const plural = (n: number, one: string, many: string) => `${n.toLocaleString("en-IN")} ${n === 1 ? one : many}`;
+const number = (n: number) => n.toLocaleString("en-IN");
 
 function Metric({ icon: Icon, value, label, detail, href, attention }: { icon: IconType; value: number; label: string; detail?: string; href: string; attention?: boolean }) {
   return (
@@ -63,17 +67,18 @@ function Metric({ icon: Icon, value, label, detail, href, attention }: { icon: I
       <Link
         href={href}
         className={cn(
-          "group flex h-full flex-col rounded-2xl border bg-surface p-4 transition-[border-color,box-shadow,translate] duration-200 hover:-translate-y-0.5 hover:border-primary hover:shadow-card sm:p-5",
+          "admin-card group relative flex h-full flex-col overflow-hidden rounded-3xl border bg-surface p-4 transition-[border-color,box-shadow,translate] duration-200 hover:-translate-y-0.5 hover:border-navy/25 hover:shadow-card sm:p-5",
           attention ? "border-accent" : "border-line",
         )}
       >
+        {attention && <span aria-hidden className="absolute inset-x-0 top-0 h-1 bg-accent" />}
         <span className="flex items-center justify-between gap-2">
-          <span aria-hidden className={cn("grid size-10 place-items-center rounded-xl text-navy", attention ? "bg-accent" : "bg-accent-soft")}>
+          <span aria-hidden className={cn("grid size-10 place-items-center rounded-2xl text-navy transition-colors", attention ? "bg-accent" : "bg-accent-soft group-hover:bg-accent")}>
             <Icon weight="bold" className="size-5" />
           </span>
-          <ArrowRightIcon aria-hidden weight="bold" className="size-4 text-navy/30 transition-[translate,color] group-hover:translate-x-0.5 group-hover:text-navy" />
+          <ArrowRightIcon aria-hidden weight="bold" className="size-4 text-navy/25 transition-[translate,color] group-hover:translate-x-0.5 group-hover:text-navy" />
         </span>
-        <span className="mt-4 font-display text-3xl font-bold leading-none tracking-tight text-navy">{value.toLocaleString("en-IN")}</span>
+        <span className="mt-4 font-display text-[2rem] leading-none tracking-tight text-navy tabular-nums">{number(value)}</span>
         <span className="mt-1.5 font-semibold leading-snug text-navy">{label}</span>
         {detail && <span className="mt-1 text-sm leading-snug text-muted">{detail}</span>}
       </Link>
@@ -86,9 +91,9 @@ function Action({ href, icon: Icon, label, hint }: { href: string; icon: IconTyp
     <li>
       <Link
         href={href}
-        className="group flex h-full min-h-16 items-center gap-3 rounded-xl border border-line bg-surface px-3 py-2.5 transition-colors hover:border-primary hover:bg-mist max-sm:flex-col max-sm:items-start max-sm:gap-2 max-sm:py-3"
+        className="group flex h-full min-h-16 items-center gap-3 rounded-2xl border border-line bg-surface px-3 py-2.5 transition-[border-color,background-color,translate] duration-200 hover:-translate-y-0.5 hover:border-navy/25 max-sm:flex-col max-sm:items-start max-sm:gap-2 max-sm:py-3"
       >
-        <span aria-hidden className="grid size-9 shrink-0 place-items-center rounded-lg bg-navy text-white transition-colors group-hover:bg-accent group-hover:text-navy">
+        <span aria-hidden className="grid size-10 shrink-0 place-items-center rounded-xl bg-navy text-white transition-colors group-hover:bg-accent group-hover:text-navy">
           <Icon weight="bold" className="size-[1.125rem]" />
         </span>
         <span className="min-w-0">
@@ -111,7 +116,7 @@ function Todo({ href, tone, children }: { href?: string; tone: "action" | "setup
   return (
     <li>
       {href ? (
-        <Link href={href} className="group -mx-2 flex items-start gap-3 rounded-lg px-2 py-2.5 text-[0.9375rem] text-navy hover:bg-mist">
+        <Link href={href} className="group -mx-2 flex items-start gap-3 rounded-xl px-2 py-2.5 text-[0.9375rem] text-navy hover:bg-mist">
           {body}
         </Link>
       ) : (
@@ -137,12 +142,13 @@ function activityHref(entry: { action: string; entityType: string | null; entity
 
 export default async function DashboardPage({ searchParams }: { searchParams: Promise<{ denied?: string }> }) {
   const user = await requireUser();
-  const [{ denied }, counts, recent, settings, activity] = await Promise.all([
+  const [{ denied }, counts, recent, settings, activity, trend] = await Promise.all([
     searchParams,
     contentCounts(),
     db().select().from(enquiries).orderBy(desc(enquiries.createdAt)).limit(5),
     getSettings(),
     recentActivity(8),
+    enquiryTrend(30),
   ]);
   const integrations = integrationStatus();
   const analytics = Boolean(settings.integrations.ga4Id || settings.integrations.gtmId);
@@ -150,6 +156,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
   const isAdmin = hasRole(user, "admin");
   const { greeting, date } = today();
   const firstName = user.fullName ? user.fullName.split(" ")[0] : "";
+  const altCoverage = counts.media_images ? (counts.media_images - counts.media_missing_alt) / counts.media_images : 1;
 
   // One sentence on what is waiting, built only from real counts.
   const waiting = [
@@ -181,46 +188,106 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
         </Notice>
       )}
 
-      <section aria-labelledby="dashboard-title" className="on-dark relative isolate overflow-hidden rounded-3xl bg-navy px-5 py-6 text-white sm:px-8 sm:py-8">
-        <Image
-          src="/images/brand/bca-mark-on-dark.svg"
-          alt=""
-          width={98}
-          height={90}
-          unoptimized
-          className="pointer-events-none absolute -bottom-5 right-6 -z-10 hidden h-36 w-auto opacity-[0.16] sm:block"
-        />
-        <p className="text-sm font-semibold text-white/70">
-          {greeting} · {date}
-        </p>
-        <h1 id="dashboard-title" className="mt-1 text-[clamp(1.6rem,1.25rem+1.4vw,2.25rem)] leading-tight tracking-tight !text-white">
-          Welcome{firstName ? `, ${firstName}` : ""}
-        </h1>
-        <p className="mt-2 max-w-xl text-[0.9375rem] text-white/80">{summary}</p>
-        <div className="mt-5 flex flex-wrap gap-2.5">
-          <a href="/" target="_blank" rel="noopener noreferrer" className="btn btn-primary btn-sm">
-            <ArrowSquareOutIcon aria-hidden weight="bold" className="size-4" />
-            View the website<span className="sr-only"> (opens in a new tab)</span>
-          </a>
-          {counts.new_enquiries > 0 ? (
-            <Link href="/admin/enquiries/?status=new" className="btn btn-secondary btn-sm">
-              Review new enquiries
-            </Link>
-          ) : (
-            <Link href="/admin/pages/" className="btn btn-secondary btn-sm">
-              Edit pages
-            </Link>
-          )}
+      {/* Welcome: what is waiting, the live figures, and a butterfly passing through. */}
+      <section
+        aria-labelledby="dashboard-title"
+        className="admin-rise on-dark relative isolate overflow-hidden rounded-[1.75rem] bg-[radial-gradient(40rem_20rem_at_110%_-20%,rgb(245_186_0/0.22),transparent_60%),linear-gradient(135deg,#262626,#161616)] px-5 py-6 text-white sm:px-8 sm:py-8"
+      >
+        <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+          <Flyer path="hero" className="opacity-90" />
+        </div>
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div className="min-w-0">
+            <p className="text-sm font-semibold text-white/65">
+              {greeting} · {date}
+            </p>
+            <h1 id="dashboard-title" className="mt-1 text-[clamp(1.75rem,1.3rem+1.6vw,2.5rem)] leading-tight tracking-tight !text-white">
+              Welcome{firstName ? `, ${firstName}` : ""}
+            </h1>
+            <p className="mt-2 max-w-xl text-[0.9375rem] text-white/80">{summary}</p>
+            <div className="mt-5 flex flex-wrap gap-2.5">
+              <a href="/" target="_blank" rel="noopener noreferrer" className="btn btn-primary btn-sm">
+                <ArrowSquareOutIcon aria-hidden weight="bold" className="size-4" />
+                View the website<span className="sr-only"> (opens in a new tab)</span>
+              </a>
+              {counts.new_enquiries > 0 ? (
+                <Link href="/admin/enquiries/?status=new" className="btn btn-secondary btn-sm">
+                  Review new enquiries
+                </Link>
+              ) : (
+                <Link href="/admin/pages/" className="btn btn-secondary btn-sm">
+                  Edit pages
+                </Link>
+              )}
+            </div>
+          </div>
+          <div className="shrink-0">
+            <AutoRefresh className="mb-2 text-white/70 lg:justify-end" />
+            <dl className="grid grid-cols-3 gap-2 text-center">
+              {[
+                { label: "New enquiries", value: counts.new_enquiries },
+                { label: "This week", value: counts.enquiries_week },
+                { label: "Subscribers", value: counts.subscribers },
+              ].map((stat) => (
+                <div key={stat.label} className="rounded-2xl border border-white/10 bg-white/[0.06] px-3 py-3 backdrop-blur-sm sm:px-4">
+                  <dt className="text-[0.6875rem] font-semibold text-white/60">{stat.label}</dt>
+                  <dd className="mt-1 font-display text-2xl leading-none text-white tabular-nums">{number(stat.value)}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
         </div>
       </section>
 
+      {/* Enquiries over time, the mix, and the library's health. */}
+      <div className="admin-stagger mt-6 grid gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+        <Card
+          title="Enquiries"
+          description="Every form submitted on the website, per day."
+          action={
+            <Link href="/admin/enquiries/" className="text-link shrink-0 text-sm">
+              Inbox
+            </Link>
+          }
+        >
+          <EnquiryChart perDay={trend.perDay} />
+        </Card>
+        <div className="grid content-start gap-6">
+          <Card title="What people ask about" description="The last 30 days.">
+            <EnquiryMix byType={trend.byType} />
+          </Card>
+          <Card title="Media library">
+            <div className="flex items-center gap-5">
+              <Ring value={altCoverage} label="alt text" size={104} />
+              <ul className="grid gap-1.5 text-sm">
+                <li>
+                  <span className="font-semibold text-navy tabular-nums">{number(counts.media_images)}</span> <span className="text-muted">images</span>
+                </li>
+                <li>
+                  <span className="font-semibold text-navy tabular-nums">{number(counts.media_videos)}</span> <span className="text-muted">videos</span>
+                </li>
+                <li>
+                  <span className="font-semibold text-navy tabular-nums">{number(counts.media_files)}</span> <span className="text-muted">PDFs</span>
+                </li>
+                <li>
+                  <Link href="/admin/media/" className="text-link text-sm">
+                    <UploadSimpleIcon aria-hidden weight="bold" className="size-4" />
+                    Upload
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </Card>
+        </div>
+      </div>
+
       <h2 className="sr-only">At a glance</h2>
-      <ul className="mt-6 grid grid-cols-2 gap-3 md:gap-4 lg:grid-cols-3">
+      <ul className="admin-stagger mt-6 grid grid-cols-2 gap-3 md:gap-4 lg:grid-cols-3">
         <Metric
           icon={TrayIcon}
           value={counts.new_enquiries}
           label="New enquiries"
-          detail={`${counts.open_enquiries.toLocaleString("en-IN")} open · ${counts.enquiries_week.toLocaleString("en-IN")} this week`}
+          detail={`${number(counts.open_enquiries)} open · ${number(counts.enquiries_week)} this week`}
           href="/admin/enquiries/?status=new"
           attention={counts.new_enquiries > 0}
         />
@@ -258,12 +325,12 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
           icon={EnvelopeSimpleIcon}
           value={counts.subscribers}
           label="Newsletter subscribers"
-          detail={`${counts.subscribers_month.toLocaleString("en-IN")} in the last 30 days`}
+          detail={`${number(counts.subscribers_month)} in the last 30 days`}
           href="/admin/subscribers/"
         />
       </ul>
 
-      <section aria-labelledby="quick-actions" className="mt-6">
+      <section aria-labelledby="quick-actions" className="mt-8">
         <h2 id="quick-actions" className="mb-3 text-lg leading-snug">
           Quick actions
         </h2>
@@ -273,8 +340,8 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
           <Action href="/admin/programmes/new/" icon={PlusCircleIcon} label="Add a new course" hint="Gets its own page once published" />
           <Action href="/admin/blog/new/" icon={NewspaperIcon} label="Write an article" hint="For the Resources blog" />
           <Action href="/admin/enquiries/" icon={TrayIcon} label="Review enquiries" hint="Reply to and track each lead" />
-          <Action href="/admin/testimonials/" icon={QuotesIcon} label="Manage testimonials" hint="Approve and feature stories" />
-          <Action href="/admin/media/" icon={ImagesIcon} label="Media library" hint="Photos, logos and files" />
+          <Action href="/admin/testimonials/" icon={QuotesIcon} label="Manage testimonials" hint="Approve stories, add videos" />
+          <Action href="/admin/media/" icon={ImagesIcon} label="Media library" hint="Photos, videos and PDFs" />
           {isAdmin && (
             <>
               <Action href="/admin/settings/?tab=header" icon={MegaphoneIcon} label="Announcement bar" hint={announcement.text ? "Showing on every page" : "Hidden at the moment"} />
@@ -284,9 +351,16 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
         </ul>
       </section>
 
-      <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)]">
+      <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)]">
         <div className="grid content-start gap-6">
-          <Card title="Latest enquiries">
+          <Card
+            title="Latest enquiries"
+            action={
+              <Link href="/admin/enquiries/" className="text-link shrink-0 text-sm">
+                Open the enquiry inbox
+              </Link>
+            }
+          >
             {recent.length === 0 ? (
               <p className="text-[0.9375rem] text-muted">No enquiries yet. When someone submits a form on the website it appears here.</p>
             ) : (
@@ -294,11 +368,11 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
                 {recent.map((enquiry) => (
                   <li key={enquiry.id}>
                     <Link href={`/admin/enquiries/${enquiry.id}/`} className="group flex items-center gap-3 rounded-lg py-3 hover:text-primary">
-                      <span aria-hidden className="grid size-10 shrink-0 place-items-center rounded-full bg-accent-soft font-sans font-bold text-navy">
+                      <span aria-hidden className="grid size-10 shrink-0 place-items-center rounded-full bg-accent-soft font-sans font-bold text-navy transition-colors group-hover:bg-accent">
                         {enquiry.name.charAt(0).toUpperCase()}
                       </span>
                       <span className="min-w-0 flex-1">
-                        <span className="block truncate font-semibold text-navy group-hover:text-primary">{enquiry.name}</span>
+                        <span className="block truncate font-semibold text-navy">{enquiry.name}</span>
                         <span className="block truncate text-sm text-muted">
                           {ENQUIRY_LABELS[enquiry.type]}, {ago(enquiry.createdAt)}
                         </span>
@@ -309,9 +383,6 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
                 ))}
               </ul>
             )}
-            <Link href="/admin/enquiries/" className="text-link mt-3">
-              Open the enquiry inbox
-            </Link>
           </Card>
 
           <Card title="Recent activity" description="Changes made in this admin, newest first.">
@@ -334,7 +405,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
                     <li key={entry.id} className="relative flex gap-3">
                       <span aria-hidden className="relative z-10 mt-2.5 size-[0.9375rem] shrink-0 rounded-full border-[3px] border-surface bg-accent" />
                       {href ? (
-                        <Link href={href} className="-mx-2 min-w-0 flex-1 rounded-lg px-2 py-1.5 hover:bg-mist">
+                        <Link href={href} className="-mx-2 min-w-0 flex-1 rounded-xl px-2 py-1.5 hover:bg-mist">
                           {text}
                         </Link>
                       ) : (
@@ -371,7 +442,6 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
               </ul>
             )}
           </Card>
-
         </div>
       </div>
     </>

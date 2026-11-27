@@ -17,6 +17,7 @@ export default async function SubscribersPage() {
   return (
     <>
       <PageHeader
+        eyebrow="Leads"
         title="Newsletter subscribers"
         description="People who signed up through the website. Export the list to import it into your email tool."
         actions={

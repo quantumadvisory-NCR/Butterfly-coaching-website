@@ -1,0 +1,206 @@
+/*
+ * The admin's own look, loaded only on /admin. The calm brand palette
+ * (charcoal, warm grays, one yellow accent) with a little more depth: a dark
+ * sidebar with a soft warm glow, a frosted top bar, cards that lift on hover.
+ * Every movement here is short and stops for anyone who prefers reduced motion.
+ */
+
+.admin-app {
+  background:
+    radial-gradient(60rem 30rem at 100% -10%, rgb(245 186 0 / 0.07), transparent 60%),
+    radial-gradient(40rem 26rem at 0% 0%, rgb(0 0 0 / 0.025), transparent 70%),
+    #f7f6f2;
+}
+
+/* Dark charcoal with a warm glow at the top and a faint butterfly near the foot. */
+.admin-sidebar {
+  background:
+    radial-gradient(22rem 16rem at 0% 0%, rgb(245 186 0 / 0.13), transparent 70%),
+    radial-gradient(18rem 18rem at 100% 100%, rgb(255 255 255 / 0.05), transparent 70%),
+    linear-gradient(180deg, #232323 0%, #1a1a1a 100%);
+}
+aside.admin-sidebar::after {
+  content: "";
+  position: absolute;
+  right: -2.5rem;
+  bottom: 7.5rem;
+  width: 11rem;
+  height: 8rem;
+  background: url("/images/brand/butterfly-monarch.webp") center / contain no-repeat;
+  opacity: 0.06;
+  transform: rotate(-14deg);
+  pointer-events: none;
+}
+aside.admin-sidebar {
+  position: sticky;
+}
+
+/* Frosted bar above each screen. */
+.admin-topbar {
+  background: rgb(247 246 242 / 0.78);
+  backdrop-filter: saturate(1.4) blur(14px);
+  -webkit-backdrop-filter: saturate(1.4) blur(14px);
+}
+
+.admin-card {
+  box-shadow:
+    0 1px 2px rgb(30 30 30 / 0.04),
+    0 8px 24px -18px rgb(30 30 30 / 0.18);
+}
+
+/* Media upload shimmer while the server checks a file. */
+.upload-shimmer {
+  background-image: linear-gradient(90deg, var(--color-accent) 0%, #ffe08a 50%, var(--color-accent) 100%);
+  background-size: 200% 100%;
+}
+
+/* Loading skeletons. */
+.admin-skeleton {
+  background: linear-gradient(90deg, #ecebe6 0%, #f6f5f1 50%, #ecebe6 100%);
+  background-size: 200% 100%;
+  border-radius: 0.75rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .admin-rise {
+    animation: admin-rise 0.45s var(--ease-out-soft) both;
+  }
+  .admin-stagger > * {
+    animation: admin-rise 0.5s var(--ease-out-soft) both;
+  }
+  .admin-stagger > :nth-child(2) {
+    animation-delay: 40ms;
+  }
+  .admin-stagger > :nth-child(3) {
+    animation-delay: 80ms;
+  }
+  .admin-stagger > :nth-child(4) {
+    animation-delay: 120ms;
+  }
+  .admin-stagger > :nth-child(5) {
+    animation-delay: 160ms;
+  }
+  .admin-stagger > :nth-child(n + 6) {
+    animation-delay: 200ms;
+  }
+
+  /* The brand butterfly beats its wings a few times on arrival and while hovered. */
+  .admin-brand-butterfly .fx-wing-img {
+    animation: fx-flap 0.32s ease-in-out 6 alternate;
+  }
+  .admin-brand:hover .admin-brand-butterfly .fx-wing-img,
+  .admin-brand:focus-visible .admin-brand-butterfly .fx-wing-img {
+    animation: fx-flap 0.28s ease-in-out infinite alternate;
+  }
+
+  .admin-fresh > * {
+    animation: admin-fresh 1.6s var(--ease-out-soft) both;
+  }
+
+  .admin-toast {
+    animation: admin-toast-in 0.35s var(--ease-out-soft) both;
+  }
+  .admin-palette {
+    animation: admin-palette-in 0.2s var(--ease-out-soft) both;
+  }
+  .admin-dialog[data-state="open"] {
+    animation: fade-in 0.2s ease-out both;
+  }
+
+  .upload-shimmer,
+  .admin-skeleton {
+    animation: admin-shimmer 1.3s linear infinite;
+  }
+
+  .admin-bell-ring {
+    transform-origin: 50% 10%;
+    animation: admin-bell 1.2s ease-in-out 2;
+  }
+
+  .admin-chart-bar {
+    transform-origin: bottom;
+    animation: admin-grow 0.7s var(--ease-out-soft) both;
+    animation-delay: calc(var(--i, 0) * 18ms);
+  }
+}
+
+@keyframes admin-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes admin-fresh {
+  0% {
+    opacity: 0;
+    transform: scale(0.94);
+    box-shadow: 0 0 0 0 rgb(245 186 0 / 0.6);
+  }
+  40% {
+    opacity: 1;
+    transform: none;
+    box-shadow: 0 0 0 6px rgb(245 186 0 / 0.35);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgb(245 186 0 / 0);
+  }
+}
+@keyframes admin-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+/* Transform only: the palette is centred with the separate `translate` property. */
+@keyframes admin-palette-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes admin-shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
+@keyframes admin-bell {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  15% {
+    transform: rotate(14deg);
+  }
+  30% {
+    transform: rotate(-12deg);
+  }
+  45% {
+    transform: rotate(8deg);
+  }
+  60% {
+    transform: rotate(-4deg);
+  }
+}
+@keyframes admin-grow {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}

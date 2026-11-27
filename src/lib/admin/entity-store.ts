@@ -648,6 +648,9 @@ export async function contentCounts() {
     subscribers: number;
     subscribers_month: number;
     media_missing_alt: number;
+    media_images: number;
+    media_videos: number;
+    media_files: number;
   }>(sql`
     select
       (select count(*)::int from enquiries where status = 'new') as new_enquiries,
@@ -664,9 +667,44 @@ export async function contentCounts() {
       (select count(*)::int from posts where status = 'draft') as draft_posts,
       (select count(*)::int from newsletter_subscribers where status = 'subscribed') as subscribers,
       (select count(*)::int from newsletter_subscribers where status = 'subscribed' and created_at > now() - interval '30 days') as subscribers_month,
-      (select count(*)::int from media where kind = 'image' and alt = '') as media_missing_alt
+      (select count(*)::int from media where kind = 'image' and alt = '') as media_missing_alt,
+      (select count(*)::int from media where kind = 'image') as media_images,
+      (select count(*)::int from media where kind = 'video') as media_videos,
+      (select count(*)::int from media where kind = 'file') as media_files
   `);
   return row!;
+}
+
+/**
+ * Enquiries per day over the last `days` days (India time, oldest first, quiet
+ * days included) and how they split by type, for the dashboard chart.
+ */
+export async function enquiryTrend(days = 30) {
+  const [perDay, byType] = await Promise.all([
+    db().execute<{ day: string; n: number }>(sql`
+      select to_char(d, 'YYYY-MM-DD') as day, coalesce(e.n, 0)::int as n
+        from generate_series(
+               (now() at time zone 'Asia/Kolkata')::date - ${days - 1}::int,
+               (now() at time zone 'Asia/Kolkata')::date,
+               interval '1 day'
+             ) as d
+        left join (
+          select (created_at at time zone 'Asia/Kolkata')::date as day, count(*) as n
+            from enquiries
+           where created_at > now() - make_interval(days => ${days + 1}::int)
+           group by 1
+        ) e on e.day = d::date
+       order by d
+    `),
+    db().execute<{ type: string; n: number }>(sql`
+      select type, count(*)::int as n
+        from enquiries
+       where created_at > now() - make_interval(days => ${days}::int)
+       group by type
+       order by n desc
+    `),
+  ]);
+  return { perDay: [...perDay], byType: [...byType] };
 }
 
 /**

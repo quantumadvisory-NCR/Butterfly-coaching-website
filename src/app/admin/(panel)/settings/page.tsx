@@ -36,7 +36,7 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
 
   return (
     <>
-      <PageHeader title="Settings" description="Details used across the whole website. Changes apply as soon as you save." />
+      <PageHeader eyebrow="Site" title="Settings" description="Details used across the whole website. Changes apply as soon as you save." />
       <SettingsTabs values={values} media={media} initialTab={tab && tab in SETTINGS_GROUPS ? (tab as SettingsKey) : undefined} />
 
       <Card title="Connections" description="These are set in the hosting environment rather than here. See docs/DEPLOYMENT.md." className="mt-6">

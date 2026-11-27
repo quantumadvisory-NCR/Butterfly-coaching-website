@@ -1,6 +1,7 @@
 import { PlusIcon } from "@phosphor-icons/react/dist/ssr";
 import type { Metadata } from "next";
 import { AdminLink as Link } from "@/components/admin/admin-link";
+import { ListFilter } from "@/components/admin/list-filter";
 import { notFound } from "next/navigation";
 import { EmptyState, PageHeader, RecordCell, RecordRow, RecordTable, StatusBadge } from "@/components/admin/ui";
 import { entityByRoute } from "@/lib/admin/entities";
@@ -27,6 +28,7 @@ export default async function EntityListPage({ params }: Props) {
   return (
     <>
       <PageHeader
+        eyebrow={config.key === "redirects" ? "Site" : "Content"}
         title={config.label}
         description={config.description}
         actions={
@@ -62,7 +64,9 @@ export default async function EntityListPage({ params }: Props) {
           {config.description}
         </EmptyState>
       ) : (
-        <RecordTable columns={[config.singular.charAt(0).toUpperCase() + config.singular.slice(1), ...(hasStatus ? ["Status"] : []), ""]}>
+        <>
+        {rows.length > 6 && <ListFilter target={`${config.route}-list`} noun={config.label.toLowerCase()} />}
+        <RecordTable id={`${config.route}-list`} columns={[config.singular.charAt(0).toUpperCase() + config.singular.slice(1), ...(hasStatus ? ["Status"] : []), ""]}>
           {rows.map((row) => (
             <RecordRow key={row.id}>
               <RecordCell label={config.singular} primary>
@@ -98,6 +102,7 @@ export default async function EntityListPage({ params }: Props) {
             </RecordRow>
           ))}
         </RecordTable>
+        </>
       )}
     </>
   );
