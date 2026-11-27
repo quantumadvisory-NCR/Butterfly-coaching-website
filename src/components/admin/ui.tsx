@@ -18,7 +18,7 @@ export function PageHeader({
   back?: { href: string; label: string };
 }) {
   return (
-    <header className="admin-rise mb-6 flex flex-col gap-4 md:mb-8 md:flex-row md:items-end md:justify-between">
+    <header className="mb-6 flex flex-col gap-4 md:mb-8 md:flex-row md:items-end md:justify-between">
       <div className="min-w-0">
         {back ? (
           <Link href={back.href} className="mb-2 inline-flex min-h-9 items-center gap-1 rounded-full text-sm font-semibold text-muted transition-colors hover:text-navy">
@@ -32,7 +32,8 @@ export function PageHeader({
             </p>
           )
         )}
-        <h1 className="text-[clamp(1.625rem,1.25rem+1.4vw,2.375rem)] leading-[1.1] tracking-tight [overflow-wrap:anywhere]">{title}</h1>
+        {/* admin-page-title puts the monarch before the title on every screen (admin.css). */}
+        <h1 className="admin-page-title text-[clamp(1.625rem,1.25rem+1.4vw,2.375rem)] leading-[1.1] tracking-tight [overflow-wrap:anywhere]">{title}</h1>
         {description && <p className="mt-2 max-w-2xl text-[0.9375rem] leading-relaxed text-muted">{description}</p>}
       </div>
       {actions && <div className="flex shrink-0 flex-wrap gap-2">{actions}</div>}

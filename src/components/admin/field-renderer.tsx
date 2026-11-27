@@ -1,18 +1,32 @@
 "use client";
 
 import { ArrowDownIcon, ArrowUpIcon, CaretDownIcon, PlusIcon, TrashIcon } from "@phosphor-icons/react";
-import dynamic from "next/dynamic";
-import { useId, useState } from "react";
+import { useEffect, useId, useState, useSyncExternalStore } from "react";
 import { type Field, type LinkValue, type Option, type ReferenceTarget, defaultsFor } from "@/lib/blocks/fields";
 import { cn } from "@/lib/utils";
 import { LibraryAddressButton, MediaPicker } from "./media-picker";
+import { preloadRichText, richTextModule, richTextOnServer, subscribeRichText } from "./rich-text-loader";
 
-// The rich-text editor (TipTap) is about half the admin's script, so it loads
-// only on screens that show a rich-text field, with a placeholder meanwhile.
-const RichTextEditor = dynamic(() => import("./rich-text-editor").then((m) => m.RichTextEditor), {
-  ssr: false,
-  loading: () => <div aria-hidden className="admin-skeleton h-52 rounded-[var(--radius-field)]" />,
-});
+type RichTextProps = { id: string; value: string; onChange: (html: string) => void; invalid?: boolean; describedBy?: string };
+
+/**
+ * The rich-text editor, loaded on first use (the admin shell usually preloads it
+ * while idle). Until it arrives a plain placeholder of the same height shows; no
+ * Suspense, so there is no minimum time on screen.
+ */
+function RichTextEditor(props: RichTextProps) {
+  const loaded = useSyncExternalStore(subscribeRichText, richTextModule, richTextOnServer);
+  const [failed, setFailed] = useState(false);
+  useEffect(() => {
+    if (!richTextModule()) preloadRichText().catch(() => setFailed(true));
+  }, []);
+  if (loaded) return <loaded.RichTextEditor {...props} />;
+  return (
+    <div aria-hidden={!failed} className={cn("grid h-52 place-items-center rounded-[var(--radius-field)] text-sm", failed ? "border border-danger text-danger" : "admin-skeleton")}>
+      {failed ? "The text editor could not load. Check your connection and reload the page." : null}
+    </div>
+  );
+}
 
 export type RefOptions = Partial<Record<ReferenceTarget, Option[]>>;
 type Data = Record<string, unknown>;

@@ -26,12 +26,11 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
   await requireUser("admin");
   const { tab } = await searchParams;
   // Read straight from the database (not the public cache) so the form always shows the saved values.
-  const rows = await db().select().from(siteSettings);
+  const [rows, media] = await Promise.all([db().select().from(siteSettings), mediaViews()]);
   const stored = new Map(rows.map((row) => [row.key, row.value]));
   const values = Object.fromEntries(
     (Object.keys(SETTINGS_GROUPS) as SettingsKey[]).map((key) => [key, parseSettingsGroup(key, stored.get(key)) as Record<string, unknown>]),
   ) as Record<SettingsKey, Record<string, unknown>>;
-  const media = await mediaViews();
   const status = integrationStatus();
 
   return (

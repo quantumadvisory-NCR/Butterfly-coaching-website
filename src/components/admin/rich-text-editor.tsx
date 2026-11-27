@@ -70,7 +70,8 @@ export function RichTextEditor({
       }),
     ],
     content: value,
-    immediatelyRender: false,
+    // Only ever mounted in the browser (see rich-text-loader.ts), so it can render straight away.
+    immediatelyRender: true,
     editorProps: {
       attributes: {
         id,

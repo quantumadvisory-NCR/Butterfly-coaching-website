@@ -5,7 +5,7 @@ import { Notice, PageHeader } from "@/components/admin/ui";
 import { UUID_RE } from "@/lib/admin/action-helpers";
 import { mediaViews } from "@/lib/admin/editor-data";
 import { entityByRoute } from "@/lib/admin/entities";
-import { entityRow, loadEntity, referenceOptions } from "@/lib/admin/entity-store";
+import { entityRow, loadEntity, referenceOptions, referenceTargets } from "@/lib/admin/entity-store";
 import { hasRole, requireUser } from "@/lib/auth";
 import { defaultsFor } from "@/lib/blocks/fields";
 
@@ -29,7 +29,8 @@ export default async function EntityEditPage({ params, searchParams }: Props) {
 
   const [existing, refOptions, media, row] = await Promise.all([
     isNew ? null : loadEntity(config.key, id),
-    referenceOptions(),
+    // Only the choice lists this form uses, so the queries fit the connection pool without waiting.
+    referenceOptions(referenceTargets(config.fields)),
     mediaViews(),
     isNew ? null : entityRow(config.key, id),
   ]);

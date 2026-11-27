@@ -107,6 +107,35 @@ Both columns are within the normal run-to-run spread. On a phone the Largest Con
 
 **20 October 2026 (announcement bar, swipe rows on phones and tablets, stacked WhatsApp and help buttons, new-course pages, editable account name):** admin medians at ~2 ms were 107, 116, 222, 108, 115, 415 and 114 ms for the seven steps above, the same as before. Homepage Lighthouse (mobile, three runs): performance 86, 87, 85; Largest Contentful Paint 3.6 to 3.7 s; Total Blocking Time 140 to 150 ms (about 40 ms more, from the small script that drives the swipe rows' dots); Cumulative Layout Shift 0; accessibility, best practices and SEO 100.
 
+## The admin redesign round (27 November 2026)
+
+The redesign (6df7240) brought back a `(panel)/loading.tsx` skeleton and added entrance animations. The owner reported the admin as slow. Measured on a local production build, from the click until the new screen's own heading is on screen (median of five, ms):
+
+| Step | 6df7240 (with skeleton) | After this round |
+|---|---|---|
+| Sidebar: Pages | 413 | 111 |
+| Sidebar: Programmes | 380 | 92 |
+| Edit a programme (from its list) | 182 | 168 |
+| Sidebar: Testimonials | 391 | 99 |
+| Edit a testimonial | 108 | 86 |
+| Sidebar: Media library | 388 | 139 |
+| Sidebar: Enquiries | 377 | 95 |
+| Sidebar: Settings | 388 | 134 |
+| Sidebar: Dashboard | 389 | 134 |
+
+What changed, and why:
+
+- **No loading skeleton.** React keeps a Suspense fallback on screen for at least 300 ms (verified in the React bundled with Next 16.4.5), so every sidebar click took about 390 ms. Removed again; the clicked link's spinner (`AdminLink`) gives instant feedback, and search-palette jumps show a thin progress bar (a transition, not a fallback).
+- **No entrance animations** on screen titles and dashboard cards.
+- **One Supabase Auth call per request instead of two.** `src/proxy.ts` calls `getSession()`, which renews the cookie only in the token's last 90 seconds and otherwise makes no network call. The authorisation check is unchanged: `getSessionUser()` still calls `getUser()` on every page and action.
+- **The bell and the Ctrl+K search are plain requests** (`/api/admin/pulse`, `/api/admin/search`), not server actions, so they never queue behind a save; stale searches are cancelled as you type. The search is a POST so names and emails never appear in addresses or logs.
+- **Rich-text editor** (about 130 KB compressed) loads in idle time after the admin opens, without Suspense, so editors open without waiting for it.
+- **Database:** connections stay open for 120 s instead of 20 s, so a click after a pause does not pay for a new TCP/TLS/sign-in handshake; `fetch_types: false` drops a catalogue query from every new connection (safe while no column is an array; `tests/unit/db.test.ts` checks).
+- **Fewer queries per editor:** each editor reads only the reference lists its fields use, and programme, article, enquiry and settings screens run their queries in parallel instead of one after another.
+- **Dashboard refresh** on returning to the tab waits a moment, only runs when the figures are out of date, and is cancelled by a link press. Media library video tiles fetch their first frame only near the viewport.
+
+Local mode has no Supabase Auth and no pooler, so the Auth and connection savings do not show in the table above; on the live site they come on top of it.
+
 ## What still needs doing
 
 1. Done: deployed on 19 October 2026 (`main` 9a0da50, functions in Mumbai, `bom1`), and the live editors were checked: they open in about 0.3 to 1.2 s.

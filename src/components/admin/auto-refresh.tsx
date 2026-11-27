@@ -19,20 +19,37 @@ export function AutoRefresh({ everyMs = 120_000, className }: { everyMs?: number
   const [updated, setUpdated] = useState<Date | null>(null);
 
   useEffect(() => {
-    const refresh = () =>
+    let last = Date.now();
+    let soon: ReturnType<typeof setTimeout> | undefined;
+    const refresh = () => {
+      last = Date.now();
       startTransition(() => {
         router.refresh();
         setUpdated(new Date());
       });
+    };
+    // A refresh started just as someone clicks a link would make the click wait for it, so
+    // a click cancels a refresh that is about to start.
+    const cancelSoon = (event: PointerEvent) => {
+      if ((event.target as Element | null)?.closest?.("a[href]")) clearTimeout(soon);
+    };
     // The page arrived just now; the clock starts from here.
     const first = setTimeout(() => setUpdated(new Date()), 0);
-    const timer = setInterval(() => document.visibilityState === "visible" && refresh(), everyMs);
-    const onVisible = () => document.visibilityState === "visible" && refresh();
+    const timer = setInterval(() => document.visibilityState === "visible" && Date.now() - last >= everyMs - 1000 && refresh(), everyMs);
+    // Back on the tab: refresh after a moment, and only if the figures are out of date.
+    const onVisible = () => {
+      if (document.visibilityState !== "visible" || Date.now() - last < everyMs) return;
+      clearTimeout(soon);
+      soon = setTimeout(refresh, 1500);
+    };
     document.addEventListener("visibilitychange", onVisible);
+    document.addEventListener("pointerdown", cancelSoon, true);
     return () => {
       clearTimeout(first);
+      clearTimeout(soon);
       clearInterval(timer);
       document.removeEventListener("visibilitychange", onVisible);
+      document.removeEventListener("pointerdown", cancelSoon, true);
     };
   }, [everyMs, router]);
 

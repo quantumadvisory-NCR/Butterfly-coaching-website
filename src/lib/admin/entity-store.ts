@@ -4,7 +4,7 @@
  */
 import "server-only";
 import { type AnyColumn, and, asc, desc, eq, isNull, sql } from "drizzle-orm";
-import type { Option, ReferenceTarget } from "@/lib/blocks/fields";
+import type { Field, Option, ReferenceTarget } from "@/lib/blocks/fields";
 import { db } from "@/lib/db";
 import * as s from "@/lib/db/schema";
 import { isReservedPath, normalisePath, slugify } from "@/lib/utils";
@@ -37,13 +37,35 @@ function uniqueError(error: unknown, map: Record<string, [field: string, message
 
 /* ---- options for reference fields ---------------------------------------- */
 
-export async function referenceOptions(): Promise<Record<ReferenceTarget, Option[]>> {
+/** Every reference target used by a set of fields, including inside list fields. */
+export function referenceTargets(fields: readonly Field[]): ReferenceTarget[] {
+  const found = new Set<ReferenceTarget>();
+  const walk = (list: readonly Field[]) => {
+    for (const field of list) {
+      if (field.type === "reference" || field.type === "references") found.add(field.to);
+      else if (field.type === "list") walk(field.fields);
+    }
+  };
+  walk(fields);
+  return [...found];
+}
+
+/**
+ * The choices for reference fields. Pass the targets a form uses so only those
+ * lists are read (an editor's queries then fit the connection pool without
+ * waiting); with none given, all five are read.
+ */
+export async function referenceOptions(targets?: readonly ReferenceTarget[]): Promise<Record<ReferenceTarget, Option[]>> {
+  const want = (target: ReferenceTarget) => !targets || targets.includes(target);
+  const none = Promise.resolve([] as { id: string; name: string }[]);
   const [programmeRows, facultyRows, categoryRows, tagRows, groupRows] = await Promise.all([
-    db().select({ id: s.programmes.id, name: s.programmes.name }).from(s.programmes).orderBy(asc(s.programmes.position)),
-    db().select({ id: s.faculty.id, name: s.faculty.name }).from(s.faculty).orderBy(asc(s.faculty.position)),
-    db().select({ id: s.categories.id, name: s.categories.name }).from(s.categories).orderBy(asc(s.categories.name)),
-    db().select({ id: s.tags.id, name: s.tags.name }).from(s.tags).orderBy(asc(s.tags.name)),
-    db().selectDistinct({ group: s.faqs.groupKey }).from(s.faqs).where(isNull(s.faqs.programmeId)).orderBy(asc(s.faqs.groupKey)),
+    want("programme") ? db().select({ id: s.programmes.id, name: s.programmes.name }).from(s.programmes).orderBy(asc(s.programmes.position)) : none,
+    want("faculty") ? db().select({ id: s.faculty.id, name: s.faculty.name }).from(s.faculty).orderBy(asc(s.faculty.position)) : none,
+    want("category") ? db().select({ id: s.categories.id, name: s.categories.name }).from(s.categories).orderBy(asc(s.categories.name)) : none,
+    want("tag") ? db().select({ id: s.tags.id, name: s.tags.name }).from(s.tags).orderBy(asc(s.tags.name)) : none,
+    want("faqGroup")
+      ? db().selectDistinct({ group: s.faqs.groupKey }).from(s.faqs).where(isNull(s.faqs.programmeId)).orderBy(asc(s.faqs.groupKey))
+      : Promise.resolve([] as { group: string }[]),
   ]);
   const options = (rows: { id: string; name: string }[]) => rows.map((r) => ({ value: r.id, label: r.name }));
   return {
@@ -181,14 +203,15 @@ export async function loadEntity<K extends EntityKey>(key: K, id: string): Promi
 async function loadAny(key: EntityKey, id: string): Promise<EntityData[EntityKey] | null> {
   switch (key) {
     case "programmes": {
-      const [r] = await db().select().from(s.programmes).where(eq(s.programmes.id, id)).limit(1);
-      if (!r) return null;
-      const [modules, cohortRows, links, faqRows] = await Promise.all([
+      // Its modules, cohorts, faculty and FAQs need only the id, so all five load at once.
+      const [[r], modules, cohortRows, links, faqRows] = await Promise.all([
+        db().select().from(s.programmes).where(eq(s.programmes.id, id)).limit(1),
         db().select().from(s.programmeModules).where(eq(s.programmeModules.programmeId, id)).orderBy(asc(s.programmeModules.position)),
         db().select().from(s.cohorts).where(eq(s.cohorts.programmeId, id)).orderBy(asc(s.cohorts.startDate)),
         db().select().from(s.programmeFaculty).where(eq(s.programmeFaculty.programmeId, id)).orderBy(asc(s.programmeFaculty.position)),
         db().select().from(s.faqs).where(eq(s.faqs.programmeId, id)).orderBy(asc(s.faqs.position)),
       ]);
+      if (!r) return null;
       return {
         name: r.name,
         slug: r.slug,
@@ -276,12 +299,13 @@ async function loadAny(key: EntityKey, id: string): Promise<EntityData[EntityKey
       return { question: r.question, answerHtml: r.answerHtml, groupKey: r.groupKey, position: r.position, status: r.status } satisfies EntityData["faqs"];
     }
     case "posts": {
-      const [r] = await db().select().from(s.posts).where(eq(s.posts.id, id)).limit(1);
-      if (!r) return null;
-      const [cats, tagRows] = await Promise.all([
+      // The links need only the id, so they load alongside the article instead of after it.
+      const [[r], cats, tagRows] = await Promise.all([
+        db().select().from(s.posts).where(eq(s.posts.id, id)).limit(1),
         db().select().from(s.postCategories).where(eq(s.postCategories.postId, id)),
         db().select().from(s.postTags).where(eq(s.postTags.postId, id)),
       ]);
+      if (!r) return null;
       return {
         title: r.title,
         slug: r.slug,

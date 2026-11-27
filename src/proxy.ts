@@ -26,7 +26,11 @@ export async function proxy(request: NextRequest) {
       },
     },
   });
-  await supabase.auth.getUser();
+  // Only renews the session cookie when the access token is within its last 90 seconds; otherwise no
+  // network call. The result is deliberately not used or trusted: getUser() in getSessionUser()
+  // (src/lib/auth) checks the token with Supabase on every page and action. getUser() here as well
+  // cost a second Supabase Auth request on every admin click.
+  await supabase.auth.getSession();
   return response;
 }
 

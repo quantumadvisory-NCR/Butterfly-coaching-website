@@ -14,7 +14,7 @@ import {
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Dialog } from "radix-ui";
-import { type DragEvent, useMemo, useRef, useState, useTransition } from "react";
+import { type DragEvent, memo, useMemo, useRef, useState, useTransition } from "react";
 import { type MediaView, deleteMediaAction, listMediaAction, mediaUsageAction, updateMediaAction } from "@/app/admin/actions/operations";
 import { AdminLink as Link } from "@/components/admin/admin-link";
 import type { MediaUsage } from "@/lib/admin/media-store";
@@ -204,34 +204,7 @@ export function MediaLibrary({ initial, canDelete, initialQuery = "" }: { initia
       {visible.length === 0 ? (
         <p className="rounded-3xl border border-dashed border-line bg-surface px-6 py-12 text-center text-muted">Nothing here yet. Upload a file or change the filter.</p>
       ) : (
-        <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5">
-          {visible.map((item) => (
-            <li key={item.id} className={cn(fresh.has(item.id) && "admin-fresh")}>
-              <button
-                type="button"
-                onClick={() => setSelected(item)}
-                className="admin-tile group block w-full overflow-hidden rounded-2xl border border-line bg-surface text-left transition-[border-color,box-shadow,translate] duration-200 hover:-translate-y-0.5 hover:border-navy/30 hover:shadow-card"
-              >
-                <MediaThumb item={item} className="aspect-[4/3] w-full" sizes="(min-width: 80rem) 200px, (min-width: 48rem) 24vw, 46vw" />
-                <span className="block px-3 py-2.5">
-                  <span className="block truncate text-sm font-semibold text-navy">{item.alt || item.filename}</span>
-                  <span className={cn("flex items-center gap-1 text-xs", item.kind === "image" && !item.alt ? "font-semibold text-danger" : "text-muted")}>
-                    {item.kind === "image" && !item.alt ? (
-                      <>
-                        <WarningIcon weight="fill" className="size-3.5" /> Needs alt text
-                      </>
-                    ) : (
-                      <>
-                        {item.kind === "image" ? SOURCES.find((s) => s.value === item.source)?.label.split(" ")[0] : KIND_NOUN[item.kind].replace(/^./, (c) => c.toUpperCase())}
-                        {item.sizeBytes ? ` · ${formatBytes(item.sizeBytes)}` : ""}
-                      </>
-                    )}
-                  </span>
-                </span>
-              </button>
-            </li>
-          ))}
-        </ul>
+        <MediaGrid items={visible} fresh={fresh} onSelect={setSelected} />
       )}
 
       {dragging && (
@@ -259,6 +232,43 @@ export function MediaLibrary({ initial, canDelete, initialQuery = "" }: { initia
     </div>
   );
 }
+
+/**
+ * The tiles, kept apart from the library's other state so a running upload's
+ * progress bar does not redraw every tile on each update.
+ */
+const MediaGrid = memo(function MediaGrid({ items, fresh, onSelect }: { items: MediaView[]; fresh: Set<string>; onSelect: (item: MediaView) => void }) {
+  return (
+    <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5">
+      {items.map((item) => (
+        <li key={item.id} className={cn(fresh.has(item.id) && "admin-fresh")}>
+          <button
+            type="button"
+            onClick={() => onSelect(item)}
+            className="admin-tile group block w-full overflow-hidden rounded-2xl border border-line bg-surface text-left transition-[border-color,box-shadow,translate] duration-200 hover:-translate-y-0.5 hover:border-navy/30 hover:shadow-card"
+          >
+            <MediaThumb item={item} className="aspect-[4/3] w-full" sizes="(min-width: 80rem) 200px, (min-width: 48rem) 24vw, 46vw" />
+            <span className="block px-3 py-2.5">
+              <span className="block truncate text-sm font-semibold text-navy">{item.alt || item.filename}</span>
+              <span className={cn("flex items-center gap-1 text-xs", item.kind === "image" && !item.alt ? "font-semibold text-danger" : "text-muted")}>
+                {item.kind === "image" && !item.alt ? (
+                  <>
+                    <WarningIcon weight="fill" className="size-3.5" /> Needs alt text
+                  </>
+                ) : (
+                  <>
+                    {item.kind === "image" ? SOURCES.find((s) => s.value === item.source)?.label.split(" ")[0] : KIND_NOUN[item.kind].replace(/^./, (c) => c.toUpperCase())}
+                    {item.sizeBytes ? ` · ${formatBytes(item.sizeBytes)}` : ""}
+                  </>
+                )}
+              </span>
+            </span>
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
+});
 
 /* ---- edit dialog -------------------------------------------------------------- */
 

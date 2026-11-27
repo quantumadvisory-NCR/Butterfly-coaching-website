@@ -36,7 +36,13 @@ export function db(): Database {
       "Database is not configured. Set DATABASE_URL (Supabase) or BCA_LOCAL_MODE=1 (local development). See .env.example.",
     );
   }
-  const shared = { prepare: false, idle_timeout: 20, connect_timeout: 10, onnotice: () => {} } as const;
+  // - `idle_timeout: 120`: a connection stays open for two minutes after its last query, so a click
+  //   after a pause in an editor (or the admin's once-a-minute check) reuses it instead of paying
+  //   for a new TCP + TLS + sign-in handshake in the middle of the click (it was 20 seconds).
+  // - `fetch_types: false`: skips the catalogue query postgres.js runs on every new connection to
+  //   learn array types. No column uses a Postgres array (tests/unit/db.test.ts checks this); add
+  //   one and this must go back to the default. Do not use sql.reserve() with this setting.
+  const shared = { prepare: false, idle_timeout: 120, connect_timeout: 10, fetch_types: false, onnotice: () => {} } as const;
   cache.sql = postgres(url, {
     ...shared,
     // Connections to the transaction pooler are cheap; six lets an editor's queries run with little queueing.

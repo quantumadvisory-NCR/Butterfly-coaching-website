@@ -19,8 +19,10 @@ function Pending() {
  * Link for the admin. Every admin screen is personal and uncached, so links do
  * not prefetch: a list of thirty records used to fire thirty background
  * requests, each one checking the sign-in with Supabase and querying the
- * database. Instead the clicked link shows a spinner straight away and the
- * screen's loading skeleton follows, so a click never looks ignored.
+ * database. Instead the clicked link shows a spinner straight away, so a click
+ * never looks ignored. There is deliberately no loading.tsx skeleton: React keeps
+ * a skeleton on screen for at least 300 ms, which made sidebar clicks about
+ * 390 ms instead of about 110 ms (measured October and November 2026).
  */
 export function AdminLink({ children, prefetch = false, ...props }: ComponentProps<typeof Link>) {
   return (

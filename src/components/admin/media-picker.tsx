@@ -3,7 +3,7 @@
 import { FilePdfIcon, FilmStripIcon, ImageIcon, MagnifyingGlassIcon, PlayIcon, UploadSimpleIcon, XIcon } from "@phosphor-icons/react";
 import Image from "next/image";
 import { Dialog } from "radix-ui";
-import { type ReactNode, createContext, useCallback, useContext, useMemo, useRef, useState } from "react";
+import { type ReactNode, createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { type MediaView, listMediaAction } from "@/app/admin/actions/operations";
 import { ACCEPT, KIND_NOUN, type UploadKind, formatBytes } from "@/lib/media-kinds";
 import { cn } from "@/lib/utils";
@@ -40,15 +40,40 @@ export function useMediaLibrary(): Library {
 
 /* ---- previews ---------------------------------------------------------------- */
 
-const CHECKERBOARD = "bg-[repeating-conic-gradient(#f5f5f5_0_25%,#fff_0_50%)] bg-[length:16px_16px]";
+/**
+ * A video's opening frame, fetched only once its tile is about to scroll into
+ * view, so opening a library with many videos does not start a download for each.
+ */
+function VideoFrame({ url }: { url: string }) {
+  const box = useRef<HTMLDivElement>(null);
+  const [near, setNear] = useState(false);
+  useEffect(() => {
+    const element = box.current;
+    if (!element || near) return;
+    const observer = new IntersectionObserver((entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) {
+        setNear(true);
+        observer.disconnect();
+      }
+    }, { rootMargin: "200px" });
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [near]);
+  return (
+    <div ref={box} className="absolute inset-0">
+      {near && <video src={`${url}#t=0.5`} preload="metadata" muted playsInline tabIndex={-1} className="pointer-events-none size-full object-cover" />}
+    </div>
+  );
+}
+
+const CHECKERBOARD ="bg-[repeating-conic-gradient(#f5f5f5_0_25%,#fff_0_50%)] bg-[length:16px_16px]";
 
 /** A preview of any library item: the picture, a video's opening frame, or a PDF badge. */
 export function MediaThumb({ item, className, sizes = "200px" }: { item: MediaView; className?: string; sizes?: string }) {
   if (item.kind === "video") {
     return (
       <div className={cn("relative overflow-hidden bg-[#1b1b1b]", className)}>
-        {/* The first frame, fetched lazily: only the start of the file is requested. */}
-        <video src={`${item.url}#t=0.5`} preload="metadata" muted playsInline tabIndex={-1} className="pointer-events-none absolute inset-0 size-full object-cover" />
+        <VideoFrame url={item.url} />
         <span aria-hidden className="absolute inset-0 grid place-items-center">
           <span className="grid size-10 place-items-center rounded-full bg-white/90 text-navy shadow-lg">
             <PlayIcon weight="fill" className="ml-0.5 size-4" />

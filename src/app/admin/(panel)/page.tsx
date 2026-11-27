@@ -188,16 +188,21 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
         </Notice>
       )}
 
-      {/* Welcome: what is waiting, the live figures, and a butterfly passing through. */}
+      {/* Welcome: what is waiting, the live figures, and the monarch with a second butterfly
+          flying a figure of eight beside it (styles in src/app/admin/admin.css). */}
       <section
         aria-labelledby="dashboard-title"
-        className="admin-rise on-dark relative isolate overflow-hidden rounded-[1.75rem] bg-[radial-gradient(40rem_20rem_at_110%_-20%,rgb(245_186_0/0.22),transparent_60%),linear-gradient(135deg,#262626,#161616)] px-5 py-6 text-white sm:px-8 sm:py-8"
+        className="admin-welcome on-dark relative isolate overflow-hidden rounded-[1.75rem] bg-[radial-gradient(40rem_20rem_at_110%_-20%,rgb(245_186_0/0.22),transparent_60%),linear-gradient(135deg,#262626,#161616)] px-5 py-6 text-white sm:px-8 sm:py-8"
       >
         <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-          <Flyer path="hero" className="opacity-90" />
+          <span className="admin-welcome__monarch" />
+          <div className="admin-welcome__sky">
+            <Flyer path="dance" />
+          </div>
         </div>
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-          <div className="min-w-0">
+          {/* Right padding below desktop keeps long names and dates clear of the monarch in the corner. */}
+          <div className="min-w-0 max-sm:pr-14 sm:max-lg:pr-24">
             <p className="text-sm font-semibold text-white/65">
               {greeting} · {date}
             </p>
@@ -221,7 +226,8 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
               )}
             </div>
           </div>
-          <div className="shrink-0">
+          {/* On desktop the figures sit below the monarch (top padding), whatever the text beside them. */}
+          <div className="shrink-0 lg:pt-24">
             <AutoRefresh className="mb-2 text-white/70 lg:justify-end" />
             <dl className="grid grid-cols-3 gap-2 text-center">
               {[
@@ -240,7 +246,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
       </section>
 
       {/* Enquiries over time, the mix, and the library's health. */}
-      <div className="admin-stagger mt-6 grid gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+      <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
         <Card
           title="Enquiries"
           description="Every form submitted on the website, per day."
@@ -282,7 +288,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
       </div>
 
       <h2 className="sr-only">At a glance</h2>
-      <ul className="admin-stagger mt-6 grid grid-cols-2 gap-3 md:gap-4 lg:grid-cols-3">
+      <ul className="mt-6 grid grid-cols-2 gap-3 md:gap-4 lg:grid-cols-3">
         <Metric
           icon={TrayIcon}
           value={counts.new_enquiries}

@@ -1,10 +1,9 @@
 "use client";
 
 import { ArrowRightIcon, ArrowSquareOutIcon, MagnifyingGlassIcon, SpinnerGapIcon } from "@phosphor-icons/react";
-import { useRouter } from "next/navigation";
 import { Dialog, VisuallyHidden } from "radix-ui";
 import { type Dispatch, type SetStateAction, useEffect, useId, useMemo, useRef, useState } from "react";
-import { type SearchHit, adminSearchAction } from "@/app/admin/actions/search";
+import type { SearchHit } from "@/lib/admin/search";
 import type { Role } from "@/lib/db/schema";
 import { cn } from "@/lib/utils";
 import { CREATE, NAV, type NavItem, allowed } from "./nav";
@@ -19,8 +18,18 @@ const fits = (query: string, text: string) => words(query).every((word) => text.
  * (Ctrl+K or ⌘K). Menu items and "create" actions match instantly; pages,
  * programmes, people, enquiries and files are searched on the server as you type.
  */
-export function CommandPalette({ role, open, setOpen }: { role: Role; open: boolean; setOpen: Dispatch<SetStateAction<boolean>> }) {
-  const router = useRouter();
+export function CommandPalette({
+  role,
+  open,
+  setOpen,
+  navigate,
+}: {
+  role: Role;
+  open: boolean;
+  setOpen: Dispatch<SetStateAction<boolean>>;
+  /** Opens an admin address; the shell shows a progress bar until the screen arrives. */
+  navigate: (href: string) => void;
+}) {
   const listId = useId();
   const [query, setQuery] = useState("");
   const [answer, setAnswer] = useState<{ query: string; hits: SearchHit[] }>({ query: "", hits: [] });
@@ -40,17 +49,30 @@ export function CommandPalette({ role, open, setOpen }: { role: Role; open: bool
     return () => window.removeEventListener("keydown", onKey);
   }, [setOpen]);
 
-  // Server search, debounced; an older answer never replaces a newer one.
+  // Server search, debounced. Each new keystroke cancels the request before it, so an older
+  // answer never replaces a newer one and the server never works on a search nobody wants.
   useEffect(() => {
     if (q.length < 2) return;
-    let current = true;
+    const controller = new AbortController();
     const timer = setTimeout(async () => {
-      const result = await adminSearchAction(q);
-      if (current) setAnswer({ query: q, hits: result.ok ? result.hits : [] });
-    }, 180);
+      try {
+        // POST, so what was typed (often a person's name or email) never appears in an address or a request log.
+        const response = await fetch("/api/admin/search/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ q }),
+          signal: controller.signal,
+          cache: "no-store",
+        });
+        const result = (await response.json()) as { ok: boolean; hits?: SearchHit[] };
+        setAnswer({ query: q, hits: result.ok && result.hits ? result.hits : [] });
+      } catch {
+        if (!controller.signal.aborted) setAnswer({ query: q, hits: [] });
+      }
+    }, 160);
     return () => {
-      current = false;
       clearTimeout(timer);
+      controller.abort();
     };
   }, [q]);
 
@@ -88,7 +110,7 @@ export function CommandPalette({ role, open, setOpen }: { role: Role; open: bool
     setOpen(false);
     setQuery("");
     if (option.external) window.open(option.href, "_blank", "noopener,noreferrer");
-    else router.push(option.href);
+    else navigate(option.href);
   };
 
   let lastSection = "";

@@ -33,6 +33,19 @@ describe.skipIf(!hasDatabase)("database", () => {
     expect(results.map((rows) => Number([...rows][0]!.n))).toEqual(Array.from({ length: 24 }, (_, i) => i));
   });
 
+  it("skips the per-connection type lookup, which is safe only while no column is a Postgres array", async () => {
+    db();
+    const pools = (globalThis as unknown as { __bcaDb?: { sql?: { options: Record<string, unknown> }; txSql?: { options: Record<string, unknown> } } }).__bcaDb;
+    expect(pools?.sql?.options.fetch_types).toBe(false);
+    expect(pools?.txSql?.options.fetch_types).toBe(false);
+    // With fetch_types off, postgres.js would return array columns as unparsed text. If this fails,
+    // remove fetch_types: false from src/lib/db/index.ts rather than adding the column.
+    const arrays = await db().execute<{ table_name: string; column_name: string }>(
+      sql`select table_name, column_name from information_schema.columns where table_schema = 'public' and data_type = 'ARRAY'`,
+    );
+    expect([...arrays]).toEqual([]);
+  });
+
   it("still runs transactions, on their own pool, alongside concurrent queries", async () => {
     // With pipelining switched off on the main pool, postgres.js refuses transactions there (UNSAFE_TRANSACTION),
     // so they must go to the separate transaction pool. Read-only: nothing is written.

@@ -1,58 +1,89 @@
 "use client";
 
 import { ArrowSquareOutIcon, BellSimpleIcon, ChatsCircleIcon, ListIcon, MagnifyingGlassIcon, SignOutIcon, XIcon } from "@phosphor-icons/react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Dialog, VisuallyHidden } from "radix-ui";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { logoutAction } from "@/app/admin/actions/auth";
-import { adminPulseAction } from "@/app/admin/actions/search";
 import { AdminLink as Link } from "@/components/admin/admin-link";
 import { Butterfly } from "@/components/ui/effects";
 import type { Role } from "@/lib/db/schema";
 import { cn } from "@/lib/utils";
 import { CommandPalette } from "./command-palette";
 import { NAV, activeItem, allowed } from "./nav";
+import { preloadRichTextWhenIdle } from "./rich-text-loader";
 import { ToastProvider, useToast } from "./toast";
 
 const PULSE_MS = 60_000;
 
 /**
  * The number of new enquiries, kept current while the admin is open: checked
- * every minute while the tab is visible, and straight away on returning to it.
- * A rise announces itself with a toast.
+ * every minute while the tab is visible, and on returning to the tab if the last
+ * check is more than half a minute old. A rise announces itself with a toast.
+ * It is a plain GET request (/api/admin/pulse), never a server action, so it
+ * never queues behind a save or holds up a click.
  */
 function useNewEnquiries(initial: number) {
   const [count, setCount] = useState(initial);
   const [checkedAt, setCheckedAt] = useState<Date | null>(null);
-  const last = useRef(initial);
+  // A refreshed layout (the dashboard refreshes itself; saves refresh the screen) brings a
+  // newer count with it: the badge follows at once.
+  const [given, setGiven] = useState(initial);
+  if (given !== initial) {
+    setGiven(initial);
+    setCount(initial);
+  }
+  // The last count announced. Whichever source sees a rise first (the minute check or a
+  // refreshed layout) announces it, once; a drop (enquiries marked read) just lowers it.
+  const latest = useRef(initial);
   const toast = useToast();
+  useEffect(() => {
+    if (initial > latest.current) {
+      const more = initial - latest.current;
+      toast({ tone: "info", title: more === 1 ? "A new enquiry has arrived" : `${more} new enquiries have arrived`, detail: "Open Enquiries to reply." });
+    }
+    latest.current = initial;
+  }, [initial, toast]);
 
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout> | undefined;
+    let soon: ReturnType<typeof setTimeout> | undefined;
     let stopped = false;
+    let lastCheck = Date.now();
     const check = async () => {
       clearTimeout(timer);
       if (document.visibilityState === "visible") {
-        const result = await adminPulseAction().catch(() => null);
-        if (stopped) return;
-        if (result?.ok) {
-          if (result.newEnquiries > last.current) {
-            const more = result.newEnquiries - last.current;
-            toast({ tone: "info", title: more === 1 ? "A new enquiry has arrived" : `${more} new enquiries have arrived`, detail: "Open Enquiries to reply." });
+        lastCheck = Date.now();
+        try {
+          const response = await fetch("/api/admin/pulse/", { cache: "no-store" });
+          const result = (await response.json()) as { ok: boolean; newEnquiries?: number };
+          if (!stopped && result.ok && typeof result.newEnquiries === "number") {
+            const now = result.newEnquiries;
+            if (now > latest.current) {
+              const more = now - latest.current;
+              toast({ tone: "info", title: more === 1 ? "A new enquiry has arrived" : `${more} new enquiries have arrived`, detail: "Open Enquiries to reply." });
+            }
+            latest.current = now;
+            setCount(now);
+            setCheckedAt(new Date());
           }
-          last.current = result.newEnquiries;
-          setCount(result.newEnquiries);
-          setCheckedAt(new Date());
+        } catch {
+          // Offline or signed out: try again at the next tick.
         }
       }
-      timer = setTimeout(check, PULSE_MS);
+      if (!stopped) timer = setTimeout(check, PULSE_MS);
     };
     timer = setTimeout(check, PULSE_MS);
-    const onVisible = () => document.visibilityState === "visible" && void check();
+    const onVisible = () => {
+      if (document.visibilityState !== "visible" || Date.now() - lastCheck < 30_000) return;
+      clearTimeout(soon);
+      soon = setTimeout(check, 1000);
+    };
     document.addEventListener("visibilitychange", onVisible);
     return () => {
       stopped = true;
       clearTimeout(timer);
+      clearTimeout(soon);
       document.removeEventListener("visibilitychange", onVisible);
     };
   }, [toast]);
@@ -140,9 +171,7 @@ function AccountBlock({ name, email, roleLabel, onNavigate }: { name: string; em
 function Brand() {
   return (
     <Link href="/admin/" className="admin-brand group flex items-center gap-3 rounded-xl px-1 py-1">
-      <span className="relative grid size-11 shrink-0 place-items-center rounded-2xl bg-white/[0.06] ring-1 ring-white/10">
-        <Butterfly sizes="40px" className="admin-brand-butterfly size-8" />
-      </span>
+      <Butterfly sizes="56px" className="admin-brand-butterfly shrink-0" />
       <span className="font-sans text-[0.9375rem] font-bold leading-tight text-white">
         Butterfly Coaching
         <span className="block text-xs font-semibold text-white/50">Website studio</span>
@@ -205,10 +234,17 @@ function Shell({
   localMode: boolean;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
+  // Jumps from the search palette run as a transition, so a thin bar can show until the
+  // screen arrives (palette results are not links, so they get no link spinner).
+  const [navigating, startNavigation] = useTransition();
+  const navigate = (href: string) => startNavigation(() => router.push(href));
   const [open, setOpen] = useState(false);
   const [closedFor, setClosedFor] = useState(pathname);
   const [searching, setSearching] = useState(false);
   const live = useNewEnquiries(newEnquiries);
+  // Fetch the rich-text editor in idle time, so opening an editor never waits for it.
+  useEffect(() => preloadRichTextWhenIdle(), []);
   const here = activeItem(pathname);
 
   // The drawer closes after navigating.
@@ -294,8 +330,9 @@ function Shell({
             Local development mode: data lives on this computer only. Connect Supabase before going live.
           </p>
         )}
-        <CommandPalette role={user.role} open={searching} setOpen={setSearching} />
-        <main id="content" className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 md:py-9 lg:px-10">
+        <CommandPalette role={user.role} open={searching} setOpen={setSearching} navigate={navigate} />
+        {navigating && <div role="progressbar" aria-label="Opening the next screen" className="admin-progress fixed inset-x-0 top-0 z-[var(--z-toast)] h-[3px]" />}
+        <main id="content" aria-busy={navigating || undefined} className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 md:py-9 lg:px-10">
           {children}
         </main>
       </div>

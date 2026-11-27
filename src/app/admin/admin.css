@@ -1,8 +1,13 @@
 /*
  * The admin's own look, loaded only on /admin. The calm brand palette
  * (charcoal, warm grays, one yellow accent) with a little more depth: a dark
- * sidebar with a soft warm glow, a frosted top bar, cards that lift on hover.
- * Every movement here is short and stops for anyone who prefers reduced motion.
+ * sidebar with a soft warm glow, a frosted top bar, softer cards, and the
+ * monarch butterfly on every screen.
+ *
+ * Speed: nothing fades or slides in when a screen opens (that made screens look
+ * late). Every butterfly is the one cached picture, drawn as a CSS background or
+ * an <img>; under reduced motion they all stay still and stay visible, except
+ * the small flying one, which is hidden.
  */
 
 .admin-app {
@@ -12,30 +17,110 @@
     #f7f6f2;
 }
 
-/* Dark charcoal with a warm glow at the top and a faint butterfly near the foot. */
+/* Dark charcoal with a warm glow at the top. */
 .admin-sidebar {
   background:
     radial-gradient(22rem 16rem at 0% 0%, rgb(245 186 0 / 0.13), transparent 70%),
     radial-gradient(18rem 18rem at 100% 100%, rgb(255 255 255 / 0.05), transparent 70%),
     linear-gradient(180deg, #232323 0%, #1a1a1a 100%);
 }
-aside.admin-sidebar::after {
-  content: "";
-  position: absolute;
-  right: -2.5rem;
-  bottom: 7.5rem;
-  width: 11rem;
-  height: 8rem;
-  background: url("/images/brand/butterfly-monarch.webp") center / contain no-repeat;
-  opacity: 0.06;
-  transform: rotate(-14deg);
-  pointer-events: none;
-}
 aside.admin-sidebar {
   position: sticky;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(255 255 255 / 0.18) transparent;
+}
+/* A large monarch resting at the foot of the sidebar. Fixed to the window, so it
+   stays at the foot however far the menu scrolls and never widens the sidebar;
+   z-index -1 keeps it above the sidebar's background and under its links. */
+aside.admin-sidebar::after {
+  content: "";
+  position: fixed;
+  z-index: -1;
+  left: 7rem;
+  bottom: 9.5rem;
+  width: 9.5rem;
+  aspect-ratio: 320 / 226;
+  background: url("/images/brand/butterfly-monarch.webp") center / contain no-repeat;
+  opacity: 0.2;
+  rotate: -14deg;
+  pointer-events: none;
 }
 
-/* Frosted bar above each screen. */
+/* The brand butterfly in the sidebar and the phone header, with a warm glow that
+   redraws its black wing edges against the charcoal. */
+.admin-brand-butterfly {
+  width: 3.5rem;
+  aspect-ratio: 320 / 226;
+}
+.admin-brand-butterfly .fx-wing-img {
+  filter: drop-shadow(0 0 0.5rem rgb(245 186 0 / 0.45));
+}
+
+/* A monarch before the title of every admin screen (PageHeader). */
+.admin-page-title::before {
+  content: "";
+  display: inline-block;
+  width: 1.15em;
+  aspect-ratio: 320 / 226;
+  margin-right: 0.35em;
+  vertical-align: -0.1em;
+  background: url("/images/brand/butterfly-monarch.webp") center / contain no-repeat;
+  rotate: -10deg;
+  filter: drop-shadow(0 3px 4px rgb(90 50 0 / 0.18));
+}
+
+/* Dashboard welcome panel: a large monarch at rest in the top corner and, on
+   desktop, a smaller one flying a figure of eight beside it. */
+.admin-welcome__monarch {
+  position: absolute;
+  top: 0.875rem;
+  right: 0.875rem;
+  width: 3.5rem;
+  aspect-ratio: 320 / 226;
+  background: url("/images/brand/butterfly-monarch.webp") center / contain no-repeat;
+  rotate: 12deg;
+  filter: drop-shadow(0 0 14px rgb(245 186 0 / 0.3)) drop-shadow(0 8px 12px rgb(0 0 0 / 0.45));
+}
+@media (width >= 40rem) {
+  .admin-welcome__monarch {
+    top: 1.25rem;
+    right: 1.75rem;
+    width: 5rem;
+  }
+}
+/* Desktop: the figures column has top padding (page.tsx), so the monarch above it
+   stays clear of the "Live · updated" line. */
+@media (width >= 64rem) {
+  .admin-welcome__monarch {
+    top: 1rem;
+    right: 2.25rem;
+    width: 6rem;
+  }
+}
+.admin-welcome__sky {
+  display: none;
+}
+/* Within the 416 x 120 px box left of the monarch: a calm figure of eight. */
+.fx-flyer-dance {
+  offset-path: path("M 120 60 C 155 18, 226 22, 226 56 C 226 92, 158 100, 120 60 C 86 24, 24 30, 24 66 C 24 98, 90 94, 120 60 Z");
+  --fly: 16s;
+  --fly-delay: 0.6s;
+  --fly-ease: linear;
+}
+.fx-flyer.fx-flyer-dance {
+  width: 36px;
+  height: 26px;
+}
+
+/* The thin bar across the top while a search-palette jump loads the next screen. */
+.admin-progress {
+  background: linear-gradient(90deg, transparent, var(--color-accent) 30%, #ffd75e 50%, var(--color-accent) 70%, transparent);
+  background-size: 50% 100%;
+  background-repeat: no-repeat;
+  background-color: rgb(245 186 0 / 0.25);
+}
+
 .admin-topbar {
   background: rgb(247 246 242 / 0.78);
   backdrop-filter: saturate(1.4) blur(14px);
@@ -48,13 +133,13 @@ aside.admin-sidebar {
     0 8px 24px -18px rgb(30 30 30 / 0.18);
 }
 
-/* Media upload shimmer while the server checks a file. */
+/* Upload progress while the server checks a file. */
 .upload-shimmer {
   background-image: linear-gradient(90deg, var(--color-accent) 0%, #ffe08a 50%, var(--color-accent) 100%);
   background-size: 200% 100%;
 }
 
-/* Loading skeletons. */
+/* Placeholder while the rich-text editor's script arrives. */
 .admin-skeleton {
   background: linear-gradient(90deg, #ecebe6 0%, #f6f5f1 50%, #ecebe6 100%);
   background-size: 200% 100%;
@@ -62,29 +147,7 @@ aside.admin-sidebar {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .admin-rise {
-    animation: admin-rise 0.45s var(--ease-out-soft) both;
-  }
-  .admin-stagger > * {
-    animation: admin-rise 0.5s var(--ease-out-soft) both;
-  }
-  .admin-stagger > :nth-child(2) {
-    animation-delay: 40ms;
-  }
-  .admin-stagger > :nth-child(3) {
-    animation-delay: 80ms;
-  }
-  .admin-stagger > :nth-child(4) {
-    animation-delay: 120ms;
-  }
-  .admin-stagger > :nth-child(5) {
-    animation-delay: 160ms;
-  }
-  .admin-stagger > :nth-child(n + 6) {
-    animation-delay: 200ms;
-  }
-
-  /* The brand butterfly beats its wings a few times on arrival and while hovered. */
+  /* The brand butterfly beats its wings a few times when the admin opens, and while hovered. */
   .admin-brand-butterfly .fx-wing-img {
     animation: fx-flap 0.32s ease-in-out 6 alternate;
   }
@@ -93,45 +156,81 @@ aside.admin-sidebar {
     animation: fx-flap 0.28s ease-in-out infinite alternate;
   }
 
+  /* Each screen's title butterfly beats its wings twice as the screen opens (an even count ends open). */
+  .admin-page-title::before {
+    animation: fx-flap 0.3s ease-in-out 0.2s 4 alternate;
+  }
+
+  /* The resting monarch opens and closes its wings every few seconds. */
+  .admin-welcome__monarch {
+    animation: admin-rest 7s ease-in-out 1.2s infinite;
+  }
+
   .admin-fresh > * {
     animation: admin-fresh 1.6s var(--ease-out-soft) both;
   }
-
   .admin-toast {
-    animation: admin-toast-in 0.35s var(--ease-out-soft) both;
+    animation: admin-toast-in 0.25s var(--ease-out-soft) both;
   }
   .admin-palette {
-    animation: admin-palette-in 0.2s var(--ease-out-soft) both;
+    animation: admin-palette-in 0.16s var(--ease-out-soft) both;
   }
   .admin-dialog[data-state="open"] {
-    animation: fade-in 0.2s ease-out both;
+    animation: fade-in 0.15s ease-out both;
   }
-
   .upload-shimmer,
   .admin-skeleton {
     animation: admin-shimmer 1.3s linear infinite;
   }
-
+  .admin-progress {
+    animation: admin-progress 0.9s ease-in-out infinite;
+  }
   .admin-bell-ring {
     transform-origin: 50% 10%;
     animation: admin-bell 1.2s ease-in-out 2;
   }
-
   .admin-chart-bar {
     transform-origin: bottom;
-    animation: admin-grow 0.7s var(--ease-out-soft) both;
-    animation-delay: calc(var(--i, 0) * 18ms);
+    animation: admin-grow 0.25s var(--ease-out-soft) both;
+    animation-delay: calc(var(--i, 0) * 5ms);
   }
 }
 
-@keyframes admin-rise {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
+/* Wide screens with motion (from 1280 px, where the text leaves it room): the second
+   butterfly flies its figure of eight. No colour
+   cycling here (that repaints every frame); a steady glow instead. */
+@media (prefers-reduced-motion: no-preference) and (width >= 80rem) {
+  .admin-welcome__sky {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 26rem;
+    height: 7.5rem;
   }
-  to {
-    opacity: 1;
-    transform: none;
+  .admin-welcome .fx-flyer {
+    animation: fx-fly var(--fly) var(--fly-delay) var(--fly-ease) infinite;
+    filter: none;
+  }
+  .admin-welcome .fx-flyer .fx-wing-img {
+    filter: drop-shadow(0 0 6px rgb(245 186 0 / 0.55));
+  }
+}
+
+@keyframes admin-rest {
+  0%,
+  78%,
+  100% {
+    transform: scaleX(1);
+  }
+  83% {
+    transform: scaleX(0.45);
+  }
+  88% {
+    transform: scaleX(1);
+  }
+  93% {
+    transform: scaleX(0.6);
   }
 }
 @keyframes admin-fresh {
@@ -194,6 +293,14 @@ aside.admin-sidebar {
   }
   60% {
     transform: rotate(-4deg);
+  }
+}
+@keyframes admin-progress {
+  from {
+    background-position: -50% 0;
+  }
+  to {
+    background-position: 150% 0;
   }
 }
 @keyframes admin-grow {

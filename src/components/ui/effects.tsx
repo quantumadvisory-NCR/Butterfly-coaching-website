@@ -39,11 +39,12 @@ export function Butterfly({
 
 /**
  * A butterfly that flies along a path, wings beating: across the hero ("hero"),
- * across a section ("wave"), or round the "Learning that lasts" loop ("loop").
+ * across a section ("wave"), round the "Learning that lasts" loop ("loop"), or a
+ * figure of eight in the admin dashboard's welcome panel ("dance", admin.css).
  * Place it inside a positioned box that clips overflow. On desktop it also
  * changes colour, from monarch orange to rose and back.
  */
-export function Flyer({ path = "hero", className }: { path?: "hero" | "wave" | "loop"; className?: string }) {
+export function Flyer({ path = "hero", className }: { path?: "hero" | "wave" | "loop" | "dance"; className?: string }) {
   return (
     <span aria-hidden className={cn("fx-flyer fx-flap", `fx-flyer-${path}`, className)}>
       <Butterfly sizes="40px" className="block size-full" />

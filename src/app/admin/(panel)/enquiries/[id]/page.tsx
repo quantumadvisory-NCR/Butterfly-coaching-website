@@ -27,14 +27,17 @@ export default async function EnquiryDetailPage({ params }: { params: Promise<{ 
   const user = await requireUser();
   const { id } = await params;
   if (!UUID_RE.test(id)) notFound();
-  const [enquiry] = await db().select().from(enquiries).where(eq(enquiries.id, id)).limit(1);
+  // The notes need only the id, so they load alongside the enquiry.
+  const [[enquiry], notes] = await Promise.all([
+    db().select().from(enquiries).where(eq(enquiries.id, id)).limit(1),
+    db()
+      .select({ id: enquiryNotes.id, body: enquiryNotes.body, createdAt: enquiryNotes.createdAt, author: profiles.fullName, email: profiles.email })
+      .from(enquiryNotes)
+      .leftJoin(profiles, eq(profiles.id, enquiryNotes.createdBy))
+      .where(eq(enquiryNotes.enquiryId, id))
+      .orderBy(asc(enquiryNotes.createdAt)),
+  ]);
   if (!enquiry) notFound();
-  const notes = await db()
-    .select({ id: enquiryNotes.id, body: enquiryNotes.body, createdAt: enquiryNotes.createdAt, author: profiles.fullName, email: profiles.email })
-    .from(enquiryNotes)
-    .leftJoin(profiles, eq(profiles.id, enquiryNotes.createdBy))
-    .where(eq(enquiryNotes.enquiryId, id))
-    .orderBy(asc(enquiryNotes.createdAt));
 
   const wa = enquiry.phone ? enquiry.phone.replace(/\D/g, "") : "";
   // Known campaign fields first, in a fixed order, with readable labels.
