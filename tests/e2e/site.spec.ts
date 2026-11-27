@@ -317,7 +317,9 @@ test.describe("homepage design (November 2026)", () => {
     await expect(table.getByRole("row", { name: /Format/ })).toContainText("100% online · English");
     await expect(table.getByRole("row", { name: /Tentative duration/ })).toContainText("42 to 46 weeks");
     await expect(page.locator("#programmes")).not.toContainText("instalments");
-    await table.getByRole("link", { name: "Reserve my seat: Level 2: PCC Coach Programme" }).click();
+    // Every level has its brochure link under the button (the guide form until a PDF is uploaded).
+    await expect(table.getByRole("link", { name: /brochure/i })).toHaveCount(3);
+    await table.getByRole("link", { name: "Enroll: Level 2: PCC Coach Programme" }).click();
     await expect(page).toHaveURL(/\/level-2-pcc-coach-program\/#enquire$/);
   });
 

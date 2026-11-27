@@ -248,8 +248,8 @@ describe("homepage redesign content (November 2026 design)", () => {
     // Three photographs slide in the hero's arched frame: the main one and two more authentic BCA photographs.
     expect(block("hero").data.image).toBe("@media:gallery.anup-with-table-group");
     expect(block("hero").data.slides).toEqual([{ image: "@media:gallery.anup-engaging-audience" }, { image: "@media:gallery.bca-community-outdoors" }]);
-    // Programmes and fees: 100% online, and "Reserve my seat" buttons (one wording per action, the brief of 25 November 2026).
-    expect(block("comparison_table").data).toMatchObject({ format: "100% online · English", buttonLabel: "Reserve my seat" });
+    // Programmes and fees: 100% online, and "Enroll" buttons (the owner's wording, 27 November 2026).
+    expect(block("comparison_table").data).toMatchObject({ format: "100% online · English", buttonLabel: "Enroll" });
     // The tentative durations shown under the fee.
     const duration = (slug: string) => PROGRAMMES.find((p) => p.slug === slug) as { duration?: string } | undefined;
     expect(duration("level-1-acc")?.duration).toBe("22 to 26 weeks");

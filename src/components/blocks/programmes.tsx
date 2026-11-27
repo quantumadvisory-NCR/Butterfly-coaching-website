@@ -305,8 +305,9 @@ async function FeesTable({ data, ctx }: BlockProps<"comparison_table">) {
   const headingId = `fees-${data.anchor || "programmes"}`;
   const button = data.buttonLabel.trim();
   const badge = (p: ProgrammeView) => (p.accreditationStatus === "accredited" ? pickMedia(ctx, p.badgeId) : null);
-  // The button, with the programme's brochure under it once one is uploaded (Admin > Programmes > Images and brochure).
-  // A click downloads the PDF straight to the visitor's device.
+  // The button, with "Brochure (PDF)" under it for every level (the owner's request of 27 November 2026). Once a PDF is
+  // uploaded (Admin > Programmes > Images and brochure) a click downloads it straight to the visitor's device; until
+  // then the link leads to the programme guide form, which sends the guide by email, so it is never a dead end.
   const reserve = (p: ProgrammeView) => {
     if (!button) return null;
     const brochure = pickMedia(ctx, p.brochureId);
@@ -316,19 +317,21 @@ async function FeesTable({ data, ctx }: BlockProps<"comparison_table">) {
           {button}
           <Arrow />
         </ButtonLink>
-        {brochure && (
-          <a
-            href={downloadHref(brochure.url, brochureFile(p.slug))}
-            download={brochureFile(p.slug)}
-            data-track="download"
-            data-track-label={`Brochure: ${p.name}`}
-            aria-label={`Download the ${p.credential ?? p.name} brochure (PDF)`}
-            className="inline-flex min-h-10 items-center gap-1.5 text-sm font-medium text-mauve underline-offset-4 hover:text-ink-deep hover:underline"
-          >
-            <DownloadSimpleIcon aria-hidden weight="bold" className="size-4" />
-            Brochure (PDF)
-          </a>
-        )}
+        <a
+          href={brochure ? downloadHref(brochure.url, brochureFile(p.slug)) : "/#programme-guide"}
+          download={brochure ? brochureFile(p.slug) : undefined}
+          data-track={brochure ? "download" : "cta_click"}
+          data-track-label={`Brochure: ${p.name}`}
+          aria-label={
+            brochure
+              ? `Download the ${p.credential ?? p.name} brochure (PDF)`
+              : `${p.credential ?? p.name} brochure: get the programme guide by email until the PDF is ready`
+          }
+          className="inline-flex min-h-10 items-center gap-1.5 text-sm font-medium text-mauve underline-offset-4 hover:text-ink-deep hover:underline"
+        >
+          <DownloadSimpleIcon aria-hidden weight="bold" className="size-4" />
+          Brochure (PDF)
+        </a>
       </div>
     );
   };

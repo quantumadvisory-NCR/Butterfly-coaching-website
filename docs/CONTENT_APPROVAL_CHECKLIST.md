@@ -182,7 +182,7 @@ Add these back only if you can evidence them.
 - [ ] **"Organisations our founder has worked with"** (homepage, under the FAQ): Axis Bank, upGrad, Vi and Amazon logos, taken from the old site. Confirm the wording and that the logos may be shown.
 - [ ] **The founder video** (`public/videos/anup-mittal-who-we-are.mp4`, from the WhatsApp video of 27 November 2026, compressed to 720p). It has no captions yet; a captions file would make it accessible to people who cannot hear it.
 - [ ] **"Recognised by the ICF Foundation"** (About page): the Certificate of Participation for providing 10 scholarships to the 2026 ICF Foundation Scholarship Program, and the two sentences beside it.
-- [ ] **Brochures:** the fees table shows "Brochure (PDF)" under each level once a PDF is uploaded in Admin > Programmes > Images and brochure. None are uploaded yet.
+- [ ] **Brochures:** the fees table shows "Brochure (PDF)" under each level's "Enroll" button. Until a PDF is uploaded in Admin > Programmes > Images and brochure, the link leads to the programme guide form. None are uploaded yet.
 
 ## Sign-off
 

@@ -777,8 +777,8 @@ export const HOME_FEES = {
   heading: "Programmes and fees",
   intro: "Every level runs **live online, in English.**",
   format: "100% online · English",
-  // One wording per action across the page (the owner's brief of 25 November 2026).
-  buttonLabel: "Reserve my seat",
+  // The owner's wording (27 November 2026, as on 22 November): "Enroll", with the brochure link under each.
+  buttonLabel: "Enroll",
   columns: [],
   rows: [],
   footnote: "",
