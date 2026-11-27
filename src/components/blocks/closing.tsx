@@ -5,7 +5,7 @@ import { GuideForm } from "@/components/site/guide-form";
 import { NewsletterForm } from "@/components/site/newsletter-form";
 import { Accordion } from "@/components/ui/accordion";
 import { ButtonLink } from "@/components/ui/button-link";
-import { Butterfly, Flyer, Twinkle } from "@/components/ui/effects";
+import { Butterfly } from "@/components/ui/effects";
 import { Emphasis } from "@/components/ui/emphasis";
 import { MediaImage } from "@/components/ui/media-image";
 import { Section, SectionHeading, sectionBackground } from "@/components/ui/section";
@@ -23,7 +23,7 @@ export async function FaqBlock({ data, ctx }: BlockProps<"faq">) {
   const cta = usableLink(data.cta, ctx.settings);
   const whatsapp = whatsappHref(ctx.settings.contact);
   const helpCard = Boolean(data.helpHeading);
-  // On the lavender band of the homepage design the section takes the design's spacing and display heading.
+  // On the light gray band of the homepage design the section takes the design's spacing and display heading.
   const design = data.background === "lavender";
   return (
     <Section background={data.background} anchor={data.anchor} flush={design} className={cn(design && "py-[var(--design-space)]")}>
@@ -35,14 +35,14 @@ export async function FaqBlock({ data, ctx }: BlockProps<"faq">) {
               {design ? (
                 <div className="reveal">
                   <h2 className={DESIGN_H2}>
-                    <Emphasis text={data.heading} auto />
+                    <Emphasis text={data.heading} />
                   </h2>
                   {data.intro && <p className="mt-4 max-w-md text-[1.0625rem] leading-normal text-mauve">{data.intro}</p>}
                 </div>
               ) : (
                 <>
-                  {/* The design's butterfly above the heading, its wings beating gently. */}
-                  <Butterfly flap="slow" className="pointer-events-none mb-3 w-12" />
+                  {/* The design's butterfly above the heading. */}
+                  <Butterfly className="pointer-events-none mb-3 w-12" />
                   <SectionHeading heading={data.heading} intro={data.intro} />
                 </>
               )}
@@ -113,18 +113,10 @@ export function CtaBlock({ data, ctx }: BlockProps<"cta">) {
   const secondary = usableLink(data.secondaryCta, ctx.settings);
   return (
     <section id={data.anchor || undefined} className="on-dark relative isolate overflow-clip bg-ink-deep text-white max-lg:hidden">
-      {/* The homepage design's dark band: a slow lavender glow and a butterfly crossing it. */}
-      <div
-        aria-hidden
-        className="fx-glow pointer-events-none absolute -bottom-64 -left-40 -z-10 size-[38.75rem] rounded-full bg-[radial-gradient(circle,color-mix(in_srgb,var(--lav)_35%,transparent)_0%,rgb(22_19_29/0)_65%)]"
-      />
-      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-[18%] h-0">
-        <Flyer path="wave" />
-      </div>
       <div className="container-site section-space grid items-center gap-10 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)] lg:gap-16">
         <div className="reveal max-w-2xl">
           <h2 className="text-h1 !text-white">
-            <Emphasis text={data.heading} tone="dark" auto />
+            <Emphasis text={data.heading} tone="dark" />
           </h2>
           {data.body && <p className="mt-4 max-w-xl text-lead text-white/85">{data.body}</p>}
           {(primary || secondary) && (
@@ -142,17 +134,12 @@ export function CtaBlock({ data, ctx }: BlockProps<"cta">) {
             </div>
           )}
         </div>
-        {/* The full BCA butterfly, whole and centred in a quiet emblem: rings and a slow orbit. */}
+        {/* The full BCA butterfly, whole and centred in a quiet emblem of rings. */}
         <div aria-hidden className="relative mx-auto aspect-square w-full max-w-[24rem]">
-          <span className="fx-rays !inset-[14%] opacity-40" />
-          <Twinkle className="absolute right-[6%] top-[8%] size-6 fill-accent" />
-          <Twinkle className="absolute bottom-[12%] left-[4%] size-4 fill-lav" style={{ animationDelay: "1.1s" }} />
           <div className="absolute inset-0 rounded-full border border-white/10" />
-          <div className="orbit-spin absolute inset-[9%] rounded-full border-2 border-dashed border-accent/45">
-            <span className="absolute left-1/2 top-0 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent shadow-[0_0_0_6px_rgb(245_186_0/0.18)]" />
-          </div>
+          <div className="absolute inset-[9%] rounded-full border-2 border-dashed border-accent/45" />
           <div className="absolute inset-[22%] grid place-items-center rounded-full bg-white/[0.06] shadow-[0_0_64px_-12px_rgb(245_186_0/0.55)] ring-1 ring-white/15">
-            <Image src="/images/brand/bca-mark-on-dark.svg" alt="" width={98} height={90} unoptimized className="mark-float h-auto w-[62%]" />
+            <Image src="/images/brand/bca-mark-on-dark.svg" alt="" width={98} height={90} unoptimized className="h-auto w-[62%]" />
           </div>
         </div>
       </div>
@@ -161,22 +148,20 @@ export function CtaBlock({ data, ctx }: BlockProps<"cta">) {
 }
 
 /**
- * "Get the programme guide" from the November 2026 design: a lavender panel
- * with a large butterfly in the corner, the heading on one side and an email
- * form on the other. Requests arrive in Enquiries.
+ * "Get the programme guide" from the November 2026 design: a light gray panel
+ * with the heading on one side and an email form on the other. Requests arrive
+ * in Enquiries. (Taken off the homepage by the owner's brief of 25 November 2026.)
  */
 function GuidePanel({ data }: BlockProps<"newsletter">) {
   return (
     <section id={data.anchor || "guide"} className={cn(sectionBackground(data.background), "py-[var(--design-space)] font-text")}>
       <div className="container-site">
         <div className="reveal relative flex flex-wrap items-center gap-x-12 gap-y-7 overflow-hidden rounded-[2rem] bg-lav-100 p-[clamp(1.75rem,4vw,3.5rem)]">
-          <Butterfly flap="slow" sizes="180px" className="pointer-events-none absolute -right-[1.875rem] -top-[1.625rem] w-[11.25rem] rotate-[18deg] opacity-60" />
           <div className="relative flex min-w-0 flex-[1_1_21.25rem] flex-col gap-2.5">
-            {data.note && <span className="fx-note inline-block -rotate-3 self-start text-[1.625rem]">{data.note}</span>}
-            <h2 className="m-0 font-grotesk text-[clamp(1.75rem,3vw,2.625rem)] font-extrabold leading-[1.1] tracking-[-0.025em] text-ink-deep">
+            <h2 className="m-0 font-grotesk text-[clamp(1.4375rem,2.5vw,2.125rem)] leading-[1.12] text-ink-deep">
               <Emphasis text={data.heading} />
             </h2>
-            {data.body && <p className="m-0 text-base leading-normal text-[#3e3850]">{data.body}</p>}
+            {data.body && <p className="m-0 text-base leading-normal text-mauve">{data.body}</p>}
           </div>
           <div className="relative min-w-0 flex-[1.2_1_25rem]">
             <GuideForm variant="panel" idPrefix={data.anchor || "guide-section"} label="Email" formNote={data.formNote} />

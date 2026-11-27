@@ -45,7 +45,7 @@ export function TimelineBlock({ data, ctx }: BlockProps<"timeline">) {
               )}
               <span
                 className={cn(
-                  "relative z-[1] grid size-12 shrink-0 place-items-center rounded-full font-display text-lg font-bold",
+                  "relative z-[1] grid size-12 shrink-0 place-items-center rounded-full font-sans text-lg font-bold",
                   i === steps.length - 1 ? "bg-accent text-navy" : "bg-navy text-white",
                 )}
               >

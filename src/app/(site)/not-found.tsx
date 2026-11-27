@@ -24,7 +24,7 @@ export default function NotFound() {
         <div className="max-w-xl">
           <p className="eyebrow mb-3">Error 404</p>
           <h1 className="text-h1">
-            <Emphasis text="This page has flown away" auto now />
+            <Emphasis text="This page has flown away" now />
           </h1>
           <p className="mt-4 text-lead">
             The page you were looking for has moved or no longer exists. Here are some good places to pick up the trail.

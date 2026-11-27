@@ -4,10 +4,10 @@ import { HOME, MAP, PLACES, mapPoint } from "./world-map-geometry";
 
 /**
  * The world map across the homepage hero on desktop (22 November 2026, the
- * owner's choice: "B. Defined", full width, moving slowly from side to side):
- * lavender continents with clear coastlines (Natural Earth), and dotted routes
- * curving out from India, in butterfly yellow, to the countries in the community
- * section. Decorative (aria-hidden); the sway is CSS only, no script.
+ * owner's choice: "B. Defined", full width; still and in light grays since the
+ * brief of 25 November 2026): light gray continents with clear coastlines
+ * (Natural Earth), and dotted routes curving out from India, in butterfly yellow,
+ * to the countries in the community section. Decorative (aria-hidden), no script.
  *
  * The continents are public/images/brand/world-map-v2.svg (drawn by
  * scripts/make-world-map.ts); the routes are drawn here on the same 1400 x 640
@@ -48,7 +48,7 @@ export function WorldMap({ className }: { className?: string }) {
               y2={route.end.y}
             >
               <stop offset="0" stopColor="var(--color-accent)" />
-              <stop offset="1" stopColor="#8f7be0" />
+              <stop offset="1" stopColor="var(--color-accent-strong)" />
             </linearGradient>
           ))}
         </defs>

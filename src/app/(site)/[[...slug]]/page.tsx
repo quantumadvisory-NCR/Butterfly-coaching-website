@@ -130,7 +130,7 @@ export default async function CatchAllPage({ params }: Props) {
   const { page } = resolved;
   return (
     <>
-      <BlockRenderer sections={page.sections} ctx={{ ...ctx, breadcrumbs }} home={page.path === "/"} />
+      <BlockRenderer sections={page.sections} ctx={{ ...ctx, breadcrumbs }} />
       {crumbData}
       {page.path === "/" && <JsonLd data={organisationJsonLd(chrome.settings, chrome.logoLight.src)} />}
       {page.path === "/thank-you/" && <TrackEvent name="generate_lead" />}

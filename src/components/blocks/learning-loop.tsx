@@ -151,7 +151,7 @@ export function LearningLoop({ anchor, eyebrow, heading, intro, steps, outcome, 
         <div className="rounded-[var(--radius-panel)] border border-line bg-surface px-5 py-8 shadow-card sm:px-8 md:px-10 md:py-10 lg:px-12">
           {eyebrow && <p className="eyebrow mb-2">{eyebrow}</p>}
           <h2 id={headingId} className="text-h2">
-            <Emphasis text={heading} auto />
+            <Emphasis text={heading} />
           </h2>
           {intro && <p className="mt-3 max-w-2xl text-lead text-ink">{intro}</p>}
 
@@ -214,7 +214,7 @@ export function LearningLoop({ anchor, eyebrow, heading, intro, steps, outcome, 
                     >
                       <span
                         className={cn(
-                          "grid size-[3.25rem] place-items-center rounded-full border font-display text-lg font-bold text-navy transition-[scale,background-color,border-color] duration-300 group-hover:border-accent motion-reduce:transition-none",
+                          "grid size-[3.25rem] place-items-center rounded-full border font-sans text-lg font-bold text-navy transition-[scale,background-color,border-color] duration-300 group-hover:border-accent motion-reduce:transition-none",
                           isActive ? "scale-[1.15] border-accent bg-accent shadow-[0_8px_20px_-8px_rgb(245_186_0/0.8)]" : done ? "border-accent/50 bg-accent-soft" : "border-line bg-surface",
                         )}
                       >
@@ -277,14 +277,14 @@ export function LearningLoop({ anchor, eyebrow, heading, intro, steps, outcome, 
                   <span
                     aria-hidden
                     className={cn(
-                      "z-[1] grid size-10 shrink-0 place-items-center rounded-full border-2 font-display font-bold text-navy transition-colors duration-300",
+                      "z-[1] grid size-10 shrink-0 place-items-center rounded-full border-2 font-sans font-bold text-navy transition-colors duration-300",
                       i <= reached ? "border-accent bg-accent" : "border-accent bg-surface",
                     )}
                   >
                     {i + 1}
                   </span>
                   <div className="pt-1.5">
-                    <h3 className="font-display text-[1.0625rem] font-bold leading-snug text-navy">{s.title}</h3>
+                    <h3 className="font-sans text-[1.0625rem] font-bold leading-snug text-navy">{s.title}</h3>
                     {s.body && <p className="mt-1 text-[0.9375rem] leading-relaxed">{s.body}</p>}
                   </div>
                 </li>
@@ -292,7 +292,7 @@ export function LearningLoop({ anchor, eyebrow, heading, intro, steps, outcome, 
             </ol>
             <div className="mt-6 flex items-center gap-3 rounded-2xl bg-accent-soft px-4 py-3">
               <LoopButterfly open={1} complete className="w-10 shrink-0" />
-              <p className="font-display font-bold text-navy">{outcome}</p>
+              <p className="font-sans font-bold text-navy">{outcome}</p>
             </div>
           </div>
 

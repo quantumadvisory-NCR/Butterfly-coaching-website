@@ -1,4 +1,3 @@
-import { Flyer } from "@/components/ui/effects";
 import { Emphasis } from "@/components/ui/emphasis";
 import { Section } from "@/components/ui/section";
 import { cn } from "@/lib/utils";
@@ -31,7 +30,7 @@ export function CommunityBlock({ data, ctx }: BlockProps<"community">) {
       <div className="container-site flex flex-col gap-9">
         <div className="reveal flex flex-col gap-3">
           <h2 id={headingId} className={cn(DESIGN_H2, "leading-[1.1]")}>
-            <Emphasis text={data.heading} auto />
+            <Emphasis text={data.heading} />
           </h2>
           {data.intro && (
             <p className="m-0 max-w-2xl text-[1.0625rem] text-mauve">
@@ -44,7 +43,6 @@ export function CommunityBlock({ data, ctx }: BlockProps<"community">) {
             <svg aria-hidden viewBox="0 0 1200 90" preserveAspectRatio="none" className="absolute left-0 top-0 h-[5.625rem] w-full overflow-visible">
               <path d="M 0 70 C 220 10, 420 110, 640 40 S 1000 0, 1200 60" style={{ fill: "none", stroke: "var(--color-lav-200)", strokeWidth: 2, strokeDasharray: "6 8" }} />
             </svg>
-            <Flyer path="wave" />
             <ul aria-label="Countries our learners join from" className="m-0 flex list-none flex-wrap gap-2.5 p-0">
               {places.map((place, i) => (
                 <li

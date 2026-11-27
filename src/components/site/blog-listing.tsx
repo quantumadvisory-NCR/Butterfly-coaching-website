@@ -77,7 +77,7 @@ export async function BlogListing({ heading, intro, basePath, filter, query = ""
           <div className="mt-6 flex flex-col gap-7 md:mt-8 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-2xl">
               <h1 className="text-h1">
-                <Emphasis text={heading} auto now />
+                <Emphasis text={heading} now />
               </h1>
               {intro && <p className="mt-4 text-lead">{intro}</p>}
             </div>

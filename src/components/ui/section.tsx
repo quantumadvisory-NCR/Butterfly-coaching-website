@@ -73,7 +73,7 @@ export function SectionHeading({
     <div className={cn("max-w-3xl", align === "center" && "mx-auto text-center", className)}>
       {eyebrow && <p className="eyebrow mb-3">{eyebrow}</p>}
       <Tag id={id} className={Tag === "h1" ? "text-h1" : "text-h2"}>
-        <Emphasis text={heading} tone={tone} auto />
+        <Emphasis text={heading} tone={tone} />
       </Tag>
       {intro && (
         <p className={cn("mt-4 text-lead text-ink", align === "center" && "mx-auto", "max-w-2xl")}>

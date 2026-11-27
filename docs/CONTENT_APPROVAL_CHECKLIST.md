@@ -40,7 +40,7 @@ Only figures that already appear on the site are published: **4,100+** hours of 
 
 ### 1c. Announcement bar (added October 2026)
 
-The dark strip above the menu reads "Know about our next cohort · Limited seats · Reserve yours" (since 22 November 2026) and is switched on. If its text uses {date}, it stays hidden until a cohort date is entered, so visitors never see a placeholder, and hides itself the day after that date.
+The dark strip above the menu reads "Know about our next cohort · Limited seats · Reserve my seat" (since the owner's brief of 25 November 2026; "Reserve yours" from 22 November) and is switched on. If its text uses {date}, it stays hidden until a cohort date is entered, so visitors never see a placeholder, and hides itself the day after that date.
 
 - [ ] When the next ACC cohort date is confirmed: **Settings > Header and announcement**, enter the **Cohort start date**, tick **Show the announcement bar**, save.
 
@@ -52,7 +52,7 @@ The new homepage design ("Butterfly Home Redesign") states facts that could not 
 - [ ] **Live online, in English, join from anywhere.** The globe badge beside the hero photo, "Every level runs live online, in English." above the fees table, and the community introduction. The programme pages say "English, with Hindi support" and do not mention online delivery.
 - [x] **"instalments available".** The handwritten note under the fees table. No longer shown: removed from the homepage on 22 November 2026.
 - [ ] **Countries learners join from.** India, UAE, Singapore, Indonesia, UK and USA in "A global learning community". List only places learners really join from.
-- [ ] **"takes 2 minutes".** The handwritten note beside "Reserve my seat".
+- [x] **"takes 2 minutes".** The handwritten note beside the hero button. No longer shown: the brief of 25 November 2026 removed every handwritten note.
 - [ ] **Fees, dates and session times.** The fees table shows these only when they are entered in **Programmes** (fee) and the programme's cohorts (dates and schedule); until then it says "Ask us for the current fee". The design file's placeholders (`[DD Month]`, `[____]`, `[X] countries`, a second story "from a learner outside India") were not carried over.
 - [ ] **The butterfly picture.** The monarch that flies across the pages (`public/images/brand/butterfly-monarch.webp`) was supplied by the owner on 1 November 2026 and its white background removed. It looks like a stock illustration: confirm the site has the right to use it.
 - [ ] **The programme guide.** "Get the programme guide" asks only for an email address. Each request arrives in **Enquiries** as a "Programme guide request" (and by email, once notifications are set up); someone needs to reply with the guide. The visitor is told "We'll send you the guide shortly".

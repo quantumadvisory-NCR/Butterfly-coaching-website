@@ -601,9 +601,9 @@ const FOUNDER_FACTS = [
 
 /* The homepage, from the November 2026 design ("Butterfly Home Redesign"). Shared
    with scripts/upgrade-homepage.ts, which moves a live homepage to this layout as a
-   draft. Text uses the design's effects markup (see src/components/ui/emphasis.tsx):
-   ==yellow highlight==, ++lavender highlight++, **bold**, __underline__, ((circle)),
-   [[yellow tag]].
+   draft. Calm since the owner's brief of 25 November 2026: headings in one colour, body
+   text with **bold** words, and the yellow ==highlight== only on "Rooted in India.
+   Recognised worldwide." (see src/components/ui/emphasis.tsx).
 
    Claims in the design that the owner must confirm before publishing (they are
    listed in docs/CONTENT_APPROVAL_CHECKLIST.md): "1 of 4 in India" and "about 46
@@ -619,16 +619,15 @@ const ICF_LOGOS = [
 
 export const HOME_HERO = {
   variant: "home",
-  eyebrow: "ICF-accredited at ++all 3 levels++",
+  eyebrow: "ICF-accredited at all 3 levels",
   heading: "Learning that stays.",
   headingAccent: "Coaching that transforms.",
   subheading: "==Rooted in India. Recognised worldwide.== ICF coach training built on practice, review and founder mentoring.",
-  // The owner's wording (27 November 2026): the hero's main button introduces the academy, with no handwritten note.
-  primaryCta: link("Know more about us", "/about-us/"),
-  ctaNote: "",
+  // The owner's brief of 25 November 2026: the main button leads to the programmes and fees table.
+  primaryCta: link("Find your ICF level", "#programmes"),
   secondaryCta: link("Just browsing? See programmes and fees", "#programmes"),
   guideForm: true,
-  guideLabel: "++Free++ programme guide: fees, dates and session times",
+  guideLabel: "Free programme guide: fees, dates and session times",
   // Authentic BCA photograph: Anup Mittal with learners around a practice table.
   image: m("gallery.anup-with-table-group"),
   imageTall: null,
@@ -646,17 +645,17 @@ export const HOME_ACCREDITATION = {
   layout: "spotlight",
   anchor: "accreditation",
   eyebrow: "A rare distinction",
-  heading: "One of about ((46 academies worldwide)) accredited by ICF at ++all three levels++, and one of [[only 4 in India.]]",
+  // One statement in white (the owner's brief of 25 November 2026); the ICF badges show in the hero and the fees table.
+  heading: "One of about 46 academies worldwide accredited by ICF at all three levels, and one of only 4 in India.",
   intro: "As per ICF's published data.",
-  note: "all three!",
-  logos: ICF_LOGOS,
+  logos: [],
   facts: [],
 };
 
 export const HOME_PATHS = {
   layout: "numbered",
   heading: "Choose your path",
-  intro: "Three ways to work with us, depending on ++where you are headed.++",
+  intro: "Three ways to work with us, depending on where you are headed.",
   items: [
     {
       tag: "For aspiring coaches",
@@ -694,35 +693,33 @@ export const HOME_PATHS = {
 export const HOME_WHY = {
   layout: "bento",
   background: "lavender",
-  heading: "Why learners choose ==BCA==",
-  intro: "",
+  // Copy from the owner's brief of 25 November 2026, word for word.
+  heading: "Why learners choose BCA",
+  intro: "Because readiness matters more than certificates. Every BCA programme is built so you learn coaching by doing it.",
   sequence: ["Learn", "Practise", "Feedback", "Revisit"],
   items: [
     {
-      title: "Learning that sticks",
-      body: "Learn, practise, revisit. ++Knowledge becomes instinct.++",
+      title: "Learning that lasts",
+      body: "You learn a skill in learning labs, practise it in practice labs, get feedback, then come back to it. Each round goes deeper, until good coaching becomes instinct.",
       visual: "loop",
-      note: "repeat, deeper",
       letters: [],
       figure: "",
       figureLabel: "",
       tags: [],
     },
     {
-      title: "The __iKAN__ framework",
-      body: "A clear structure you can use **from your first session.**",
+      title: "The iKAN framework",
+      body: "Our own four-step framework gives every coaching conversation a clear structure, one you can use from your very first session.",
       visual: "letters",
-      note: "our own",
-      letters: ["i: Identify the real need", "K: Explore the known and unknown", "A: Choose an alternate path", "N: Take actio**N**, then repeat"],
+      letters: ["i: Identify the real need", "K: Explore the known and unknown", "A: Choose an alternate path", "N: Take action, then repeat"],
       figure: "",
       figureLabel: "",
       tags: [],
     },
     {
       title: "Mentoring and feedback",
-      body: "Practice labs, ++assessed against ICF competencies.++",
+      body: "You coach in live practice labs and get feedback assessed against the ICF Core Competencies, with mentoring from our founder along the way.",
       visual: "figure",
-      note: "",
       letters: [],
       // Every certification programme includes 10 hours of mentor coaching (see PROGRAMMES).
       figure: "10",
@@ -739,17 +736,17 @@ export const HOME_FEES = {
   background: "lavender",
   anchor: "programmes",
   heading: "Programmes and fees",
-  intro: "Every level runs ++live online, in English.++",
+  intro: "Every level runs **live online, in English.**",
   format: "100% online · English",
-  note: "",
-  buttonLabel: "Enroll",
+  // One wording per action across the page (the owner's brief of 25 November 2026).
+  buttonLabel: "Reserve my seat",
   columns: [],
   rows: [],
   footnote: "",
 };
 
 export const HOME_COMMUNITY = {
-  heading: "A ((global)) learning community",
+  heading: "A global learning community",
   intro: "Live online, so the room can include coaches from around the world.",
   places: ["IN India", "AE UAE", "SG Singapore", "ID Indonesia", "GB UK", "US USA"],
   moreLabel: "+ more",
@@ -780,8 +777,18 @@ export const HOME_CHOICES = {
   heading: "Where are you today?",
   intro: "",
   items: [
-    { tag: "takes 2 minutes", title: "I'm ready", body: "", link: RESERVE, secondaryLink: NO_LINK, accent: true, icon: "cap", image: null },
-    { tag: "", title: "I'm curious", body: "++Free guide++ with fees and dates.", link: link("Get the guide", "#guide"), secondaryLink: NO_LINK, accent: false, icon: "compass", image: null },
+    { tag: "", title: "I'm ready", body: "", link: RESERVE, secondaryLink: NO_LINK, accent: true, icon: "cap", image: null },
+    // Leads to the programme guide form in the hero.
+    {
+      tag: "",
+      title: "I'm curious",
+      body: "**Free guide** with fees and dates.",
+      link: link("Get the programme guide", "#programme-guide"),
+      secondaryLink: NO_LINK,
+      accent: false,
+      icon: "compass",
+      image: null,
+    },
     {
       tag: "",
       title: "I'm still deciding",
@@ -795,16 +802,7 @@ export const HOME_CHOICES = {
   ],
 };
 
-export const HOME_GUIDE = {
-  layout: "guide",
-  anchor: "guide",
-  note: "it's free",
-  heading: "Get the programme ==guide==",
-  body: "Fees, dates and session times for all three levels, sent to your inbox.",
-  formNote: "We only use your email to send the guide.",
-};
-
-/** The homepage's sections, in the design's order. */
+/** The homepage's sections, in the design's order. The programme guide section at the foot was taken out by the owner's brief of 25 November 2026 (the guide is offered in the hero form). */
 export const HOME_SECTIONS: Section[] = [
   { type: "hero", data: HOME_HERO },
   { type: "trust_strip", data: HOME_ACCREDITATION },
@@ -815,7 +813,6 @@ export const HOME_SECTIONS: Section[] = [
   { type: "testimonials", data: HOME_STORIES },
   { type: "faq", data: HOME_FAQ },
   { type: "path_cards", data: HOME_CHOICES },
-  { type: "newsletter", data: HOME_GUIDE },
 ];
 
 const closingCta = (heading = "Ready to find your next step?"): Section => ({

@@ -72,7 +72,7 @@ function Form({ variant, label, idPrefix, formNote, onReset }: Props & { onReset
       <div aria-hidden className="sr-only">
         <input type="text" name="website" tabIndex={-1} autoComplete="off" />
       </div>
-      <label htmlFor={inputId} className="flex items-start gap-2 text-sm font-semibold leading-snug text-[#2a2533]">
+      <label htmlFor={inputId} className="flex items-start gap-2 text-sm font-semibold leading-snug text-[#16131d]">
         {variant === "hero" && (
           <svg aria-hidden viewBox="0 0 24 24" className="mt-px size-[1.125rem] shrink-0 fill-none stroke-lav-deep" style={{ strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }}>
             <path d="M4 4h16v16H4z" />

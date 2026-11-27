@@ -23,12 +23,14 @@
      text (2.8 to 1 on light gray); #8A6800 keeps the hue and passes AA (4.6 to 1). */
   --bca-label: #8a6800;
 
-  /* The November 2026 homepage design adds lavender beside butterfly yellow. One
-     value; every shade below is mixed from it, exactly as in the design file. */
-  --lav: #a895ee;
+  /* The November 2026 design's lavender, now a neutral gray (the owner's brief of 25 November 2026:
+     gray, white and yellow, with yellow the only accent). Every lav-* shade below is mixed from it,
+     so they are light grays too. */
+  --lav: #9a9a97;
 
-  --font-heading: var(--ff-bricolage);
-  --font-body: var(--ff-inter);
+  /* The two typefaces, loaded in src/app/layout.tsx. */
+  --font-heading: var(--ff-playfair);
+  --font-body: var(--ff-jakarta);
 
   /* Layout */
   --gutter: clamp(1rem, 0.25rem + 3.4vw, 2.5rem);
@@ -75,27 +77,28 @@
   --color-accent-soft: color-mix(in srgb, var(--bca-accent) 22%, #fff);
   --color-label: var(--bca-label);
 
-  /* November 2026 design: lavender shades, the deep ink and plum of its dark
-     sections, and its purple-gray text. Used by the homepage, the header and
-     footer, and the effects shared by every page. */
+  /* November 2026 design tokens, made neutral by the owner's brief of 25 November 2026: the lav-* shades
+     are grays (from --lav), the dark sections charcoal, and the text grays. The names are kept so
+     saved page content and the code need no renaming. */
   --color-lav: var(--lav);
   --color-lav-50: color-mix(in srgb, var(--lav) 11%, #fff);
   --color-lav-100: color-mix(in srgb, var(--lav) 24%, #fff);
   --color-lav-200: color-mix(in srgb, var(--lav) 45%, #fff);
-  /* Lavender text on light backgrounds: 6.3 to 1 on white. */
-  --color-lav-deep: color-mix(in srgb, var(--lav) 52%, #1a1030);
-  --color-lav-dim: color-mix(in srgb, var(--lav) 42%, #1c1631);
+  /* Strong text and marks on light backgrounds: the primary dark. */
+  --color-lav-deep: #2b2b2b;
+  --color-lav-dim: #3a3a38;
   --color-ink-deep: #16131d;
-  --color-plum: #1c1631;
-  --color-plum-card: #221d2c;
-  --color-plum-line: #3a3348;
-  /* Text: 6.6 to 1 (mauve) and 8.6 to 1 (mauve-deep) on the page. */
-  --color-mauve: #5d5868;
-  --color-mauve-deep: #4a4556;
-  --color-lilac-line: #e7e3ec;
-  /* Text on the dark sections: 10.1 and 6.1 to 1 on plum. */
-  --color-lilac: #c9c1e4;
-  --color-lilac-soft: #9d93c2;
+  /* Dark sections ("plum" in the design file), now charcoal. */
+  --color-plum: #1e1e1e;
+  --color-plum-card: #262626;
+  --color-plum-line: #3a3a3a;
+  /* Body text gray: 6.4 to 1 on the page. */
+  --color-mauve: #5f5f5f;
+  --color-mauve-deep: #5f5f5f;
+  --color-lilac-line: #e3e3e3;
+  /* Text on the dark sections: 11.6 and 6.9 to 1 on charcoal. */
+  --color-lilac: #c9c9c6;
+  --color-lilac-soft: #a3a3a0;
 
   /* Backgrounds. The page colour sits behind every section. */
   --color-background: var(--bca-background);
@@ -124,24 +127,24 @@
 
   /* Type */
   --font-sans: var(--font-body), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-display: var(--font-heading), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  /* The design's own typefaces, independent of the theme setting. */
-  --font-grotesk: var(--ff-bricolage), var(--ff-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-text: var(--ff-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-note: var(--ff-caveat), "Segoe Print", "Bradley Hand", cursive;
+  --font-display: var(--font-heading), Georgia, "Times New Roman", serif;
+  /* The homepage design's classes: font-grotesk for headings and large numbers (Playfair Display SemiBold),
+     font-text for everything else (Plus Jakarta Sans). */
+  --font-grotesk: var(--ff-playfair), Georgia, "Times New Roman", serif;
+  --font-text: var(--ff-jakarta), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
 
   --text-display: clamp(2.5rem, 1.55rem + 4.2vw, 4.75rem);
   --text-display--line-height: 1.02;
-  --text-display--letter-spacing: -0.035em;
+  --text-display--letter-spacing: -0.005em;
   --text-h1: clamp(2.125rem, 1.5rem + 2.8vw, 3.5rem);
   --text-h1--line-height: 1.06;
-  --text-h1--letter-spacing: -0.03em;
-  --text-h2: clamp(1.75rem, 1.35rem + 1.8vw, 2.75rem);
+  --text-h1--letter-spacing: -0.005em;
+  --text-h2: clamp(1.4375rem, 1.1rem + 1.48vw, 2.25rem);
   --text-h2--line-height: 1.12;
-  --text-h2--letter-spacing: -0.025em;
+  --text-h2--letter-spacing: -0.005em;
   --text-h3: clamp(1.25rem, 1.12rem + 0.55vw, 1.5rem);
   --text-h3--line-height: 1.25;
-  --text-h3--letter-spacing: -0.015em;
+  --text-h3--letter-spacing: -0.005em;
   --text-lead: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
   --text-lead--line-height: 1.55;
 
@@ -183,14 +186,21 @@
     overflow-x: clip;
   }
 
+  /* Headings: Playfair Display SemiBold. Small h4 labels stay in the body typeface. */
   h1,
   h2,
   h3,
   h4 {
     color: var(--color-navy);
     font-family: var(--font-display);
-    font-weight: 700;
+    font-weight: 600;
+    letter-spacing: -0.005em;
     text-wrap: balance;
+  }
+
+  h4 {
+    font-family: var(--font-sans);
+    letter-spacing: normal;
   }
 
   p,
@@ -281,7 +291,7 @@
     padding: 0.75rem 1.75rem;
     border-radius: 999px;
     border: 2px solid transparent;
-    font-family: var(--font-display);
+    font-family: var(--font-sans);
     font-size: 1rem;
     font-weight: 600;
     line-height: 1.2;
@@ -336,10 +346,6 @@
     background: var(--color-ink-deep);
     color: #fff;
   }
-  .btn-lav {
-    background: var(--color-lav-deep);
-    color: #fff;
-  }
 
   .btn-secondary {
     border-color: var(--color-navy);
@@ -382,11 +388,7 @@
       transform: translateX(130%);
     }
     .btn-ink:hover {
-      background: #2e2840;
-      color: #fff;
-    }
-    .btn-lav:hover {
-      background: var(--color-ink-deep);
+      background: var(--color-primary);
       color: #fff;
     }
     .btn-secondary:hover {
@@ -558,7 +560,7 @@
    yellow, the November 2026 design's card hover. Colour stays on the edge. */
 :root {
   --fx-card-edge: linear-gradient(135deg, var(--color-lav-100) 0%, var(--color-lav) 45%, var(--color-lav-deep) 80%, var(--color-accent) 100%);
-  --fx-card-shadow: 0 28px 50px -28px rgb(70 45 160 / 0.45);
+  --fx-card-shadow: 0 28px 50px -28px rgb(43 43 43 / 0.45);
 }
 
 /* "Choose your path" card. On hover and keyboard focus its edge turns
@@ -763,37 +765,6 @@
     animation-delay: 0.21s;
   }
 
-  /* The call-to-action emblem: an orbit that turns very slowly and a butterfly that drifts. */
-  .orbit-spin {
-    animation: orbit-spin 48s linear infinite;
-  }
-  /* The butterfly at the centre of "Your coaching wings" flaps its wings slowly. */
-  .wing-flap {
-    transform-box: view-box;
-    transform-origin: 60px 50px;
-    animation: wing-flap 3.2s ease-in-out infinite;
-  }
-  .mark-float {
-    animation: mark-float 7s ease-in-out infinite;
-  }
-}
-
-@keyframes wing-flap {
-  50% {
-    scale: 0.8 1;
-  }
-}
-
-@keyframes orbit-spin {
-  to {
-    rotate: 360deg;
-  }
-}
-
-@keyframes mark-float {
-  50% {
-    translate: 0 -0.5rem;
-  }
 }
 
 @keyframes reveal-up {

@@ -35,9 +35,10 @@ export function PathCardsBlock(props: BlockProps<"path_cards">) {
 }
 
 /**
- * "Choose your path" from the November 2026 design: white cards with a big
- * outlined number that tilts and fills with yellow on hover, a small label,
- * a button and an optional text link. A coloured card is soft lavender.
+ * "Choose your path" from the November 2026 design: white cards with a small
+ * label, a title, a button and an optional text link. A coloured card is light
+ * gray with a dark button (the owner's brief of 25 November 2026, which also
+ * took out the big outline numbers).
  */
 function NumberedCards({ data, ctx }: BlockProps<"path_cards">) {
   const items = data.items.filter((item) => item.title);
@@ -48,7 +49,7 @@ function NumberedCards({ data, ctx }: BlockProps<"path_cards">) {
       <div className="container-site flex flex-col gap-8">
         <div className="reveal flex flex-wrap items-end justify-between gap-4">
           <h2 id={headingId} className={DESIGN_H2}>
-            <Emphasis text={data.heading} auto />
+            <Emphasis text={data.heading} />
           </h2>
           {data.intro && (
             <p className="m-0 max-w-[23.75rem] text-[1.0625rem] leading-normal text-mauve">
@@ -68,21 +69,12 @@ function NumberedCards({ data, ctx }: BlockProps<"path_cards">) {
                   item.accent ? "border-lav-100 bg-lav-50" : "border-lilac-line bg-white",
                 )}
               >
-                <span
-                  aria-hidden
-                  className={cn(
-                    "fx-bignum absolute right-5 top-1 font-grotesk text-[7rem] font-extrabold leading-none text-transparent max-sm:text-[5.5rem]",
-                    item.accent ? "[-webkit-text-stroke:1.5px_var(--lav)]" : "[-webkit-text-stroke:1.5px_var(--color-lav-200)]",
-                  )}
-                >
-                  {String(i + 1).padStart(2, "0")}
-                </span>
                 {item.tag && (
                   <span className={cn("self-start rounded-lg px-2.5 py-1.5 text-xs font-bold uppercase tracking-[0.1em] text-lav-deep", item.accent ? "bg-white" : "bg-lav-50")}>
                     {item.tag}
                   </span>
                 )}
-                <h3 className="relative mb-0 mt-[2.875rem] font-grotesk text-[2rem] font-bold leading-[1.05] tracking-[-0.025em] text-ink-deep max-sm:mt-8 max-sm:text-[1.75rem]">
+                <h3 className="relative mb-0 mt-3.5 font-grotesk text-[1.625rem] leading-[1.12] text-ink-deep max-sm:text-[1.4375rem]">
                   {item.title}
                 </h3>
                 {item.body && (
@@ -93,7 +85,7 @@ function NumberedCards({ data, ctx }: BlockProps<"path_cards">) {
                 {(link || second) && (
                   <div className="flex flex-wrap items-center gap-[1.125rem]">
                     {link && (
-                      <ButtonLink href={link.href} variant={item.accent ? "lav" : "primary"} trackLabel={`Path: ${item.title}`} className="font-text text-[0.9375rem]">
+                      <ButtonLink href={link.href} variant={item.accent ? "ink" : "primary"} trackLabel={`Path: ${item.title}`} className="font-text text-[0.9375rem]">
                         {link.label}
                       </ButtonLink>
                     )}
@@ -115,8 +107,8 @@ function NumberedCards({ data, ctx }: BlockProps<"path_cards">) {
 
 /**
  * "Where are you today?" from the November 2026 design: a deep ink section with
- * a slow lavender glow, and one card per choice. A coloured card is butterfly
- * yellow with a dark button; its small label becomes a handwritten note.
+ * one card per choice, every button at the foot of its card. A coloured card is
+ * butterfly yellow with a dark button.
  */
 function ChoiceCards({ data, ctx }: BlockProps<"path_cards">) {
   const items = data.items.filter((item) => item.title);
@@ -126,16 +118,12 @@ function ChoiceCards({ data, ctx }: BlockProps<"path_cards">) {
     <section
       id={data.anchor || undefined}
       aria-labelledby={headingId}
-      className="on-dark relative isolate overflow-hidden bg-ink-deep py-[var(--design-space)] font-text text-[#f4f1fd]"
+      className="on-dark bg-ink-deep py-[var(--design-space)] font-text text-[#f2f2f2]"
     >
-      <div
-        aria-hidden
-        className="fx-glow pointer-events-none absolute -bottom-64 -left-40 size-[38.75rem] rounded-full bg-[radial-gradient(circle,color-mix(in_srgb,var(--lav)_35%,transparent)_0%,rgb(22_19_29/0)_65%)]"
-      />
-      <div className="container-site relative flex flex-col gap-8">
+      <div className="container-site flex flex-col gap-8">
         <div className="reveal flex flex-col gap-3">
           <h2 id={headingId} className={cn(DESIGN_H2, "!text-white")}>
-            <Emphasis text={data.heading} tone="dark" auto />
+            <Emphasis text={data.heading} tone="dark" />
           </h2>
           {data.intro && (
             <p className="m-0 max-w-2xl text-[1.0625rem] text-lilac">
@@ -154,15 +142,14 @@ function ChoiceCards({ data, ctx }: BlockProps<"path_cards">) {
                   item.accent ? "border-accent bg-accent text-ink-deep" : "border-plum-line bg-plum-card",
                 )}
               >
-                <h3 className={cn("m-0 font-grotesk text-[1.875rem] font-extrabold leading-tight tracking-[-0.025em]", item.accent ? "!text-ink-deep" : "!text-white")}>{item.title}</h3>
-                {item.tag && <span className={cn("fx-note text-[1.625rem]", item.accent ? "!text-ink-deep" : "!text-lav-200", !item.body && "grow")}>{item.tag}</span>}
+                <h3 className={cn("m-0 font-grotesk text-[1.5rem] leading-tight", item.accent ? "!text-ink-deep" : "!text-white")}>{item.title}</h3>
                 {item.body && (
-                  <p className={cn("m-0 grow text-base", item.accent ? "text-ink-deep" : "text-lilac")}>
+                  <p className={cn("m-0 text-base", item.accent ? "text-ink-deep" : "text-lilac")}>
                     <Emphasis text={item.body} tone={item.accent ? "light" : "dark"} strong />
                   </p>
                 )}
                 {link && (
-                  <ButtonLink href={link.href} variant={item.accent ? "ink" : "secondary"} trackLabel={`Choice: ${item.title}`} className="mt-1 self-start font-text text-[0.9375rem]">
+                  <ButtonLink href={link.href} variant={item.accent ? "ink" : "secondary"} trackLabel={`Choice: ${item.title}`} className="mt-auto self-start font-text text-[0.9375rem]">
                     {link.label}
                     {item.accent && <Arrow />}
                   </ButtonLink>
@@ -233,7 +220,7 @@ function PanelCards({ data, ctx }: BlockProps<"path_cards">) {
         <div className="on-dark relative overflow-hidden rounded-[var(--radius-panel)] bg-navy px-5 py-7 shadow-panel sm:px-8 sm:py-9 lg:px-10 lg:py-10">
           <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between md:gap-8">
             <h2 id={headingId} className="text-h2 !text-white">
-              <Emphasis text={data.heading} tone="dark" auto />
+              <Emphasis text={data.heading} tone="dark" />
             </h2>
             {data.intro && <p className="max-w-md text-[1.0313rem] leading-snug text-white/80 md:text-right">{data.intro}</p>}
           </div>

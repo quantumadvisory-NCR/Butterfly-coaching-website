@@ -46,7 +46,7 @@ function NavAnchor({ node, className, onClick }: { node: NavNode; className?: st
 function DesktopNav({ nav, pathname }: { nav: NavNode[]; pathname: string }) {
   // A lavender line draws in beneath each link on hover, and stays under the current section.
   const itemClass =
-    "fx-nav-link inline-flex h-11 items-center gap-1 rounded-full px-3 font-text text-[0.9375rem] font-medium text-[#2a2533] transition-colors hover:text-ink-deep data-[state=open]:text-ink-deep";
+    "fx-nav-link inline-flex h-11 items-center gap-1 rounded-full px-3 font-text text-[0.9375rem] font-medium text-[#16131d] transition-colors hover:text-ink-deep data-[state=open]:text-ink-deep";
   return (
     <NavigationMenu.Root aria-label="Main" delayDuration={80} className="hidden lg:block">
       <NavigationMenu.List className="flex items-center gap-1 xl:gap-2">
@@ -68,7 +68,7 @@ function DesktopNav({ nav, pathname }: { nav: NavNode[]; pathname: string }) {
                 <CaretDownIcon aria-hidden weight="bold" className="size-3.5 transition-transform duration-200 group-data-[state=open]:rotate-180" />
               </NavigationMenu.Trigger>
               <NavigationMenu.Content className="absolute left-0 top-full z-[var(--z-header)] w-[21rem] pt-2 data-[state=open]:animate-[pop-in_0.18s_var(--ease-out-soft)]">
-                <ul className="grid gap-0.5 rounded-[1.375rem] border border-lilac-line bg-surface p-2 font-text shadow-[0_28px_50px_-28px_rgb(70_45_160/0.45)]">
+                <ul className="grid gap-0.5 rounded-[1.375rem] border border-lilac-line bg-surface p-2 font-text shadow-[0_28px_50px_-28px_rgb(43_43_43/0.45)]">
                   {node.children.map((child) => (
                     <li key={child.id}>
                       <NavigationMenu.Link asChild active={pathname === child.href}>
@@ -123,7 +123,7 @@ function MobileNav({ nav, pathname, cta, tel, phoneDisplay, whatsapp, siteName }
             <Dialog.Title>{siteName} menu</Dialog.Title>
           </VisuallyHidden.Root>
           <div className="flex h-[var(--header-height)] shrink-0 items-center justify-between border-b border-line pl-5 pr-3">
-            <span className="flex items-center gap-2.5 font-grotesk text-lg font-bold text-ink-deep">
+            <span className="flex items-center gap-2.5 font-text text-lg font-bold text-ink-deep">
               <Image src="/images/brand/bca-mark-mid-gray.svg" alt="" width={98} height={90} unoptimized className="h-7 w-auto" />
               Menu
             </span>
@@ -207,7 +207,7 @@ function AnnouncementBar({ announcement }: { announcement: NonNullable<Props["an
   ));
   if (announcement.link && !announcement.link.label) {
     return (
-      <div className="on-dark bg-ink-deep font-text text-[#f4f1fd]">
+      <div className="on-dark bg-ink-deep font-text text-[#f2f2f2]">
         <p className="container-site flex items-center justify-center gap-x-2.5 py-2.5 text-center text-sm leading-snug max-sm:gap-x-2 max-sm:py-2 max-sm:text-[0.8125rem] max-sm:leading-tight">
           <LiveDot />
           <Link
@@ -226,7 +226,7 @@ function AnnouncementBar({ announcement }: { announcement: NonNullable<Props["an
     );
   }
   return (
-    <div className="on-dark bg-ink-deep font-text text-[#f4f1fd]">
+    <div className="on-dark bg-ink-deep font-text text-[#f2f2f2]">
       <p className="container-site flex flex-wrap items-center justify-center gap-x-2.5 gap-y-0.5 py-2.5 text-center text-sm leading-snug max-sm:gap-x-2 max-sm:py-2 max-sm:text-[0.8125rem] max-sm:leading-tight">
         <LiveDot />
         {phrases}

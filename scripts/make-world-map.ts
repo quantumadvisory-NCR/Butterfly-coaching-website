@@ -8,8 +8,8 @@
  * Without a path it downloads https://unpkg.com/world-atlas@2.0.2/land-50m.json
  * (about 0.5 MB) for this run only; nothing is kept. The coastline is decoded
  * from the TopoJSON, clipped to the map's frame, simplified and filled in the
- * owner's chosen style ("B. Defined", 22 November 2026): medium lavender land
- * with a clear lavender coastline. The frame comes from
+ * owner's chosen style ("B. Defined", 22 November 2026): light gray land
+ * with a clear gray coastline (colours from the owner's brief, 25 November 2026). The frame comes from
  * src/components/site/world-map-geometry.ts, so the routes drawn on top by
  * world-map.tsx line up.
  *
@@ -22,8 +22,8 @@ import { MAP } from "../src/components/site/world-map-geometry";
 
 const SOURCE = "https://unpkg.com/world-atlas@2.0.2/land-50m.json";
 const FILE = "public/images/brand/world-map-v2.svg";
-const FILL = "#e2d9fb";
-const EDGE = "#a996ee";
+const FILL = "#ecece9";
+const EDGE = "#d6d5d0";
 const EDGE_WIDTH = 1.5;
 const TOLERANCE = 0.35; // map units: how far simplification may move the coast
 const MIN_AREA = 2; // map units squared: smaller islands are left out

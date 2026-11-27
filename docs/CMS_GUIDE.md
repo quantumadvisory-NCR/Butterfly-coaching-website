@@ -64,13 +64,13 @@ Each section has five small buttons:
 
 | Section | Use it for |
 |---|---|
-| Hero | The opening of a page: heading, a sentence, one or two buttons, an image. **Homepage hero** (November 2026 design): a pill with a pulsing dot, a heading whose second line ends in a lavender word over a hand-drawn yellow stroke, an optional handwritten note beside the button (the live homepage has none since 27 November 2026), the second button as a text link, an optional programme guide form, the photo in a yellow arch with up to three badges under it (all the same size, side by side in a still row) and a dark sticker. Add photographs under **More photographs for a slideshow** and the arch becomes a slideshow that starts with the main image and slides to the next every few seconds (visitors can pause it or pick a photograph; it never moves on its own for anyone who asks their device for reduced motion). On desktop a world map fills the top of the hero from edge to edge, drifting slowly from side to side and fading out towards the bottom, with dotted routes from India to the UAE, Singapore, Indonesia, the UK and the USA (it stays still for anyone who asks their device for reduced motion); phones and tablets keep the turning globe on the photograph's corner instead. **Live online label** (for example "Live online · join from anywhere") shows under that globe on phones and tablets, and beside the photograph on desktop. Every part is optional |
+| Hero | The opening of a page: heading, a sentence, one or two buttons, an image. **Homepage hero** (November 2026 design): a pill with a pulsing dot, a heading in one colour whose last word sits on a yellow underline, the main button ("Find your ICF level", to the programmes and fees table), the second button as a text link, an optional programme guide form, the photo in a yellow arch with up to three badges under it (all the same size, side by side in a still row) and a dark sticker that stays still. The guide form can be linked to as . Add photographs under **More photographs for a slideshow** and the arch becomes a slideshow that starts with the main image and slides to the next every few seconds (visitors can pause it or pick a photograph; it never moves on its own for anyone who asks their device for reduced motion). On desktop a light gray world map fills the top of the hero from edge to edge, still, fading out towards the bottom, with dotted routes from India to the UAE, Singapore, Indonesia, the UK and the USA; phones and tablets keep the turning globe on the photograph's corner instead. **Live online label** (for example "Live online · join from anywhere") shows under that globe on phones and tablets, and beside the photograph on desktop. Every part is optional |
 | Rich text | Paragraphs, headings and lists, such as a policy |
 | Image and text | A picture beside some text, with optional bullet points |
-| Pathway cards | Up to four cards that send visitors to the right place. **Numbered cards** ("Choose your path": a big outlined number, a small label, a button and an optional second link; **Colour this card** makes one lavender), **Dark section of choices** ("Where are you today?": coloured card in yellow, the small label as a handwritten note), **Charcoal panel** or **Image cards** |
-| Feature list | A short list of points. **Numbered points beside a photograph**, or **Picture cards side by side** ("Why learners choose BCA"): each card can show a **Loop** (the Sequence words around a circle, the handwritten note in the middle), **Letter tiles** (one per line, as `K: Explore the known and unknown`) or a **Big figure on a dark card** with small labels. `**Double asterisks**` show letters or words in bold |
+| Pathway cards | Up to four cards that send visitors to the right place. **Numbered cards** ("Choose your path": a small label, a title, a button and an optional second link; **Colour this card** makes one light gray with a dark button), **Dark section of choices** ("Where are you today?": coloured card in yellow; every button sits at the foot of its card), **Charcoal panel** or **Image cards** |
+| Feature list | A short list of points. **Numbered points beside a photograph**, or **Picture cards side by side** ("Why learners choose BCA"): each card can show a **Loop** (the Sequence words around a circle), **Letter tiles** (one per line, as `K: Explore the known and unknown`) or a **Big figure on a dark card** with small labels. `**Double asterisks**` show letters or words in bold |
 | Programme cards | Cards created automatically from your programmes |
-| Comparison table | The ACC, PCC and MCC comparison (automatic), **Programmes and fees** (the homepage design: badges, hours, next start, format, session times, fee and **Tentative duration** from **Programmes** (the duration is each programme's **Duration** field, e.g. "22 to 26 weeks"), a button under each level (e.g. "Enroll") and an optional handwritten note; rows with no information are left out. The section's **Format** text, e.g. "100% online · English", is shown for any programme without a format of its own), or a table you build |
+| Comparison table | The ACC, PCC and MCC comparison (automatic), **Programmes and fees** (the homepage design: badges, hours, next start, format, session times, fee and **Tentative duration** from **Programmes** (the duration is each programme's **Duration** field, e.g. "22 to 26 weeks"), a button under each level (e.g. "Reserve my seat"); rows with no information are left out. The section's **Format** text, e.g. "100% online · English", is shown for any programme without a format of its own), or a table you build |
 | Testimonials | Approved student stories. Featured stories can be **one story told large, with the others to choose from**, or **two stories side by side**. **A moving carousel of story cards** (the homepage since 22 November 2026) works with featured or all approved stories: the cards glide along continuously and visitors can drag them, with arrows and a pause button (the cards wait while someone hovers over them or uses the keyboard there, and stay still for anyone who asks their device for reduced motion until they press play), and long stories are cut to six lines with **Read more stories** leading to the rest |
 | Founder and faculty | Profiles from the Faculty list |
 | FAQ accordion | Questions from one FAQ group |
@@ -79,31 +79,26 @@ Each section has five small buttons:
 | Video | YouTube videos |
 | Call to action | A bold closing band with one or two buttons |
 | Contact form | An enquiry form, with contact details beside it if you wish |
-| Newsletter signup | An email signup form, or **Programme guide request** on a lavender panel: visitors leave an email address and the request arrives in Enquiries |
+| Newsletter signup | An email signup form, or **Programme guide request** on a light gray panel: visitors leave an email address and the request arrives in Enquiries |
 | Resource downloads | Your published downloads |
-| Trust strip | Accreditation badges, logos and key facts, in a white card or as the **dark spotlight** of the homepage design (medals that turn on hover, a butterfly flying between them, a handwritten note over the last one) |
+| Trust strip | Accreditation badges, logos and key facts, in a white card or as the **dark spotlight** of the homepage design (a small label, one statement in white and a source line; it shows no badges) |
 | Statistics strip | Up to four verified figures that count up once as they scroll into view. A figure left empty is hidden, so you can prepare one before it is confirmed |
 | Latest articles | Your most recent blog articles |
 | Global community | Where learners join from, as chips under a dotted path a butterfly flies along. One place per line, optionally with a code first (`IN India`); the first chip is yellow |
 
 Every section adapts to the screen by itself. You do not design separate phone and desktop versions.
 
-### Effects in headings and short texts
+### Emphasis in texts
 
-Headings, introductions and card texts can carry the hand-drawn effects of the November 2026 design. Type them around the words in the admin; visitors see the effect, and screen readers hear only the words.
+Since the owner's brief of 25 November 2026 the site is calm: one heading typeface (Playfair Display) and one body typeface (Plus Jakarta Sans), gray, white and yellow, and no hand-drawn effects or handwritten notes. **Headings always show in one colour**, whatever marks they contain. In card texts and other body text you can still mark words:
 
 | Type | You get |
 |---|---|
-| `==words==` | A yellow highlighter stroke |
-| `++words++` | A lavender highlighter stroke |
-| `__words__` | A thick hand-drawn yellow underline (lavender on dark sections) |
-| `((words))` | A hand-drawn circle around the words |
-| `[[words]]` | A tilted yellow tag |
 | `**words**` | Bold |
+| `==words==` | Bold with a yellow highlighter stroke (keep it for the hero's "Rooted in India. Recognised worldwide.") |
+| `++words++`, `__words__`, `((words))`, `[[words]]` | Bold (older marks, kept so earlier content still reads well) |
 
-A section heading with none of these gets the underline beneath its last word automatically, so every page shares the homepage's signature. The help text under each field says which effects it accepts.
-
-On wide screens the effects draw in as they scroll into view; for visitors who ask their device for less motion, everything is simply shown.
+The highlighter draws in as it scrolls into view; for visitors who ask their device for less motion it is simply shown.
 
 ### Buttons and links
 
@@ -254,9 +249,9 @@ Send an old address to a new one. Use **Permanent** when a page has moved for go
 | Footer | The short description and copyright name |
 | Newsletter | Footer signup on or off, and its wording |
 | Booking and analytics | Booking link; Google Analytics or Tag Manager; the consent banner |
-| Colours and typography | The five brand colours and the typefaces |
+| Colours | The five brand colours (the typefaces are fixed in the code) |
 
-**Announcement bar:** the yellow strip above the menu on every page. The quickest way in is **Dashboard > Edit the announcement bar**, which also tells you whether the bar is showing. Tick **Show the announcement bar**, write the text (for example "Next ACC cohort enrolling now · Limited seats") and set the **Announcement link** (for example "Reserve yours" going to `/level-1-acc-coach-program/`). Leave the link's label empty and the whole announcement becomes the link instead. Since 22 November 2026 the bar reads "Know about our next cohort · Limited seats · Reserve yours →", with the link on "Reserve yours". The preview under the form shows the bar exactly as visitors will see it, or explains why it is hidden.
+**Announcement bar:** the yellow strip above the menu on every page. The quickest way in is **Dashboard > Edit the announcement bar**, which also tells you whether the bar is showing. Tick **Show the announcement bar**, write the text (for example "Next ACC cohort enrolling now · Limited seats") and set the **Announcement link** (for example "Reserve my seat" going to `/level-1-acc-coach-program/`). Leave the link's label empty and the whole announcement becomes the link instead. Since the brief of 25 November 2026 the bar reads "Know about our next cohort · Limited seats · Reserve my seat →", with the link on "Reserve my seat" (one wording per action across the site). The preview under the form shows the bar exactly as visitors will see it, or explains why it is hidden.
 
 To show a date, write `{date}` where it belongs, for example "Next ACC cohort starts {date} · Limited seats", and pick the **Cohort start date**. The bar then stays hidden while there is no date and hides itself after the date has passed, so visitors never see a placeholder.
 

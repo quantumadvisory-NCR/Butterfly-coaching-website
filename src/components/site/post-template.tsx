@@ -43,7 +43,7 @@ export async function PostTemplate({
               </p>
             )}
             <h1 className="mt-3 text-h1">
-              <Emphasis text={post.title} auto now />
+              <Emphasis text={post.title} now />
             </h1>
             <p className="mt-5 text-[0.9375rem] text-muted">
               {post.authorName} <span aria-hidden>·</span> <time dateTime={post.publishedAt ?? undefined}>{formatDate(post.publishedAt)}</time>{" "}
@@ -89,7 +89,7 @@ export async function PostTemplate({
         <section className="section-space border-t border-line bg-page">
           <div className="container-site">
             <h2 className="text-h2">
-              <Emphasis text="Keep reading" auto />
+              <Emphasis text="Keep reading" />
             </h2>
             <ul className="mt-9 grid gap-x-6 gap-y-10 md:grid-cols-3">
               {related.map((p) => (

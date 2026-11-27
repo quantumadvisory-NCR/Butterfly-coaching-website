@@ -25,7 +25,7 @@ export function PreviewFrame({ src, title, editHref, published }: { src: string;
     <div className="flex h-dvh flex-col bg-[#2b2f3a]">
       <header className="on-dark flex flex-wrap items-center justify-between gap-x-4 gap-y-2 bg-navy px-3 py-2 text-white sm:px-5">
         <div className="min-w-0">
-          <p className="truncate font-display font-bold">{title}</p>
+          <p className="truncate font-sans font-bold">{title}</p>
           <p className="text-xs text-white/70">{published ? "This matches the live page." : "Draft preview. Visitors cannot see this until you publish."}</p>
         </div>
         <div role="group" aria-label="Preview size" className="flex rounded-full bg-white/10 p-1">

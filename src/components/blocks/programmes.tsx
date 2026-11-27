@@ -206,7 +206,7 @@ function Hours({ value }: { value: string | number | null }) {
   if (!formatted) return <span className="text-mauve">Ask us</span>;
   return (
     <>
-      <strong className="font-grotesk text-[1.375rem] font-bold text-ink-deep">{formatted}</strong> hrs
+      <strong className="font-grotesk text-[1.375rem] text-ink-deep">{formatted}</strong> hrs
     </>
   );
 }
@@ -326,7 +326,7 @@ async function FeesTable({ data, ctx }: BlockProps<"comparison_table">) {
       <div className="container-site flex flex-col gap-8">
         <div className="reveal flex flex-col gap-3">
           <h2 id={headingId} className={DESIGN_H2}>
-            <Emphasis text={data.heading} auto />
+            <Emphasis text={data.heading} />
           </h2>
           {data.intro && (
             <p className="m-0 text-[1.0625rem] text-mauve">
@@ -336,7 +336,7 @@ async function FeesTable({ data, ctx }: BlockProps<"comparison_table">) {
         </div>
 
         {/* Tablet and desktop */}
-        <div className="reveal hidden overflow-hidden rounded-[1.75rem] border border-lav-100 bg-white shadow-[0_30px_60px_-48px_rgb(70_45_160/0.7)] md:block">
+        <div className="reveal hidden overflow-hidden rounded-[1.75rem] border border-lav-100 bg-white shadow-[0_30px_60px_-48px_rgb(43_43_43/0.5)] md:block">
           <table className="fx-table w-full border-collapse text-left text-[0.9375rem] text-ink-deep">
             <caption className="sr-only">{plainText(data.heading)}</caption>
             <thead>
@@ -350,7 +350,7 @@ async function FeesTable({ data, ctx }: BlockProps<"comparison_table">) {
                         {media && <MediaImage media={media} alt="" sizes="56px" className="!size-14 shrink-0 object-contain" />}
                         <span className="flex flex-col gap-0.5">
                           {p.levelLabel && <span className="text-xs font-bold uppercase tracking-[0.1em] text-lav-deep">{p.levelLabel}</span>}
-                          <span className="font-grotesk text-[1.625rem] font-extrabold leading-none">{p.credential ?? p.name}</span>
+                          <span className="font-grotesk text-[1.625rem] leading-none">{p.credential ?? p.name}</span>
                         </span>
                       </span>
                     </th>
@@ -361,23 +361,21 @@ async function FeesTable({ data, ctx }: BlockProps<"comparison_table">) {
             <tbody>
               {rows.map((row) => (
                 <tr key={row.label}>
-                  <th scope="row" className={cn("border-t border-[#eeeaf3] px-6 py-4 font-medium text-mauve", row.top && "align-top")}>
+                  <th scope="row" className={cn("border-t border-[#ececec] px-6 py-4 font-medium text-mauve", row.top && "align-top")}>
                     {row.label}
                   </th>
                   {row.cells.map((cell, c) => (
-                    <td key={programmes[c]!.id} className={cn("border-t border-[#eeeaf3] px-5 py-4", row.top && "align-top")}>
+                    <td key={programmes[c]!.id} className={cn("border-t border-[#ececec] px-5 py-4", row.top && "align-top")}>
                       {cell}
                     </td>
                   ))}
                 </tr>
               ))}
-              {(button || data.note) && (
+              {button && (
                 <tr>
-                  <td className="border-t border-[#eeeaf3] px-6 pb-[1.625rem] pt-[1.125rem]">
-                    {data.note && <span className="fx-note inline-block -rotate-[4deg] text-[1.375rem]">{data.note}</span>}
-                  </td>
+                  <td className="border-t border-[#ececec] px-6 pb-[1.625rem] pt-[1.125rem]" />
                   {programmes.map((p) => (
-                    <td key={p.id} className="border-t border-[#eeeaf3] px-5 pb-[1.625rem] pt-[1.125rem]">
+                    <td key={p.id} className="border-t border-[#ececec] px-5 pb-[1.625rem] pt-[1.125rem]">
                       {reserve(p)}
                     </td>
                   ))}
@@ -393,11 +391,11 @@ async function FeesTable({ data, ctx }: BlockProps<"comparison_table">) {
             const media = badge(p);
             return (
               <li key={p.id} className="reveal overflow-hidden rounded-[1.75rem] border border-lav-100 bg-white">
-                <h3 className="m-0 flex items-center gap-3 border-b border-[#eeeaf3] px-5 py-4">
+                <h3 className="m-0 flex items-center gap-3 border-b border-[#ececec] px-5 py-4">
                   {media && <MediaImage media={media} alt="" sizes="48px" className="!size-12 shrink-0 object-contain" />}
                   <span className="flex flex-col gap-0.5 font-text">
                     {p.levelLabel && <span className="text-xs font-bold uppercase tracking-[0.1em] text-lav-deep">{p.levelLabel}</span>}
-                    <span className="font-grotesk text-2xl font-extrabold leading-none text-ink-deep">{p.credential ?? p.name}</span>
+                    <span className="font-grotesk text-2xl leading-none text-ink-deep">{p.credential ?? p.name}</span>
                   </span>
                 </h3>
                 <dl className="grid gap-3.5 px-5 py-4">
@@ -408,12 +406,11 @@ async function FeesTable({ data, ctx }: BlockProps<"comparison_table">) {
                     </div>
                   ))}
                 </dl>
-                {button && <div className="border-t border-[#eeeaf3] px-5 py-4">{reserve(p)}</div>}
+                {button && <div className="border-t border-[#ececec] px-5 py-4">{reserve(p)}</div>}
               </li>
             );
           })}
         </ul>
-        {data.note && <p className="fx-note -mt-2 -rotate-2 text-[1.375rem] md:hidden">{data.note}</p>}
         {data.footnote && <p className="m-0 max-w-3xl text-sm text-mauve">{data.footnote}</p>}
       </div>
     </Section>
@@ -454,7 +451,7 @@ export async function ComparisonTableBlock(props: BlockProps<"comparison_table">
               <tr className="bg-navy text-white">
                 <td className="w-[22%] p-5" />
                 {table.columns.map((column) => (
-                  <th key={column} scope="col" className="p-5 font-display text-lg font-semibold">
+                  <th key={column} scope="col" className="p-5 font-sans text-lg font-semibold">
                     {column}
                   </th>
                 ))}
@@ -491,7 +488,7 @@ export async function ComparisonTableBlock(props: BlockProps<"comparison_table">
         <ul className="mt-9 grid gap-4 md:hidden">
           {table.columns.map((column, c) => (
             <li key={column} className="overflow-hidden rounded-card border border-line bg-surface">
-              <h3 className="bg-navy px-5 py-4 font-display text-lg font-semibold text-white">{column}</h3>
+              <h3 className="bg-navy px-5 py-4 font-sans text-lg font-semibold text-white">{column}</h3>
               <dl className="grid gap-4 p-5">
                 {table.rows.map((row) =>
                   row.values[c] ? (

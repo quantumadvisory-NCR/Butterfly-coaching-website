@@ -141,9 +141,12 @@ describe("settings", () => {
   it("uses the documented gray and yellow palette, with the logo's grey-white #FCFCFC page background, by default", () => {
     expect(DEFAULT_THEME).toMatchObject({ primary: "#2b2b2b", navy: "#2b2b2b", accent: "#f5ba00", background: "#fcfcfc", ink: "#5f5f5f" });
   });
-  it("defaults to the homepage design's typefaces and keeps a saved choice", () => {
-    expect(DEFAULT_THEME).toMatchObject({ headingFont: "bricolage", bodyFont: "inter" });
-    expect(parseSettingsGroup("theme", { headingFont: "jakarta", bodyFont: "jakarta" })).toMatchObject({ headingFont: "jakarta", bodyFont: "jakarta" });
+  it("has no typeface choice: the fonts are fixed in the code, and an old saved choice is ignored", () => {
+    expect(DEFAULT_THEME).not.toHaveProperty("headingFont");
+    const theme = parseSettingsGroup("theme", { headingFont: "jakarta", bodyFont: "manrope", accent: "#f5ba00" });
+    expect(theme).not.toHaveProperty("headingFont");
+    expect(theme).not.toHaveProperty("bodyFont");
+    expect(theme.accent).toBe("#f5ba00");
   });
   it("gives a theme saved under the old pale-blue scheme the current page background", () => {
     // Saved before the redesign: it has "sky" and no "background".
@@ -200,7 +203,7 @@ describe("announcement bar", () => {
 
   it("shows the owner's chosen wording by default, with no date needed", () => {
     expect(resolveAnnouncement(DEFAULT_SETTINGS.header, today)).toBe("Know about our next cohort · Limited seats");
-    expect(DEFAULT_SETTINGS.header.announcementLink).toEqual({ label: "Reserve yours", href: "/level-1-acc-coach-program/" });
+    expect(DEFAULT_SETTINGS.header.announcementLink).toEqual({ label: "Reserve my seat", href: "/level-1-acc-coach-program/" });
   });
 
   it("puts the cohort date into the text, written out in full", () => {

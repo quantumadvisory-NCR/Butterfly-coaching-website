@@ -1,16 +1,18 @@
 /* ==========================================================================
-   Effects from the November 2026 homepage design, shared by every page:
-   highlighter strokes, hand-drawn underlines and circles, handwritten notes,
-   flapping and flying butterflies, sparkles, floating badges, shimmering
-   figures, card and button hovers. All of it is decoration: the words read the
-   same without it, and every movement stops for anyone who prefers reduced
-   motion. Components: src/components/ui/effects.tsx and emphasis.tsx.
-   Imported by globals.css.
+   Effects shared by every page. Since the owner's brief of 25 November 2026 the
+   site is calm and still: a gray, white and yellow palette, no playful
+   decorations, no looping movement. What stays is the yellow highlighter on
+   marked body text, the yellow underline drawn under "transforms." in the hero,
+   entrance animations as sections come into view, the pulsing "live" dots, the
+   hero photo slideshow and the student stories carousel, and the card and
+   button hovers. Every movement stops for anyone who prefers reduced motion.
+   Components: src/components/ui/effects.tsx and emphasis.tsx. Imported by
+   globals.css.
    ========================================================================== */
 
 /* ---- emphasis inside text ---------------------------------------------------- */
 
-/* A highlighter stroke behind the words (yellow; lavender; lavender on dark). */
+/* The yellow highlighter stroke behind ==marked== words in body text. */
 .fx-mark {
   background-repeat: no-repeat;
   background-position: 0 88%;
@@ -28,100 +30,6 @@
   margin: 0 -0.04em;
   border-radius: 0.18em;
 }
-.fx-mark-lav {
-  background-image: linear-gradient(104deg, transparent 0%, var(--color-lav-200) 3%, var(--color-lav-200) 96%, transparent 100%);
-}
-.fx-mark-dark {
-  background-image: linear-gradient(
-    104deg,
-    transparent 0%,
-    color-mix(in srgb, var(--lav) 55%, transparent) 3%,
-    color-mix(in srgb, var(--lav) 45%, transparent) 96%,
-    transparent 100%
-  );
-}
-
-/* A thick hand-drawn yellow stroke under a word. */
-.fx-scribble {
-  position: relative;
-  display: inline-block;
-  isolation: isolate;
-}
-/* The drawing's box stays within the word (so a heading at the screen edge never
-   overflows); the stroke paints a little past it, as in the design. */
-.fx-scribble > svg {
-  position: absolute;
-  left: 0;
-  bottom: -0.1em;
-  z-index: -1;
-  width: 100%;
-  height: 0.3em;
-  overflow: visible;
-  pointer-events: none;
-}
-.fx-scribble path {
-  fill: none;
-  stroke: var(--color-accent);
-  stroke-width: 12;
-  stroke-linecap: round;
-  stroke-dasharray: 240;
-  stroke-dashoffset: 0;
-}
-.fx-scribble-lav path {
-  stroke: var(--lav);
-}
-
-/* A hand-drawn loop around a word. Phones keep the colour and drop the loop. */
-.fx-circle {
-  position: relative;
-  display: inline-block;
-  white-space: nowrap;
-}
-.fx-circle > svg {
-  position: absolute;
-  left: 0;
-  top: -16%;
-  width: 100%;
-  height: 132%;
-  overflow: visible;
-  pointer-events: none;
-}
-.fx-circle path {
-  fill: none;
-  stroke: var(--color-accent);
-  stroke-width: 4;
-  stroke-linecap: round;
-  stroke-dasharray: 820;
-  stroke-dashoffset: 0;
-}
-@media (width < 37.5rem) {
-  .fx-circle {
-    white-space: normal;
-  }
-  .fx-circle > svg {
-    display: none;
-  }
-}
-
-/* A tilted yellow tag, like a sticker on the heading. */
-.fx-tag {
-  display: inline-block;
-  white-space: nowrap;
-  padding: 0 0.3em;
-  border-radius: 0.3em;
-  background: var(--color-accent);
-  color: var(--color-ink-deep);
-  rotate: -1.5deg;
-  box-shadow: 0 12px 30px -12px rgb(246 195 28 / 0.8);
-}
-
-/* A handwritten note in the margin. */
-.fx-note {
-  font-family: var(--font-note);
-  font-weight: 700;
-  line-height: 1;
-  color: var(--color-lav-deep);
-}
 
 /* An underlined text link with an arrow that nudges forward on hover. */
 .fx-link {
@@ -134,27 +42,22 @@
   text-decoration: underline;
   text-decoration-thickness: 1.5px;
   text-underline-offset: 5px;
-  transition: color 0.2s;
+  transition: text-decoration-color 0.2s;
 }
 .fx-link:hover {
-  color: #5a45b5;
-}
-.on-dark .fx-link:hover {
-  color: var(--color-accent);
+  text-decoration-color: var(--color-accent);
 }
 
-/* The homepage always uses the design's typefaces, whatever Admin > Settings
-   chooses for the other pages. */
-.design-fonts {
-  --font-heading: var(--ff-bricolage);
-  --font-body: var(--ff-inter);
-  --font-display: var(--ff-bricolage), var(--ff-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-sans: var(--ff-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  font-family: var(--font-sans);
+/* Headings and large numbers in Playfair Display SemiBold, whatever weight or
+   tracking class an element also carries (unlayered, so it wins over utilities). */
+.font-grotesk {
+  font-weight: 600;
+  letter-spacing: -0.005em;
 }
 
-/* The soft lavender band of the homepage design. The first band in a run has
-   rounded top corners; the ones that follow continue it seamlessly. */
+/* The light gray band of the homepage design (lavender until 25 November 2026).
+   The first band in a run has rounded top corners; the ones that follow continue
+   it seamlessly. */
 .section-lav {
   border-radius: clamp(1.75rem, 4vw, 3.5rem) clamp(1.75rem, 4vw, 3.5rem) 0 0;
 }
@@ -162,62 +65,8 @@
   border-radius: 0;
 }
 
-/* ---- butterflies ------------------------------------------------------------- */
-
-/* The monarch's wings beat by squeezing the picture around its body. */
-.fx-wing-img {
-  transform-origin: 50% 50%;
-}
-
-/* A butterfly that flies along a path across its section. The section clips it.
-   Each path sets its flight: --fly (time), --fly-delay and --fly-ease. */
-.fx-flyer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 1;
-  width: 44px;
-  height: 32px;
-  offset-rotate: auto 90deg;
-  pointer-events: none;
-}
-.fx-flyer-hero {
-  offset-path: path("M -60 520 C 120 380, 260 160, 520 260 S 900 520, 1120 230 S 1380 80, 1560 160");
-  --fly: 18s;
-  --fly-delay: 0s;
-  --fly-ease: linear;
-}
-.fx-flyer-wave {
-  offset-path: path("M -40 60 C 200 10, 420 120, 640 50 S 1000 0, 1300 70");
-  --fly: 22s;
-  --fly-delay: 3s;
-  --fly-ease: linear;
-}
-.fx-flyer.fx-flyer-wave {
-  width: 36px;
-  height: 26px;
-}
-.fx-flyer-climb {
-  offset-path: path("M 70 126 C 140 126, 180 98, 250 98 S 360 70, 430 70");
-  --fly: 6s;
-  --fly-delay: 0s;
-  --fly-ease: ease-in-out;
-}
-.fx-flyer.fx-flyer-climb {
-  width: 38px;
-  height: 28px;
-}
-
-/* The colour a flying butterfly shows on desktop: a hue that moves from monarch
-   orange through rose and violet to lavender and back. */
-@property --fly-hue {
-  syntax: "<number>";
-  inherits: false;
-  initial-value: 30;
-}
-
 /* ---- the "Live online" globe badge (components/site/globe-badge.tsx) ------------ */
-/* From the owner's globe-badge.html, 1 November 2026. */
+/* From the owner's globe-badge.html, 1 November 2026. Phones and tablets only. */
 
 /* --globe is the ball's size: smaller on phones, so the badge fits beside the photograph. */
 .bca-globe {
@@ -259,7 +108,7 @@
   bottom: -12px;
   height: 18px;
   border-radius: 50%;
-  background: radial-gradient(ellipse at center, rgb(22 40 90 / 0.32) 0%, rgb(22 40 90 / 0) 70%);
+  background: radial-gradient(ellipse at center, rgb(22 22 22 / 0.28) 0%, rgb(22 22 22 / 0) 70%);
   pointer-events: none;
 }
 .bca-globe__canvas {
@@ -279,15 +128,15 @@
   align-items: center;
   gap: 8px;
   padding: 7px 14px;
-  border: 1px solid #e6e0f3;
+  border: 1px solid #ececec;
   border-radius: 999px;
   background: #fff;
-  color: #2a2533;
+  color: var(--color-ink-deep);
   font-size: 13px;
   font-weight: 600;
   line-height: 1.2;
   white-space: nowrap;
-  box-shadow: 0 12px 24px -18px rgb(70 45 160 / 0.6);
+  box-shadow: 0 12px 24px -18px rgb(43 43 43 / 0.5);
 }
 .bca-globe__live {
   flex: none;
@@ -300,18 +149,6 @@
   .bca-globe__live {
     animation: fx-live 1.6s ease-out infinite;
   }
-  .bca-globe--float .bca-globe__ball {
-    animation: bca-globe-bob 6s ease-in-out infinite;
-  }
-}
-@keyframes bca-globe-bob {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-8px);
-  }
 }
 
 /* Since 22 November 2026 the globe badge shows on phones and tablets only, as
@@ -323,12 +160,12 @@
 }
 
 /* ---- the world map across the hero (components/site/world-map.tsx) ------------- */
-/* 22 November 2026, the owner's choice ("B. Defined", full width, moving side to
-   side). It spans the whole hero under the header, a little wider than the screen
-   so its slow side-to-side sway never shows an edge, and fades out from the middle
-   to the bottom. It is placed so India (0.3855 of the map's height down, see
-   world-map-geometry.ts) sits 6.75rem below the hero's top at every width: in the
-   open band above the photograph, clear of the "1 of 4" sticker. */
+/* 22 November 2026, the owner's choice ("B. Defined", full width); in light grays
+   and still since the brief of 25 November 2026. It spans the whole hero under the
+   header and fades out from the middle to the bottom. It is placed so India
+   (0.3855 of the map's height down, see world-map-geometry.ts) sits 6.75rem below
+   the hero's top at every width: in the open band above the photograph, clear of
+   the "1 of 4" sticker. */
 .bca-worldmap {
   --map-height: calc(112vw * 640 / 1400);
   position: absolute;
@@ -340,19 +177,6 @@
   pointer-events: none;
   -webkit-mask-image: linear-gradient(to bottom, #000 34%, transparent 94%);
   mask-image: linear-gradient(to bottom, #000 34%, transparent 94%);
-}
-@media (prefers-reduced-motion: no-preference) {
-  .bca-worldmap {
-    animation: bca-worldmap-sway 40s ease-in-out infinite alternate;
-  }
-}
-@keyframes bca-worldmap-sway {
-  from {
-    translate: -2.5% 0;
-  }
-  to {
-    translate: 2.5% 0;
-  }
 }
 .bca-worldmap__land,
 .bca-worldmap__routes {
@@ -406,21 +230,7 @@
   }
 }
 
-
-/* ---- decorative pieces --------------------------------------------------------- */
-
-/* Slowly turning sun rays (behind the closing call to action). The accreditation
-   medals had them too until 22 November 2026. */
-.fx-rays {
-  position: absolute;
-  inset: -32px;
-  border-radius: 50%;
-  background: repeating-conic-gradient(color-mix(in srgb, var(--lav) 60%, transparent) 0deg 5deg, transparent 5deg 15deg);
-  -webkit-mask-image: radial-gradient(circle, #000 32%, transparent 70%);
-  mask-image: radial-gradient(circle, #000 32%, transparent 70%);
-  opacity: 0.75;
-  pointer-events: none;
-}
+/* ---- hovers ------------------------------------------------------------------- */
 
 /* A medal turns once on hover. */
 .fx-medal {
@@ -430,25 +240,19 @@
   transition: transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-/* Big figures in butterfly yellow; they shimmer when motion is welcome. */
+/* Big figures ("1 of 4", "10") in butterfly yellow. */
 .fx-shine {
   color: var(--color-accent);
 }
 
-/* Cards lift and take a lavender edge on hover. Uses the translate property,
-   so it never fights the transform of the scroll reveal. */
+/* Cards lift and take a gray edge on hover. Uses the translate property, so it
+   never fights the transform of the scroll reveal. */
 .fx-card {
   transition:
     translate 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
     box-shadow 0.4s,
     background-color 0.4s,
     border-color 0.4s;
-}
-.fx-bignum {
-  transition:
-    color 0.4s,
-    -webkit-text-stroke-color 0.4s,
-    transform 0.5s;
 }
 .fx-tile {
   transition:
@@ -468,13 +272,8 @@
 @media (hover: hover) {
   .fx-card:hover {
     translate: 0 -6px;
-    border-color: var(--lav) !important;
+    border-color: #d6d5d0 !important;
     box-shadow: var(--fx-card-shadow);
-  }
-  .fx-card:hover .fx-bignum {
-    color: rgb(246 195 28 / 0.3);
-    -webkit-text-stroke-color: #e2ad00;
-    transform: translateY(-4px) rotate(-4deg);
   }
   .fx-tile:hover {
     background-color: var(--color-accent) !important;
@@ -497,7 +296,7 @@
   }
 }
 
-/* Menu links: a lavender line draws in beneath them. */
+/* Menu links: a dark line draws in beneath them. */
 .fx-nav-link {
   position: relative;
 }
@@ -509,7 +308,7 @@
   bottom: 0.45rem;
   height: 2px;
   border-radius: 2px;
-  background: var(--lav);
+  background: var(--color-lav-deep);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.3s;
@@ -521,7 +320,7 @@
   transform: scaleX(1);
 }
 
-/* ---- motion ---------------------------------------------------------------- */
+/* ---- motion: entrances only ------------------------------------------------------ */
 
 @media (prefers-reduced-motion: no-preference) {
   .fx-rise {
@@ -531,103 +330,28 @@
     stroke-dasharray: 340;
     animation: fx-draw 1.2s 1s cubic-bezier(0.6, 0, 0.2, 1) both;
   }
-  .fx-scribble path {
-    animation: fx-draw-scribble 1s 0.5s cubic-bezier(0.6, 0, 0.2, 1) both;
-  }
-  .fx-circle path {
-    animation: fx-draw-circle 1.5s 0.4s cubic-bezier(0.6, 0, 0.2, 1) both;
-  }
   .fx-mark {
     animation: fx-mark 1.1s 0.5s cubic-bezier(0.6, 0, 0.2, 1) both;
   }
-  .fx-flap .fx-wing-img {
-    animation: fx-flap 0.3s ease-in-out infinite alternate;
-  }
-  .fx-flap-slow .fx-wing-img {
-    animation: fx-flap 0.55s ease-in-out infinite alternate;
-  }
-  .fx-bob {
-    animation: fx-bob 5.5s ease-in-out infinite;
-  }
-  .fx-flyer {
-    animation: fx-fly var(--fly) var(--fly-delay) var(--fly-ease) infinite;
-  }
   .fx-live {
     animation: fx-live 1.6s ease-out infinite;
-  }
-  .fx-orbit {
-    animation: fx-orbit 10s linear infinite;
-  }
-  .fx-rays {
-    animation: fx-orbit 34s linear infinite;
-  }
-  .fx-spin {
-    transform-origin: 50% 50%;
-    animation: fx-orbit 18s linear infinite;
-  }
-  .fx-shine {
-    background: linear-gradient(100deg, var(--color-accent) 20%, #fff1b8 40%, var(--color-accent) 60%);
-    background-size: 200% 100%;
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    animation: fx-shimmer 4s linear infinite;
-  }
-  .fx-glow {
-    animation: fx-glow 4s ease-in-out infinite;
-  }
-  .fx-twinkle {
-    animation: fx-twinkle 2.6s ease-in-out infinite;
-  }
-  .fx-wiggle {
-    animation: fx-wiggle 3s ease-in-out infinite;
   }
   .fx-pop {
     animation: fx-popin 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
   }
 
-  /* Where the browser can tie animation to scrolling, highlights and strokes
-     draw in as they come into view; ones already on screen ("fx-now") draw in
-     shortly after the page opens. */
+  /* Where the browser can tie animation to scrolling, highlights draw in as they
+     come into view; ones already on screen ("fx-now") draw in shortly after the
+     page opens. */
   @supports (animation-timeline: view()) {
     .fx-mark:not(.fx-now) {
       animation: fx-mark linear both;
       animation-timeline: view();
       animation-range: entry 60% cover 42%;
     }
-    .fx-scribble:not(.fx-now) path {
-      animation: fx-draw-scribble linear both;
-      animation-timeline: view();
-      animation-range: entry 70% cover 42%;
-    }
-    .fx-circle:not(.fx-now) path {
-      animation: fx-draw-circle linear both;
-      animation-timeline: view();
-      animation-range: entry 50% cover 45%;
-    }
     .fx-mark.fx-now {
       animation: fx-mark 1.1s 0.75s cubic-bezier(0.6, 0, 0.2, 1) both;
     }
-    .fx-scribble.fx-now path {
-      animation: fx-draw-scribble 1s 1.2s cubic-bezier(0.6, 0, 0.2, 1) both;
-    }
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .fx-flyer {
-    display: none;
-  }
-}
-
-/* Desktop only (phones and tablets keep the plain monarch): the flying butterfly
-   changes colour as it goes, with a soft glow in the same colour. */
-@media (prefers-reduced-motion: no-preference) and (width >= 64rem) {
-  .fx-flyer {
-    animation:
-      fx-fly var(--fly) var(--fly-delay) var(--fly-ease) infinite,
-      fx-hue 8s var(--fly-delay) ease-in-out infinite alternate;
-    filter: hue-rotate(calc((var(--fly-hue) - 30) * 1deg)) drop-shadow(0 0 7px hsl(var(--fly-hue) 95% 62% / 0.55));
   }
 }
 
@@ -649,67 +373,12 @@
     stroke-dashoffset: 0;
   }
 }
-@keyframes fx-draw-scribble {
-  from {
-    stroke-dashoffset: 240;
-  }
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-@keyframes fx-draw-circle {
-  from {
-    stroke-dashoffset: 820;
-  }
-  to {
-    stroke-dashoffset: 0;
-  }
-}
 @keyframes fx-mark {
   from {
     background-size: 0% 42%;
   }
   to {
     background-size: 100% 42%;
-  }
-}
-@keyframes fx-flap {
-  from {
-    transform: scaleX(1);
-  }
-  to {
-    transform: scaleX(0.3);
-  }
-}
-@keyframes fx-bob {
-  0%,
-  100% {
-    transform: translateY(0) rotate(-2deg);
-  }
-  50% {
-    transform: translateY(-12px) rotate(2deg);
-  }
-}
-@keyframes fx-fly {
-  from {
-    offset-distance: 0%;
-  }
-  to {
-    offset-distance: 100%;
-  }
-}
-@keyframes fx-hue {
-  0% {
-    --fly-hue: 30;
-  }
-  30% {
-    --fly-hue: -12;
-  }
-  65% {
-    --fly-hue: -72;
-  }
-  100% {
-    --fly-hue: -108;
   }
 }
 @keyframes fx-live {
@@ -720,60 +389,19 @@
     box-shadow: 0 0 0 9px rgb(46 158 107 / 0);
   }
 }
+/* Pops up into place, upright (no tilt). */
 @keyframes fx-popin {
   0% {
     opacity: 0;
-    transform: translateY(30px) scale(0.4) rotate(-20deg);
+    transform: translateY(24px) scale(0.6);
   }
   70% {
     opacity: 1;
-    transform: translateY(-6px) scale(1.08) rotate(4deg);
+    transform: translateY(-4px) scale(1.04);
   }
   100% {
     opacity: 1;
     transform: none;
-  }
-}
-@keyframes fx-orbit {
-  to {
-    transform: rotate(360deg);
-  }
-}
-@keyframes fx-shimmer {
-  from {
-    background-position: 200% 0;
-  }
-  to {
-    background-position: -200% 0;
-  }
-}
-@keyframes fx-glow {
-  0%,
-  100% {
-    opacity: 0.55;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-@keyframes fx-twinkle {
-  0%,
-  100% {
-    transform: scale(0.6) rotate(0);
-    opacity: 0.4;
-  }
-  50% {
-    transform: scale(1.1) rotate(45deg);
-    opacity: 1;
-  }
-}
-@keyframes fx-wiggle {
-  0%,
-  100% {
-    transform: rotate(-4deg);
-  }
-  50% {
-    transform: rotate(3deg);
   }
 }
 

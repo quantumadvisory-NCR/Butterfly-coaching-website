@@ -151,15 +151,16 @@ test.describe("enquiry forms", () => {
   test("the programme guide form stores a request in the inbox", async ({ page }) => {
     const email = `guide.${Date.now()}@e2e.test`;
     await page.goto("/");
-    const form = page.locator("#guide form");
-    await form.getByLabel("Email").fill("not-an-email");
+    // The form sits in the homepage hero (the section at the foot of the page was taken out on 27 November 2026).
+    const form = page.locator("#programme-guide form");
+    await form.getByLabel("Free programme guide").fill("not-an-email");
     await waitForToken(page, form);
-    await form.getByRole("button", { name: "Send it" }).click();
+    await form.getByRole("button", { name: "Get the programme guide" }).click();
     await expect(form.getByRole("alert")).toContainText("valid email");
 
-    await form.getByLabel("Email").fill(email);
-    await form.getByRole("button", { name: "Send it" }).click();
-    const status = page.locator("#guide").getByRole("status");
+    await form.getByLabel("Free programme guide").fill(email);
+    await form.getByRole("button", { name: "Get the programme guide" }).click();
+    const status = page.locator("#programme-guide").getByRole("status");
     await expect(status).toContainText("send you the guide");
     await expect(status).toContainText(email);
     const [row] = await sql`select type, name, source_path from enquiries where email = ${email}`;
@@ -167,7 +168,7 @@ test.describe("enquiry forms", () => {
 
     // "Use another email" brings the form back, empty.
     await status.getByRole("button", { name: "Use another email" }).click();
-    await expect(page.locator("#guide form").getByLabel("Email")).toHaveValue("");
+    await expect(page.locator("#programme-guide form").getByLabel("Free programme guide")).toHaveValue("");
   });
 
   test("spam protection: bots, replays and floods are stopped", async ({ page }) => {

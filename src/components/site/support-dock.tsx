@@ -101,7 +101,7 @@ export function SupportDock({ panel, whatsapp }: { panel: SupportPanel | null; w
               type="button"
               data-track="cta_click"
               data-track-label="Need help: open"
-              className="inline-flex h-12 items-center gap-2 rounded-full bg-navy pl-3.5 pr-4 font-display text-[0.9375rem] font-semibold text-white shadow-lift ring-2 ring-white transition-[transform,background-color,scale] duration-200 hover:-translate-y-0.5 hover:bg-navy-soft active:scale-95 data-[state=open]:bg-navy-soft sm:h-14 sm:pl-4 sm:pr-5"
+              className="inline-flex h-12 items-center gap-2 rounded-full bg-navy pl-3.5 pr-4 font-sans text-[0.9375rem] font-semibold text-white shadow-lift ring-2 ring-white transition-[transform,background-color,scale] duration-200 hover:-translate-y-0.5 hover:bg-navy-soft active:scale-95 data-[state=open]:bg-navy-soft sm:h-14 sm:pl-4 sm:pr-5"
             >
               <span aria-hidden className="grid size-7 place-items-center rounded-full bg-accent text-navy">
                 {open ? <XIcon weight="bold" className="size-4" /> : <ChatCircleDotsIcon weight="fill" className="size-4" />}
@@ -124,7 +124,7 @@ export function SupportDock({ panel, whatsapp }: { panel: SupportPanel | null; w
                     <XIcon aria-hidden weight="bold" className="size-5" />
                   </button>
                 </Popover.Close>
-                <p id="support-panel-heading" className="pr-10 font-display text-lg font-bold leading-snug text-white">
+                <p id="support-panel-heading" className="pr-10 font-sans text-lg font-bold leading-snug text-white">
                   {panel.heading}
                 </p>
                 {panel.body && <p className="mt-1.5 text-[0.9375rem] leading-snug text-white/80">{panel.body}</p>}

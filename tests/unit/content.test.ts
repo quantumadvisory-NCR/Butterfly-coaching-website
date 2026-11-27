@@ -6,7 +6,9 @@ import { MEDIA } from "@seed/media";
 import { hrefSchema, objectSchema } from "@/lib/blocks/fields";
 import { BLOCKS, defaultBlockData, getBlock, mediaIdsInSections, validateBlockData } from "@/lib/blocks/registry";
 import { sanitiseRichText } from "@/lib/sanitise";
-import { hasEmphasis, plainText } from "@/components/ui/emphasis";
+import type { ReactElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { Emphasis, plainText } from "@/components/ui/emphasis";
 
 const mediaKeys = new Set(MEDIA.map((m) => m.key));
 
@@ -81,20 +83,22 @@ describe("seed content", () => {
     expect(hero.data.heading).toBe("Learning that stays.");
     expect(hero.data.headingAccent).toBe("Coaching that transforms.");
     expect(plainText(String(hero.data.subheading))).toBe("Rooted in India. Recognised worldwide. ICF coach training built on practice, review and founder mentoring.");
-    // The owner's change of 27 November 2026: the main button introduces the academy, with no handwritten note.
-    expect(hero.data.primaryCta).toEqual({ label: "Know more about us", href: "/about-us/" });
-    expect(hero.data.ctaNote).toBe("");
+    // The owner's brief of 25 November 2026: the main button finds your level in the fees table, and no handwritten note.
+    expect(hero.data.primaryCta).toEqual({ label: "Find your ICF level", href: "#programmes" });
+    expect(hero.data).not.toHaveProperty("ctaNote");
+    expect(hero.data.eyebrow).toBe("ICF-accredited at all 3 levels");
     expect(hero.data.secondaryCta).toEqual({ label: "Just browsing? See programmes and fees", href: "#programmes" });
     expect(hero.data.guideForm).toBe(true);
   });
 
-  it("ends the homepage with the choices and the programme guide", () => {
+  it("ends the homepage with the choices, whose guide button leads to the hero's guide form", () => {
     const home = PAGES.find((p) => p.path === "/")!;
-    const [choices, guide] = home.sections.slice(-2);
-    expect(choices!.data.layout).toBe("choices");
-    expect(plainText(String(choices!.data.heading))).toBe("Where are you today?");
-    expect(guide!.type).toBe("newsletter");
-    expect(guide!.data).toMatchObject({ layout: "guide", anchor: "guide" });
+    const choices = home.sections.at(-1)!;
+    expect(choices.data.layout).toBe("choices");
+    expect(plainText(String(choices.data.heading))).toBe("Where are you today?");
+    const items = choices.data.items as { title: string; tag: string; link: { label: string; href: string } }[];
+    expect(items.find((item) => item.title === "I'm curious")!.link).toEqual({ label: "Get the programme guide", href: "#programme-guide" });
+    expect(items.every((item) => !item.tag)).toBe(true);
   });
 
   it("includes every required public route", () => {
@@ -205,7 +209,6 @@ describe("homepage redesign content (November 2026 design)", () => {
       "testimonials",
       "faq",
       "path_cards",
-      "newsletter",
     ]);
     expect(block("trust_strip").data.layout).toBe("spotlight");
     expect(block("path_cards").data.layout).toBe("numbered");
@@ -218,8 +221,8 @@ describe("homepage redesign content (November 2026 design)", () => {
     // Three photographs slide in the hero's arched frame: the main one and two more authentic BCA photographs.
     expect(block("hero").data.image).toBe("@media:gallery.anup-with-table-group");
     expect(block("hero").data.slides).toEqual([{ image: "@media:gallery.anup-engaging-audience" }, { image: "@media:gallery.bca-community-outdoors" }]);
-    // Programmes and fees: 100% online, no instalments note, "Enroll" buttons.
-    expect(block("comparison_table").data).toMatchObject({ format: "100% online · English", note: "", buttonLabel: "Enroll" });
+    // Programmes and fees: 100% online, and "Reserve my seat" buttons (one wording per action, the brief of 25 November 2026).
+    expect(block("comparison_table").data).toMatchObject({ format: "100% online · English", buttonLabel: "Reserve my seat" });
     // The tentative durations shown under the fee.
     const duration = (slug: string) => PROGRAMMES.find((p) => p.slug === slug) as { duration?: string } | undefined;
     expect(duration("level-1-acc")?.duration).toBe("22 to 26 weeks");
@@ -236,6 +239,8 @@ describe("homepage redesign content (November 2026 design)", () => {
 
   it("links every in-page button to a section that exists", () => {
     const anchors = new Set(home.sections.map((s) => s.data.anchor).filter(Boolean));
+    // The hero's programme guide form is #programme-guide (components/blocks/hero.tsx).
+    if (home.sections.some((s) => s.type === "hero" && s.data.guideForm)) anchors.add("programme-guide");
     const hrefs = JSON.stringify(home.sections).match(/"href":"#[^"]+"/g) ?? [];
     for (const href of hrefs) expect(anchors).toContain(href.slice(9, -1));
   });
@@ -252,8 +257,16 @@ describe("emphasis markup", () => {
     expect(plainText("A ((global)) learning ++community++, **bold** and __drawn__ [[tag]]")).toBe("A global learning community, bold and drawn tag");
     expect(plainText("No markup at all")).toBe("No markup at all");
   });
-  it("recognises text that carries effects", () => {
-    expect(hasEmphasis("Choose your __path__")).toBe(true);
-    expect(hasEmphasis("Choose your path")).toBe(false);
+  it("shows headings in one colour, without highlights, tags or drawings (owner's brief, 25 November 2026)", () => {
+    expect(Emphasis({ text: "Why learners choose ==BCA==" })).toBe("Why learners choose BCA");
+    expect(Emphasis({ text: "One of [[only 4 in India.]]", tone: "dark" })).toBe("One of only 4 in India.");
+  });
+  it("sets marked body text in bold, highlighting only ==yellow== words", () => {
+    const html = renderToStaticMarkup(Emphasis({ text: "==Rooted in India.== Learn, ++practise++ and ((revisit)).", strong: true }) as ReactElement);
+    expect(html.match(/fx-mark/g)).toHaveLength(1);
+    expect(html).toContain(">Rooted in India.</strong>");
+    expect(html).toContain(">practise</strong>");
+    expect(html).toContain(">revisit</strong>");
+    expect(html).not.toMatch(/lav|circle|scribble|fx-tag/);
   });
 });

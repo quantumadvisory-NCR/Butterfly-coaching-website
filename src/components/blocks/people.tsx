@@ -45,8 +45,8 @@ function StoryAvatar({ t, dark, ctx }: { t: TestimonialView; dark: boolean; ctx:
 
 /**
  * Two student stories side by side, from the November 2026 design: the first
- * large on a deep ink card under an oversized lavender quote mark, the second
- * on a white card with a dashed lavender edge.
+ * large on a deep ink card under an oversized quote mark, the second on a white
+ * card with a light gray edge.
  */
 function StoryPair({ items, data, ctx }: { items: TestimonialView[]; data: BlockProps<"testimonials">["data"]; ctx: BlockContext }) {
   const [lead, second] = items;
@@ -64,17 +64,17 @@ function StoryPair({ items, data, ctx }: { items: TestimonialView[]; data: Block
       className={cn("pb-[var(--design-space)] font-text", continues ? "pt-4" : "pt-[var(--design-space)]")}
     >
       <div className="container-site flex flex-col gap-[1.125rem]">
-        <h2 className={cn("reveal m-0 font-grotesk font-bold tracking-[-0.025em] text-ink-deep", continues ? "text-2xl" : "text-[clamp(2.125rem,4vw,3.5rem)] font-extrabold leading-[1.05]")}>
-          <Emphasis text={data.heading} auto={!continues} />
+        <h2 className={cn("reveal m-0 font-grotesk text-ink-deep", continues ? "text-2xl" : "text-[clamp(1.75rem,3.2vw,2.25rem)] leading-[1.12]")}>
+          <Emphasis text={data.heading} />
         </h2>
         <div className="flex flex-wrap gap-[1.125rem]">
-          <figure className="on-dark fx-card reveal relative m-0 flex min-w-0 flex-[1.4_1_27.5rem] flex-col gap-[1.625rem] overflow-hidden rounded-[1.75rem] border border-ink-deep bg-ink-deep p-[clamp(1.75rem,3vw,2.5rem)] text-[#f4f1fd]">
-            <span aria-hidden className="pointer-events-none absolute -top-10 right-4 font-grotesk text-[13.75rem] font-extrabold leading-none text-lav opacity-[0.22]">
+          <figure className="on-dark fx-card reveal relative m-0 flex min-w-0 flex-[1.4_1_27.5rem] flex-col gap-[1.625rem] overflow-hidden rounded-[1.75rem] border border-ink-deep bg-ink-deep p-[clamp(1.75rem,3vw,2.5rem)] text-[#f2f2f2]">
+            <span aria-hidden className="pointer-events-none absolute -top-10 right-4 font-grotesk text-[10.3125rem] leading-none text-lav opacity-[0.22]">
               &ldquo;
             </span>
             <blockquote
               className={cn(
-                "relative m-0 font-grotesk font-semibold leading-[1.25] tracking-[-0.02em]",
+                "relative m-0 font-text font-medium leading-[1.4]",
                 leadQuote.length > 160 ? "text-[clamp(1.25rem,1.9vw,1.75rem)]" : "text-[clamp(1.5rem,2.4vw,2.125rem)]",
               )}
             >
@@ -89,10 +89,10 @@ function StoryPair({ items, data, ctx }: { items: TestimonialView[]; data: Block
             </figcaption>
           </figure>
           {second && (
-            <figure className="fx-card reveal m-0 flex min-w-0 flex-[1_1_20rem] flex-col justify-between gap-[1.625rem] rounded-[1.75rem] border-[1.5px] border-dashed border-lav bg-white p-[clamp(1.75rem,3vw,2.5rem)]">
+            <figure className="fx-card reveal m-0 flex min-w-0 flex-[1_1_20rem] flex-col justify-between gap-[1.625rem] rounded-[1.75rem] border-[1.5px] border-[#d6d5d0] bg-white p-[clamp(1.75rem,3vw,2.5rem)]">
               <blockquote
                 className={cn(
-                  "m-0 font-grotesk font-semibold leading-[1.3] tracking-[-0.015em] text-lav-deep",
+                  "m-0 font-text font-medium leading-[1.45] text-lav-deep",
                   secondQuote.length > 200 ? "text-[1.125rem]" : "text-[clamp(1.25rem,1.8vw,1.5rem)]",
                 )}
               >
@@ -222,7 +222,7 @@ export async function ProfilesBlock({ data, ctx }: BlockProps<"profiles">) {
           <div className={cn(showFounder && "mt-16 border-t border-line pt-14 md:mt-20 md:pt-16")}>
             {!showFounder && <SectionHeading heading={data.heading} intro={data.intro} />}
             {showFounder && <h3 className="text-h2">
-<Emphasis text="Faculty and mentor coaches" auto />
+<Emphasis text="Faculty and mentor coaches" />
 </h3>}
             <ul className="mt-9 grid gap-x-6 gap-y-11 sm:grid-cols-2 lg:grid-cols-4">
               {team.map((person) => (
@@ -255,7 +255,7 @@ function Attribution({ t, ctx }: { t: TestimonialView; ctx: BlockContext }) {
           <MediaImage media={photo} fill alt="" sizes="48px" className="!object-top" />
         </span>
       ) : (
-        <span aria-hidden className="grid size-12 shrink-0 place-items-center rounded-full bg-accent font-display font-bold text-navy">
+        <span aria-hidden className="grid size-12 shrink-0 place-items-center rounded-full bg-accent font-sans font-bold text-navy">
           {t.name.charAt(0)}
         </span>
       )}
@@ -330,7 +330,7 @@ function StoryCard({ t, credential, ctx, lead = false }: { t: TestimonialView; c
       <blockquote
         className={cn(
           "max-w-3xl leading-snug",
-          lead ? "mt-4 font-display text-white" : "text-[1.0625rem] text-navy",
+          lead ? "mt-4 font-sans font-medium text-white" : "text-[1.0625rem] text-navy",
           // Long stories step down a size so the lead card stays readable.
           lead && (quote.length > 280 ? "text-lg md:text-xl" : "text-xl md:text-2xl"),
         )}
@@ -398,7 +398,7 @@ function StorySpotlight({ t, ctx }: { t: TestimonialView; ctx: BlockContext }) {
 
 /**
  * Student stories as a moving carousel (22 November 2026): cards in the pair
- * design, alternately deep ink and white with a dashed lavender edge, that move
+ * design, alternately deep ink and white with a light gray edge, that move
  * along by themselves. Long stories are cut to six lines on the card; the link
  * underneath leads to the full stories.
  */
@@ -417,8 +417,8 @@ function StoryCarouselSection({ items, data, ctx }: { items: TestimonialView[]; 
         <StoryCarousel
           label={plainText(data.heading) || "Student stories"}
           heading={
-            <h2 className={cn("reveal m-0 font-grotesk font-bold tracking-[-0.025em] text-ink-deep", continues ? "text-2xl" : "text-[clamp(2.125rem,4vw,3.5rem)] font-extrabold leading-[1.05]")}>
-              <Emphasis text={data.heading} auto={!continues} />
+            <h2 className={cn("reveal m-0 font-grotesk text-ink-deep", continues ? "text-2xl" : "text-[clamp(1.75rem,3.2vw,2.25rem)] leading-[1.12]")}>
+              <Emphasis text={data.heading} />
             </h2>
           }
           footer={
@@ -439,17 +439,17 @@ function StoryCarouselSection({ items, data, ctx }: { items: TestimonialView[]; 
                 key={t.id}
                 className={cn(
                   "relative m-0 flex w-full flex-col justify-between gap-[1.625rem] overflow-hidden rounded-[1.75rem] p-[clamp(1.5rem,2.6vw,2.25rem)]",
-                  dark ? "on-dark border border-ink-deep bg-ink-deep text-[#f4f1fd]" : "border-[1.5px] border-dashed border-lav bg-white",
+                  dark ? "on-dark border border-ink-deep bg-ink-deep text-[#f2f2f2]" : "border-[1.5px] border-[#d6d5d0] bg-white",
                 )}
               >
                 {dark && (
-                  <span aria-hidden className="pointer-events-none absolute -top-8 right-4 font-grotesk text-[10rem] font-extrabold leading-none text-lav opacity-[0.22]">
+                  <span aria-hidden className="pointer-events-none absolute -top-8 right-4 font-grotesk text-[7.5rem] leading-none text-lav opacity-[0.22]">
                     &ldquo;
                   </span>
                 )}
                 <blockquote
                   className={cn(
-                    "relative m-0 line-clamp-6 font-grotesk font-semibold leading-[1.3] tracking-[-0.015em]",
+                    "relative m-0 line-clamp-6 font-text font-medium leading-[1.45]",
                     dark ? "text-white" : "text-lav-deep",
                     quote.length > 200 ? "text-[1.0625rem]" : "text-[clamp(1.125rem,1.6vw,1.375rem)]",
                   )}
@@ -502,7 +502,7 @@ export async function TestimonialsBlock({ data, ctx }: BlockProps<"testimonials"
                 In their own words
               </p>
               <h2 className="text-h2">
-                <Emphasis text={data.heading} auto />
+                <Emphasis text={data.heading} />
               </h2>
               {data.intro && <p className="mt-4 max-w-xl text-lead text-ink">{data.intro}</p>}
             </div>

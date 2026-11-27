@@ -9,8 +9,7 @@ const link = <N extends string>(name: N, label: string, help?: string) => ({ typ
 
 /** Help for text fields that accept the design's emphasis markup (see components/ui/emphasis.tsx). */
 const EFFECTS =
-  "Effects: **words** in bold, ==words== yellow highlighter, ++words++ lavender highlighter, __words__ hand-drawn underline, ((words)) hand-drawn circle, [[words]] yellow tag.";
-const HEADING_EFFECTS = `${EFFECTS} Without any, the last word gets the hand-drawn underline.`;
+  "Headings show their words plainly, in one colour. In body text, marks set words in bold: **words**, ++words++, __words__, ((words)) or [[words]]; ==words== also adds the yellow highlighter.";
 
 /** Options every block shares. */
 const shared = [
@@ -24,7 +23,7 @@ const shared = [
     options: [
       { value: "cream", label: "Page background (standard)" },
       { value: "surface", label: "White" },
-      { value: "lavender", label: "Soft lavender (homepage design)" },
+      { value: "lavender", label: "Light gray band (homepage design)" },
     ],
   },
   {
@@ -52,20 +51,19 @@ const hero = [
     type: "text",
     name: "eyebrow",
     label: "Small label above the heading",
-    help: 'On the homepage it sits in a pill with a pulsing dot; separate phrases with " · ". ++words++ shows words in lavender.',
+    help: 'On the homepage it sits in a pill with a pulsing dot; separate phrases with " · ".',
     maxLength: 90,
   },
-  { type: "text", name: "heading", label: "Heading", required: true, help: `${EFFECTS} On a page header without any, the last word gets the hand-drawn underline.`, maxLength: 90 },
+  { type: "text", name: "heading", label: "Heading", required: true, help: EFFECTS, maxLength: 90 },
   {
     type: "text",
     name: "headingAccent",
     label: "Second line of the heading (homepage)",
-    help: 'Optional. Shown in gray, with its last word on a line of its own in lavender over a hand-drawn yellow stroke, e.g. "Coaching that transforms."',
+    help: 'Optional. Shown on its own line, with its last word over a yellow underline, e.g. "Coaching that transforms."',
     maxLength: 90,
   },
   { type: "textarea", name: "subheading", label: "Supporting statement", help: EFFECTS, maxLength: 320, rows: 3 },
   link("primaryCta", "Primary button"),
-  { type: "text", name: "ctaNote", label: "Handwritten note beside the button (homepage)", help: 'Optional, e.g. "takes 2 minutes".', maxLength: 32 },
   link("secondaryCta", "Secondary button", "On the homepage this is a text link under the button."),
   {
     type: "boolean",
@@ -139,12 +137,12 @@ const hero = [
 ] as const satisfies readonly Field[];
 
 const richText = [
-  { type: "text", name: "heading", label: "Heading", help: HEADING_EFFECTS, maxLength: 120 },
+  { type: "text", name: "heading", label: "Heading", help: EFFECTS, maxLength: 120 },
   { type: "richtext", name: "body", label: "Text", required: true },
 ] as const satisfies readonly Field[];
 
 const imageText = [
-  { type: "text", name: "heading", label: "Heading", required: true, help: HEADING_EFFECTS, maxLength: 120 },
+  { type: "text", name: "heading", label: "Heading", required: true, help: EFFECTS, maxLength: 120 },
   { type: "richtext", name: "body", label: "Text" },
   { type: "stringList", name: "bullets", label: "Bullet points", itemLabel: "Point" },
   link("cta", "Button"),
@@ -174,7 +172,7 @@ const pathCards = [
       { value: "choices", label: "Dark section of choices, e.g. \"Where are you today?\" (homepage design)" },
     ],
   },
-  { type: "text", name: "heading", label: "Heading", required: true, help: HEADING_EFFECTS, maxLength: 120 },
+  { type: "text", name: "heading", label: "Heading", required: true, help: EFFECTS, maxLength: 120 },
   { type: "textarea", name: "intro", label: "Introduction", help: EFFECTS, maxLength: 300, rows: 2 },
   {
     type: "list",
@@ -187,8 +185,8 @@ const pathCards = [
       {
         type: "text",
         name: "tag",
-        label: "Small label (numbered cards) or handwritten note (choices)",
-        help: 'e.g. "For aspiring coaches", or "takes 2 minutes".',
+        label: "Small label (numbered cards)",
+        help: 'e.g. "For aspiring coaches". Not shown on the choices cards.',
         maxLength: 40,
       },
       { type: "text", name: "title", label: "Title", required: true, maxLength: 60 },
@@ -199,7 +197,7 @@ const pathCards = [
         type: "boolean",
         name: "accent",
         label: "Colour this card",
-        help: "Numbered cards: soft lavender with a lavender button. Choices: butterfly yellow with a dark button.",
+        help: "Numbered cards: light gray with a dark button. Choices: butterfly yellow with a dark button.",
       },
       {
         type: "select",
@@ -228,7 +226,7 @@ const featureList = [
       { value: "bento", label: "Picture cards side by side (homepage design)" },
     ],
   },
-  { type: "text", name: "heading", label: "Heading", required: true, help: HEADING_EFFECTS, maxLength: 120 },
+  { type: "text", name: "heading", label: "Heading", required: true, help: EFFECTS, maxLength: 120 },
   { type: "textarea", name: "intro", label: "Introduction", maxLength: 400, rows: 3 },
   {
     type: "stringList",
@@ -250,7 +248,7 @@ const featureList = [
         type: "textarea",
         name: "body",
         label: "Description",
-        help: "**Double asterisks** show letters or words in bold. Picture cards also take the effects, e.g. ++words++ for a lavender highlight.",
+        help: "**Double asterisks** show letters or words in bold. The card text also takes ==words== for the yellow highlighter.",
         maxLength: 400,
         rows: 3,
       },
@@ -265,7 +263,6 @@ const featureList = [
           { value: "figure", label: "Big figure on a dark card" },
         ],
       },
-      { type: "text", name: "note", label: "Handwritten note (picture cards)", help: 'e.g. "our own", or the words in the middle of the loop.', maxLength: 40 },
       {
         type: "stringList",
         name: "letters",
@@ -283,7 +280,7 @@ const featureList = [
 ] as const satisfies readonly Field[];
 
 const programmeCards = [
-  { type: "text", name: "heading", label: "Heading", required: true, help: HEADING_EFFECTS, maxLength: 120 },
+  { type: "text", name: "heading", label: "Heading", required: true, help: EFFECTS, maxLength: 120 },
   { type: "textarea", name: "intro", label: "Introduction", maxLength: 400, rows: 3 },
   {
     type: "select",
@@ -300,7 +297,7 @@ const programmeCards = [
 ] as const satisfies readonly Field[];
 
 const comparisonTable = [
-  { type: "text", name: "heading", label: "Heading", required: true, help: HEADING_EFFECTS, maxLength: 120 },
+  { type: "text", name: "heading", label: "Heading", required: true, help: EFFECTS, maxLength: 120 },
   { type: "textarea", name: "intro", label: "Introduction", help: EFFECTS, maxLength: 400, rows: 3 },
   {
     type: "select",
@@ -321,16 +318,9 @@ const comparisonTable = [
   },
   {
     type: "text",
-    name: "note",
-    label: "Handwritten note (programmes and fees)",
-    help: 'Shown under the table, e.g. "instalments available". Leave empty for none.',
-    maxLength: 40,
-  },
-  {
-    type: "text",
     name: "buttonLabel",
     label: "Button under each programme (programmes and fees)",
-    help: 'e.g. "Enroll". Opens the programme\'s enquiry form. Leave empty for no buttons.',
+    help: 'e.g. "Reserve my seat". Opens the programme\'s enquiry form. Leave empty for no buttons.',
     maxLength: 24,
   },
   { type: "stringList", name: "columns", label: "Column headings (custom table)", itemLabel: "Column" },
@@ -349,7 +339,7 @@ const comparisonTable = [
 ] as const satisfies readonly Field[];
 
 const testimonials = [
-  { type: "text", name: "heading", label: "Heading", required: true, help: HEADING_EFFECTS, maxLength: 120 },
+  { type: "text", name: "heading", label: "Heading", required: true, help: EFFECTS, maxLength: 120 },
   { type: "textarea", name: "intro", label: "Introduction", maxLength: 300, rows: 2 },
   {
     type: "select",
@@ -377,7 +367,7 @@ const testimonials = [
 ] as const satisfies readonly Field[];
 
 const profiles = [
-  { type: "text", name: "heading", label: "Heading", required: true, help: HEADING_EFFECTS, maxLength: 120 },
+  { type: "text", name: "heading", label: "Heading", required: true, help: EFFECTS, maxLength: 120 },
   { type: "textarea", name: "intro", label: "Introduction", maxLength: 500, rows: 3 },
   {
     type: "select",
@@ -406,7 +396,7 @@ const profiles = [
 ] as const satisfies readonly Field[];
 
 const faq = [
-  { type: "text", name: "heading", label: "Heading", required: true, help: HEADING_EFFECTS, maxLength: 120 },
+  { type: "text", name: "heading", label: "Heading", required: true, help: EFFECTS, maxLength: 120 },
   { type: "textarea", name: "intro", label: "Introduction", maxLength: 300, rows: 2 },
   {
     type: "reference",
@@ -432,7 +422,7 @@ const timeline = [
     ],
   },
   { type: "text", name: "eyebrow", label: "Small label above the heading", maxLength: 60 },
-  { type: "text", name: "heading", label: "Heading", required: true, help: HEADING_EFFECTS, maxLength: 120 },
+  { type: "text", name: "heading", label: "Heading", required: true, help: EFFECTS, maxLength: 120 },
   { type: "textarea", name: "intro", label: "Introduction", maxLength: 400, rows: 3 },
   {
     type: "list",
@@ -460,7 +450,7 @@ const timeline = [
 ] as const satisfies readonly Field[];
 
 const gallery = [
-  { type: "text", name: "heading", label: "Heading", help: HEADING_EFFECTS, maxLength: 120 },
+  { type: "text", name: "heading", label: "Heading", help: EFFECTS, maxLength: 120 },
   { type: "textarea", name: "intro", label: "Introduction", maxLength: 300, rows: 2 },
   {
     type: "list",
@@ -477,7 +467,7 @@ const gallery = [
 ] as const satisfies readonly Field[];
 
 const video = [
-  { type: "text", name: "heading", label: "Heading", help: HEADING_EFFECTS, maxLength: 120 },
+  { type: "text", name: "heading", label: "Heading", help: EFFECTS, maxLength: 120 },
   { type: "textarea", name: "intro", label: "Introduction", maxLength: 300, rows: 2 },
   {
     type: "list",
@@ -494,14 +484,14 @@ const video = [
 ] as const satisfies readonly Field[];
 
 const cta = [
-  { type: "text", name: "heading", label: "Heading", required: true, help: HEADING_EFFECTS, maxLength: 120 },
+  { type: "text", name: "heading", label: "Heading", required: true, help: EFFECTS, maxLength: 120 },
   { type: "textarea", name: "body", label: "Text", maxLength: 300, rows: 2 },
   link("primaryCta", "Primary button"),
   link("secondaryCta", "Secondary button", 'Use "whatsapp" as the link to open WhatsApp with the number from Site settings.'),
 ] as const satisfies readonly Field[];
 
 const contactForm = [
-  { type: "text", name: "heading", label: "Heading", required: true, help: HEADING_EFFECTS, maxLength: 120 },
+  { type: "text", name: "heading", label: "Heading", required: true, help: EFFECTS, maxLength: 120 },
   { type: "textarea", name: "intro", label: "Introduction", maxLength: 400, rows: 3 },
   {
     type: "select",
@@ -526,10 +516,9 @@ const newsletter = [
     label: "Form",
     options: [
       { value: "newsletter", label: "Newsletter signup" },
-      { value: "guide", label: "Programme guide request, on a lavender panel (homepage design)" },
+      { value: "guide", label: "Programme guide request, on a light gray panel (homepage design)" },
     ],
   },
-  { type: "text", name: "note", label: "Handwritten note above the heading", help: 'Optional, e.g. "it\'s free".', maxLength: 32 },
   { type: "text", name: "heading", label: "Heading", required: true, help: EFFECTS, maxLength: 120 },
   { type: "textarea", name: "body", label: "Text", maxLength: 300, rows: 2 },
   {
@@ -542,7 +531,7 @@ const newsletter = [
 ] as const satisfies readonly Field[];
 
 const community = [
-  { type: "text", name: "heading", label: "Heading", required: true, help: HEADING_EFFECTS, maxLength: 120 },
+  { type: "text", name: "heading", label: "Heading", required: true, help: EFFECTS, maxLength: 120 },
   { type: "textarea", name: "intro", label: "Introduction", help: EFFECTS, maxLength: 300, rows: 2 },
   {
     type: "stringList",
@@ -555,7 +544,7 @@ const community = [
 ] as const satisfies readonly Field[];
 
 const resourceDownloads = [
-  { type: "text", name: "heading", label: "Heading", required: true, help: HEADING_EFFECTS, maxLength: 120 },
+  { type: "text", name: "heading", label: "Heading", required: true, help: EFFECTS, maxLength: 120 },
   { type: "textarea", name: "intro", label: "Introduction", maxLength: 300, rows: 2 },
 ] as const satisfies readonly Field[];
 
@@ -572,7 +561,6 @@ const trustStrip = [
   { type: "text", name: "eyebrow", label: "Small label above the heading (spotlight)", help: 'e.g. "A rare distinction".', maxLength: 60 },
   { type: "text", name: "heading", label: "Heading", help: `${EFFECTS} Only claims you can evidence.`, maxLength: 160 },
   { type: "textarea", name: "intro", label: "Short text under the heading", help: "Optional. One sentence, and only verified claims.", maxLength: 200, rows: 2 },
-  { type: "text", name: "note", label: "Handwritten note over the last badge (spotlight)", help: 'Optional, e.g. "all three!".', maxLength: 30 },
   {
     type: "list",
     name: "logos",
@@ -622,7 +610,7 @@ const stats = [
 ] as const satisfies readonly Field[];
 
 const blogTeasers = [
-  { type: "text", name: "heading", label: "Heading", required: true, help: HEADING_EFFECTS, maxLength: 120 },
+  { type: "text", name: "heading", label: "Heading", required: true, help: EFFECTS, maxLength: 120 },
   { type: "textarea", name: "intro", label: "Introduction", maxLength: 300, rows: 2 },
   { type: "number", name: "limit", label: "Number of articles", min: 1, max: 6 },
   link("cta", "Button"),

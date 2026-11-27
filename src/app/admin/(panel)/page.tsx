@@ -294,7 +294,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
                 {recent.map((enquiry) => (
                   <li key={enquiry.id}>
                     <Link href={`/admin/enquiries/${enquiry.id}/`} className="group flex items-center gap-3 rounded-lg py-3 hover:text-primary">
-                      <span aria-hidden className="grid size-10 shrink-0 place-items-center rounded-full bg-accent-soft font-display font-bold text-navy">
+                      <span aria-hidden className="grid size-10 shrink-0 place-items-center rounded-full bg-accent-soft font-sans font-bold text-navy">
                         {enquiry.name.charAt(0).toUpperCase()}
                       </span>
                       <span className="min-w-0 flex-1">

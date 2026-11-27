@@ -3,7 +3,6 @@ import type { ReactNode } from "react";
 import { CountUp } from "@/components/ui/count-up";
 import { Breadcrumbs } from "@/components/site/breadcrumbs";
 import { ButtonLink } from "@/components/ui/button-link";
-import { Flyer, HandArrow, Tick } from "@/components/ui/effects";
 import { Emphasis } from "@/components/ui/emphasis";
 import { MediaImage } from "@/components/ui/media-image";
 import { RichText, Section } from "@/components/ui/section";
@@ -11,7 +10,7 @@ import { cn } from "@/lib/utils";
 import { type BlockProps, pickMedia, usableLink } from "./types";
 
 /** Headings in the homepage design's display style. */
-export const DESIGN_H2 = "m-0 font-grotesk text-[clamp(2.125rem,4vw,3.5rem)] font-extrabold leading-[1.05] tracking-[-0.025em] text-ink-deep";
+export const DESIGN_H2 = "m-0 font-grotesk text-[clamp(1.75rem,3.2vw,2.25rem)] leading-[1.12] text-ink-deep";
 
 export function RichTextBlock({ data, ctx }: BlockProps<"rich_text">) {
   // When a page opens with plain text (legal pages), the heading is the page's h1.
@@ -23,11 +22,11 @@ export function RichTextBlock({ data, ctx }: BlockProps<"rich_text">) {
         {data.heading &&
           (first ? (
             <h1 className="text-h1">
-              <Emphasis text={data.heading} auto now />
+              <Emphasis text={data.heading} now />
             </h1>
           ) : (
             <h2 className="text-h2">
-              <Emphasis text={data.heading} auto />
+              <Emphasis text={data.heading} />
             </h2>
           ))}
         <RichText html={data.body} className={cn("prose-lg", data.heading && "mt-6")} />
@@ -45,7 +44,7 @@ export function ImageTextBlock({ data, ctx }: BlockProps<"image_text">) {
       <div className={cn("container-site grid items-center gap-9 lg:gap-16", image && "lg:grid-cols-2")}>
         <div className={cn("reveal max-w-xl", imageLeft && "lg:order-2")}>
           <h2 className="text-h2">
-            <Emphasis text={data.heading} auto />
+            <Emphasis text={data.heading} />
           </h2>
           <RichText html={data.body} className="mt-5" />
           {data.bullets.length > 0 && (
@@ -107,7 +106,7 @@ type Item = BlockProps<"feature_list">["data"]["items"][number];
 /** The pictures inside the "Why learners choose BCA" cards. */
 function BentoVisual({ item, sequence }: { item: Item; sequence: string[] }): ReactNode {
   if (item.visual === "loop" && sequence.length > 0) {
-    // Up to four words around a dashed circle, a yellow dot orbiting it, the note at the centre.
+    // Up to four words around a dashed circle.
     const spots = [
       "left-1/2 top-[1.125rem] -translate-x-1/2 bg-ink-deep text-white",
       "right-0 top-1/2 -translate-y-1/2 border border-lav-200 bg-white",
@@ -117,12 +116,6 @@ function BentoVisual({ item, sequence }: { item: Item; sequence: string[] }): Re
     return (
       <div aria-hidden className="relative mx-auto mt-3 size-60 shrink-0">
         <div className="absolute inset-9 rounded-full border-2 border-dashed border-lav-200" />
-        <div className="fx-orbit absolute inset-9">
-          <span className="absolute -top-2 left-1/2 -ml-2 size-4 rounded-full bg-accent shadow-[0_0_0_5px_rgb(246_195_28/0.25)]" />
-        </div>
-        {item.note && (
-          <span className="fx-note absolute left-1/2 top-1/2 w-24 -translate-x-1/2 -translate-y-1/2 -rotate-6 text-center text-[1.625rem] leading-[0.95]">{item.note}</span>
-        )}
         {sequence.slice(0, 4).map((word, i) => (
           <span key={`${word}-${i}`} className={cn("absolute rounded-full px-3 py-1.5 text-[0.8125rem] font-semibold leading-tight", spots[i])}>
             {word}
@@ -138,7 +131,7 @@ function BentoVisual({ item, sequence }: { item: Item; sequence: string[] }): Re
           const tile = parseTile(line);
           return (
             <li key={`${line}-${i}`} className="fx-tile flex min-h-[7.5rem] flex-col gap-1.5 rounded-[1.25rem] bg-lav-50 p-[1.125rem]">
-              <span aria-hidden className="font-grotesk text-[2.75rem] font-extrabold leading-none text-lav-deep">
+              <span aria-hidden className="font-grotesk text-[2.75rem] leading-none text-lav-deep">
                 {tile.letter}
               </span>
               <span className="text-sm font-semibold leading-[1.35] text-ink-deep">
@@ -154,13 +147,13 @@ function BentoVisual({ item, sequence }: { item: Item; sequence: string[] }): Re
     return (
       <>
         <p className="mt-auto flex items-baseline gap-2.5">
-          <span className="fx-shine font-grotesk text-[4.75rem] font-extrabold leading-none tracking-[-0.025em]">{item.figure}</span>
-          {item.figureLabel && <span className="max-w-[13rem] text-[0.9375rem] leading-[1.35] text-[#e6dfff]">{item.figureLabel}</span>}
+          <span className="fx-shine font-grotesk text-[4.75rem] leading-none">{item.figure}</span>
+          {item.figureLabel && <span className="max-w-[13rem] text-[0.9375rem] leading-[1.35] text-[#f2f2f2]">{item.figureLabel}</span>}
         </p>
         {item.tags.length > 0 && (
           <ul className="flex flex-wrap gap-2">
             {item.tags.map((tag) => (
-              <li key={tag} className="rounded-full border border-[rgb(201_188_247/0.25)] bg-white/[0.08] px-3 py-1.5 text-[0.8125rem]">
+              <li key={tag} className="rounded-full border border-white/20 bg-white/[0.08] px-3 py-1.5 text-[0.8125rem]">
                 {tag}
               </li>
             ))}
@@ -193,7 +186,7 @@ function FeatureBento({ data, ctx }: BlockProps<"feature_list">) {
       <div className="container-site flex flex-col gap-8">
         <div className="reveal flex flex-col gap-3">
           <h2 className={DESIGN_H2}>
-            <Emphasis text={data.heading} auto />
+            <Emphasis text={data.heading} />
           </h2>
           {data.intro && <p className="m-0 max-w-2xl text-[1.0625rem] leading-normal text-mauve">{data.intro}</p>}
         </div>
@@ -206,15 +199,12 @@ function FeatureBento({ data, ctx }: BlockProps<"feature_list">) {
                 className={cn(
                   "fx-card reveal flex min-w-0 flex-col gap-3.5 rounded-[1.75rem] border p-[1.875rem] max-sm:p-6",
                   sizes[item.visual] ?? sizes.none,
-                  dark ? "on-dark border-plum bg-plum text-[#f4f1fd]" : "border-lav-100 bg-white",
+                  dark ? "on-dark border-plum bg-plum text-[#f2f2f2]" : "border-lav-100 bg-white",
                 )}
               >
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <h3 className={cn("m-0 font-grotesk text-[1.625rem] font-bold leading-tight tracking-[-0.025em]", dark ? "!text-white" : "text-ink-deep")}>
+                <h3 className={cn("m-0 font-grotesk text-[1.3125rem] leading-tight", dark ? "!text-white" : "text-ink-deep")}>
                     <Emphasis text={item.title} tone={dark ? "dark" : "light"} />
-                  </h3>
-                  {item.note && item.visual !== "loop" && <span className="fx-note inline-block -rotate-3 text-[1.375rem]">{item.note}</span>}
-                </div>
+                </h3>
                 {item.body && (
                   <p className={cn("m-0 text-base leading-normal", dark ? "text-lilac" : "text-mauve")}>
                     <Emphasis text={item.body} tone={dark ? "dark" : "light"} strong />
@@ -233,7 +223,7 @@ function FeatureBento({ data, ctx }: BlockProps<"feature_list">) {
 /**
  * "Why BCA": heading, introduction and a framed photograph on one side; the
  * points as numbered cards on the other, joined by a thin line. Cards lift and
- * take a lavender edge on hover, and ease in as they scroll into view.
+ * take a gray edge on hover, and ease in as they scroll into view.
  */
 export function FeatureListBlock(props: BlockProps<"feature_list">) {
   if (props.data.layout === "bento") return <FeatureBento {...props} />;
@@ -243,14 +233,12 @@ export function FeatureListBlock(props: BlockProps<"feature_list">) {
   const items = data.items.filter((item) => item.title);
   return (
     <Section background={data.background} anchor={data.anchor} className="relative isolate overflow-clip">
-      {/* A soft lavender glow behind the cards. */}
-      <div aria-hidden className="fx-glow pointer-events-none absolute -right-40 top-16 -z-10 size-[30rem] rounded-full bg-lav/20 blur-3xl" />
       {/* On wide screens the button sits under the photograph; on narrow screens it follows the points. */}
       <div className="container-site grid gap-10 lg:grid-cols-12 lg:gap-x-14 lg:gap-y-9">
         <div className="lg:col-span-5">
           <span aria-hidden className="mb-5 block h-1 w-12 rounded-full bg-accent" />
           <h2 className="text-h2">
-            <Emphasis text={data.heading} auto />
+            <Emphasis text={data.heading} />
           </h2>
           {data.intro && <p className="mt-4 max-w-md text-lead text-ink">{data.intro}</p>}
           {data.sequence.length > 0 && (
@@ -261,7 +249,7 @@ export function FeatureListBlock(props: BlockProps<"feature_list">) {
                   <li key={`${word}-${i}`} className="flex items-center gap-2">
                     <span
                       className={cn(
-                        "fx-chip rounded-full border px-3.5 py-1.5 font-display text-[0.9375rem] font-semibold text-navy",
+                        "fx-chip rounded-full border px-3.5 py-1.5 font-sans text-[0.9375rem] font-semibold text-navy",
                         last ? "border-accent bg-accent" : "border-accent/50 bg-accent-soft",
                       )}
                     >
@@ -281,7 +269,6 @@ export function FeatureListBlock(props: BlockProps<"feature_list">) {
             <div className="reveal relative mt-9 max-w-md max-lg:mt-7 lg:max-w-none">
               {/* A yellow echo of the photograph's curved corner. */}
               <span aria-hidden className="absolute -left-3 -top-3 h-2/3 w-2/3 rounded-card rounded-tl-[var(--radius-wing)] bg-accent" />
-              <span aria-hidden className="fx-spin absolute -bottom-4 -right-4 size-20 rounded-full border-2 border-dashed border-lav" />
               <div className="relative aspect-[4/3] overflow-hidden rounded-card rounded-tl-[var(--radius-wing)] shadow-card ring-4 ring-surface max-lg:aspect-[16/10]">
                 <MediaImage media={image} fill sizes="(min-width: 64rem) 36vw, (min-width: 28rem) 28rem, 100vw" className="transition-transform duration-700 ease-out hover:scale-[1.03]" />
               </div>
@@ -296,7 +283,7 @@ export function FeatureListBlock(props: BlockProps<"feature_list">) {
               <li key={`${item.title}-${i}`} className="reveal lift-card why-step group flex flex-col gap-4 p-5 sm:flex-row sm:gap-5 sm:p-6 md:p-7">
                 <span
                   aria-hidden
-                  className="relative z-10 grid size-12 shrink-0 place-items-center rounded-2xl bg-accent font-display text-lg font-extrabold text-navy shadow-[0_6px_16px_-6px_rgb(245_186_0/0.7)] transition-transform duration-300 group-hover:-rotate-6"
+                  className="relative z-10 grid size-12 shrink-0 place-items-center rounded-2xl bg-accent font-sans text-lg font-extrabold text-navy shadow-[0_6px_16px_-6px_rgb(245_186_0/0.7)] transition-transform duration-300 group-hover:-rotate-6"
                 >
                   {String(i + 1).padStart(2, "0")}
                 </span>
@@ -368,91 +355,35 @@ function shortLabel(name: string) {
 }
 
 /**
- * The accreditation spotlight from the November 2026 design: a deep plum
- * section, the heading beside three medals that climb like steps, and a
- * butterfly flying up the dotted path between them. (The design's yellow ribbon
- * of moving phrases was taken out at the owner's request on 1 November 2026, and
- * the sun rays behind the medals on 22 November 2026.)
+ * The accreditation spotlight from the November 2026 design, calm since the
+ * owner's brief of 25 November 2026: a dark section with a small label, one
+ * statement in white and a source line. The staircase of ICF badges that sat
+ * beside it is gone (they already show in the hero and the fees table), and so
+ * are its glow, dotted path, butterfly and handwritten note.
  */
-function AccreditationSpotlight({ data, ctx }: BlockProps<"trust_strip">) {
-  const logos = data.logos.map((logo) => ({ ...logo, media: pickMedia(ctx, logo.image) })).filter((logo) => logo.media);
+function AccreditationSpotlight({ data }: BlockProps<"trust_strip">) {
   const headingId = `accreditation-${data.anchor || "title"}`;
-  const steps = logos.length === 3;
   return (
     <section
       id={data.anchor || "accreditation"}
       aria-labelledby={data.heading ? headingId : undefined}
-      className="on-dark relative isolate overflow-hidden bg-plum py-[var(--design-space)] font-text text-[#f4f1fd]"
+      className="on-dark bg-plum py-[var(--design-space)] font-text text-[#f2f2f2]"
     >
-      <div
-        aria-hidden
-        className="fx-glow pointer-events-none absolute -right-36 top-0 h-[35rem] w-[51.25rem] max-w-[120vw] rounded-full bg-[radial-gradient(ellipse,color-mix(in_srgb,var(--lav)_38%,transparent)_0%,rgb(28_22_49/0)_65%)]"
-      />
-      <div className="container-site relative flex flex-wrap items-center gap-x-14 gap-y-10">
-        <div className="reveal flex min-w-0 flex-[1_1_25rem] flex-col gap-5">
+      <div className="container-site">
+        <div className="reveal flex max-w-[52rem] flex-col gap-5">
           {data.eyebrow && (
-            <span className="inline-flex items-center gap-3 self-start text-[0.8125rem] font-bold uppercase tracking-[0.14em] text-lav-200">
+            <span className="inline-flex items-center gap-3 self-start text-[0.8125rem] font-bold uppercase tracking-[0.14em] text-lilac">
               <span aria-hidden className="inline-block h-0.5 w-7 bg-accent" />
               {data.eyebrow}
             </span>
           )}
           {data.heading && (
-            <h2 id={headingId} className="m-0 font-grotesk text-[clamp(1.75rem,3vw,2.625rem)] font-bold leading-[1.28] tracking-[-0.025em] !text-white">
+            <h2 id={headingId} className="m-0 font-grotesk text-[clamp(1.375rem,2.6vw,1.625rem)] leading-[1.32] !text-white">
               <Emphasis text={data.heading} tone="dark" />
             </h2>
           )}
           {data.intro && <p className="m-0 text-sm text-lilac-soft">{data.intro}</p>}
         </div>
-        {/* Wide enough for the three medals in one row whenever it sits beside the heading, so the dotted path lines up. */}
-        {logos.length > 0 && (
-          <div className="flex min-w-0 flex-[1.3_1_32.5rem] justify-center pt-12">
-            <ul className="relative flex flex-wrap items-start justify-center gap-x-10 gap-y-7">
-              {steps && (
-                <li aria-hidden className="pointer-events-none absolute inset-0 max-[53.75rem]:hidden">
-                  <svg viewBox="0 0 500 200" className="absolute left-0 top-0 z-0 h-[12.5rem] w-[31.25rem] overflow-visible">
-                    <path d="M 70 126 C 140 126, 180 98, 250 98 S 360 70, 430 70" style={{ fill: "none", stroke: "color-mix(in srgb, var(--lav) 60%, transparent)", strokeWidth: 2, strokeDasharray: "5 9" }} />
-                  </svg>
-                  <Flyer path="climb" />
-                </li>
-              )}
-              {logos.map((logo, i) => {
-                const last = i === logos.length - 1;
-                return (
-                  <li
-                    key={`${logo.name}-${i}`}
-                    className={cn("reveal relative z-[2] flex w-[8.75rem] flex-col items-center gap-3.5", steps && ["mt-14", "mt-7", "mt-0"][i], "max-sm:mt-0")}
-                  >
-                    {last && data.note && (
-                      <span aria-hidden className="absolute bottom-full left-[4.375rem] -mb-1.5 flex items-end gap-0.5 whitespace-nowrap text-accent max-[53.75rem]:hidden">
-                        <HandArrow variant="down" className="h-[1.8rem] w-9" />
-                        <span className="fx-note fx-wiggle mb-4 inline-block text-[1.75rem] !text-accent">{data.note}</span>
-                      </span>
-                    )}
-                    <div className="fx-medal relative flex size-[8.75rem] items-center justify-center">
-                      <span
-                        aria-hidden
-                        className={cn(
-                          "absolute inset-[5px] rounded-full bg-white",
-                          last
-                            ? "shadow-[0_0_0_5px_var(--color-accent),0_26px_44px_-18px_rgb(0_0_0/0.7)]"
-                            : "shadow-[0_0_0_5px_rgb(201_188_247/0.22),0_26px_44px_-18px_rgb(0_0_0/0.7)]",
-                        )}
-                      />
-                      <MediaImage media={logo.media} alt={logo.name} sizes="110px" className="fx-medal-img relative !size-[6.875rem] object-contain" />
-                    </div>
-                    <span className="flex flex-col items-center gap-0.5 text-center">
-                      <strong className="font-grotesk text-[1.1875rem]">{logo.caption || shortLabel(logo.name)}</strong>
-                      <span className="inline-flex items-center gap-1.5 text-[0.8125rem] font-semibold text-[#9fd8bb]">
-                        <Tick className="size-3.5" />
-                        Accredited
-                      </span>
-                    </span>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        )}
       </div>
     </section>
   );

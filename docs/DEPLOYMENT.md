@@ -96,7 +96,7 @@ Vercel serverless functions accept request bodies up to about 4.5 MB, which is w
 
 ### Bringing an existing homepage up to the November 2026 design
 
-The November 2026 design ("Butterfly Home Redesign") changes the header, footer and effects on every page as soon as the code is deployed. The homepage's new sections and copy are content, so they are added by a script rather than by deploying: the hero with the programme guide form, the accreditation spotlight, numbered pathway cards, "Why learners choose BCA" as picture cards, programmes and fees, the global community and student stories, the FAQ on lavender, "Where are you today?" and the programme guide. Sections the design leaves out (figures, programme cards, the learning loop, the founder, the closing call to action) are kept but hidden, so any can be switched back on. The hero keeps the photograph already chosen in the admin.
+The November 2026 design ("Butterfly Home Redesign") changes the header, footer and effects on every page as soon as the code is deployed. The homepage's new sections and copy are content, so they are added by a script rather than by deploying: the hero with the programme guide form, the accreditation spotlight, numbered pathway cards, "Why learners choose BCA" as picture cards, programmes and fees, the global community and student stories, the FAQ on light gray, "Where are you today?" and the programme guide. Sections the design leaves out (figures, programme cards, the learning loop, the founder, the closing call to action) are kept but hidden, so any can be switched back on. The hero keeps the photograph already chosen in the admin.
 
 Before publishing, confirm the design's claims listed in [CONTENT_APPROVAL_CHECKLIST.md](CONTENT_APPROVAL_CHECKLIST.md) (section 1d).
 

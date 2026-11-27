@@ -67,7 +67,7 @@ export default async function EnquirePage({ searchParams }: Props) {
         <header className="hero-enter mt-6 max-w-3xl md:mt-8">
           {chosen?.label && <p className="eyebrow mb-3">{chosen.label}</p>}
           <h1 className="text-h1">
-            <Emphasis text={heading} auto now />
+            <Emphasis text={heading} now />
           </h1>
           {chosen?.summary && <p className="mt-4 max-w-2xl text-lead">{chosen.summary}</p>}
         </header>

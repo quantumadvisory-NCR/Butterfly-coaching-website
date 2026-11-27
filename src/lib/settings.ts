@@ -56,7 +56,7 @@ const header = [
     label: "Cohort start date",
     help: "Shown in place of {date}, written out in full (for example 12 January 2027).",
   },
-  { type: "link", name: "announcementLink", label: "Announcement link", help: 'For example "Reserve yours" linking to /level-1-acc-coach-program/. Leave the label empty to make the whole announcement the link.' },
+  { type: "link", name: "announcementLink", label: "Announcement link", help: 'For example "Reserve my seat" linking to /level-1-acc-coach-program/. Leave the label empty to make the whole announcement the link.' },
   { type: "link", name: "cta", label: "Header button" },
 ] as const satisfies readonly Field[];
 
@@ -142,20 +142,6 @@ const integrations = [
   },
 ] as const satisfies readonly Field[];
 
-export const HEADING_FONTS = [
-  { value: "bricolage", label: "Bricolage Grotesque (homepage design, default)" },
-  { value: "jakarta", label: "Plus Jakarta Sans (earlier BCA typeface)" },
-  { value: "schibsted", label: "Schibsted Grotesk" },
-  { value: "manrope", label: "Manrope" },
-  { value: "newsreader", label: "Newsreader (serif)" },
-] as const;
-
-export const BODY_FONTS = [
-  { value: "inter", label: "Inter (homepage design, default)" },
-  { value: "jakarta", label: "Plus Jakarta Sans (earlier BCA typeface)" },
-  { value: "manrope", label: "Manrope" },
-] as const;
-
 const theme = [
   { type: "color", name: "primary", label: "Links and secondary buttons", help: "The brand value is charcoal #2B2B2B." },
   { type: "color", name: "navy", label: "Headings and dark sections", help: "The brand value is charcoal #2B2B2B." },
@@ -167,8 +153,6 @@ const theme = [
     help: "Behind every page of the website and the admin. The brand value is #FCFCFC, the grey-white of the logo artwork.",
   },
   { type: "color", name: "ink", label: "Body text", help: "The brand value is mid gray #5F5F5F." },
-  { type: "select", name: "headingFont", label: "Heading typeface", options: HEADING_FONTS },
-  { type: "select", name: "bodyFont", label: "Body typeface", options: BODY_FONTS },
 ] as const satisfies readonly Field[];
 
 const brand = [
@@ -190,7 +174,8 @@ export const SETTINGS_GROUPS = {
   footer: { label: "Footer", fields: footer },
   newsletter: { label: "Newsletter", fields: newsletter },
   integrations: { label: "Booking and analytics", fields: integrations },
-  theme: { label: "Colours and typography", fields: theme },
+  // The typefaces are fixed in the code (Playfair Display and Plus Jakarta Sans, the owner's brief of 25 November 2026).
+  theme: { label: "Colours", fields: theme },
 } as const;
 
 export type SettingsKey = keyof typeof SETTINGS_GROUPS;
@@ -215,8 +200,6 @@ export const DEFAULT_THEME: SiteSettings["theme"] = {
   accent: "#f5ba00",
   background: "#fcfcfc",
   ink: "#5f5f5f",
-  headingFont: "bricolage",
-  bodyFont: "inter",
 };
 
 export const DEFAULT_SETTINGS: SiteSettings = {
@@ -246,7 +229,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
     announcementEnabled: true,
     announcementText: "Know about our next cohort · Limited seats",
     announcementDate: "",
-    announcementLink: { label: "Reserve yours", href: "/level-1-acc-coach-program/" },
+    announcementLink: { label: "Reserve my seat", href: "/level-1-acc-coach-program/" },
     cta: { label: "Book a discovery call", href: "booking" },
   },
   support: {

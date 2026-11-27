@@ -79,10 +79,10 @@ function WaveIcon({ className }: { className?: string }) {
 }
 
 /** The life-cycle butterfly: charcoal upper wings with yellow spots, yellow lower wings. */
-function ButterflyIcon({ className, flap = false }: { className?: string; flap?: boolean }) {
+function ButterflyIcon({ className }: { className?: string }) {
   return (
     <svg aria-hidden viewBox="0 0 120 100" className={className}>
-      <g className={cn(flap && "wing-flap")}>
+      <g>
         <path d="M58 48 C50 20 24 6 11 16 C0 25 6 46 26 51 C38 54 50 52 58 50 Z" fill="var(--color-navy)" />
         <path d="M62 48 C70 20 96 6 109 16 C120 25 114 46 94 51 C82 54 70 52 62 50 Z" fill="var(--color-navy)" />
         <circle cx="30" cy="27" r="7" fill="var(--color-accent)" />
@@ -163,10 +163,9 @@ export function CredentialJourney({ credential, modules }: { credential: string;
     <section id="journey" aria-labelledby="journey-heading" className="section-space bg-page">
       <div className="container-site">
         <div className="relative isolate overflow-hidden rounded-[var(--radius-panel)] bg-tint px-5 py-8 sm:px-8 md:px-10 md:py-10 lg:px-12 lg:py-12">
-          <div aria-hidden className="fx-glow pointer-events-none absolute -right-24 -top-28 -z-10 size-80 rounded-full bg-lav/30 blur-3xl" />
           <p className="eyebrow mb-2">Your transformation</p>
           <h2 id="journey-heading" className="text-h2">
-            <Emphasis text={journey.heading} auto />
+            <Emphasis text={journey.heading} />
           </h2>
           <p className="mt-3 max-w-xl text-lead text-ink">{journey.intro}</p>
           <dl className="mt-6 flex flex-wrap gap-x-10 gap-y-4 max-sm:grid max-sm:grid-cols-3 max-sm:gap-x-4 md:mt-7">
@@ -305,17 +304,17 @@ export function AccWings({ outcomes }: { outcomes: string[] }) {
           <div className="mx-auto max-w-xl text-center">
             <p className="eyebrow mb-2">Your coaching wings</p>
             <h2 id="wings-heading" className="text-h2">
-              <Emphasis text="What you will build" auto />
+              <Emphasis text="What you will build" />
             </h2>
             <p className="mt-3 text-[1.0625rem] leading-relaxed">Three core skills on one wing, three foundations on the other. Together, they help you take flight as a coach.</p>
           </div>
           <div className="mt-8 grid items-center gap-4 md:mt-10 md:grid-cols-2 md:max-lg:items-stretch lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:gap-8">
             {/* The learner at the centre: above the wings on phones and tablets (the wings side by side on tablets), between them on desktop. */}
             <div aria-hidden className="relative mx-auto mb-2 grid size-52 place-items-center md:col-span-2 lg:order-2 lg:col-span-1 lg:mb-0 lg:size-64">
-              <div className="orbit-spin absolute inset-0 rounded-full border-2 border-dashed border-navy/20" />
+              <div className="absolute inset-0 rounded-full border-2 border-dashed border-navy/20" />
               <div className="absolute inset-[16%] rounded-full bg-accent/25 blur-2xl" />
               <div className="absolute inset-[13%] rounded-full bg-surface shadow-card" />
-              <ButterflyIcon flap className="relative w-[46%]" />
+              <ButterflyIcon className="relative w-[46%]" />
               <span className="absolute bottom-[9%] rounded-full bg-navy px-3 py-1 text-[0.6875rem] font-bold uppercase tracking-[0.14em] text-white">You, the coach</span>
             </div>
             <ul className="grid gap-4 md:max-lg:auto-rows-fr lg:order-1">

@@ -274,7 +274,7 @@ test.describe("content flows to the public site", () => {
 
   test("theme colours are validated before they reach the page", async ({ page }) => {
     await page.goto("/admin/settings/");
-    await page.getByRole("tab", { name: "Colours and typography" }).click();
+    await page.getByRole("tab", { name: "Colours", exact: true }).click();
     const panel = page.getByRole("tabpanel");
     await panel.getByLabel("Links and secondary buttons", { exact: true }).fill("red;}body{display:none");
     await save(page, panel.getByRole("button", { name: "Save" }));

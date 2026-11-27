@@ -1,4 +1,4 @@
-import { Fragment, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { Breadcrumbs } from "@/components/site/breadcrumbs";
 import type { SectionSnapshot } from "@/lib/content/public";
 import { type BlockData, type BlockType, defaultBlockData, isBlockType } from "@/lib/blocks/registry";
@@ -51,23 +51,19 @@ const OWNS_BREADCRUMBS = new Set<string>(["hero", "rich_text"]);
 
 /**
  * Renders a page's sections in order. Unknown block types are skipped, never fatal.
- * `home` sets the homepage in the November 2026 design's typefaces.
  */
 export function BlockRenderer({
   sections,
   ctx,
-  home = false,
 }: {
   sections: SectionSnapshot[];
   ctx: Omit<BlockContext, "index">;
-  home?: boolean;
 }) {
   const visible = sections.filter((section) => !section.isHidden && isBlockType(section.type));
   const first = visible[0];
   const needsCrumbBar = ctx.breadcrumbs.length > 0 && (!first || !OWNS_BREADCRUMBS.has(first.type));
-  const Wrapper = home ? HomeFonts : Fragment;
   return (
-    <Wrapper>
+    <>
       {needsCrumbBar && (
         <div className="bg-page">
           <div className="container-site py-4">
@@ -82,10 +78,6 @@ export function BlockRenderer({
         const data = { ...defaultBlockData(type), ...section.data } as BlockData[BlockType];
         return <Component key={section.id} data={data} ctx={{ ...ctx, index, prev: neighbour(visible[index - 1]), next: neighbour(visible[index + 1]) }} />;
       })}
-    </Wrapper>
+    </>
   );
-}
-
-function HomeFonts({ children }: { children: ReactNode }) {
-  return <div className="design-fonts">{children}</div>;
 }

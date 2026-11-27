@@ -19,15 +19,15 @@
  * It acts on whichever database .env.local points at, and says which first.
  *
  * Two related facts are saved straight away, not as a draft, and only where the
- * owner has not set them (22 November 2026): each ICF level's tentative
- * duration (Admin > Programmes > Duration, shown in the fees table and in the
- * Key facts on the three level pages) when it is empty, and the announcement
- * bar's "Know about our next cohort · Limited seats" (link "Reserve yours") when
- * the bar still has the launch wording.
+ * owner has not set them: each ICF level's tentative duration (Admin >
+ * Programmes > Duration, shown in the fees table and in the Key facts on the
+ * three level pages) when it is empty, and the announcement bar's "Know about
+ * our next cohort · Limited seats" with the link "Reserve my seat" (the owner's
+ * brief of 25 November 2026) when the bar still has a wording this script set.
  *
- * DEPLOY THE CODE FIRST. The draft and the announcement rely on the 22 November
- * 2026 code (the slideshow field, the carousel layout, an announcement link
- * without a label). On the live database --apply therefore also needs
+ * DEPLOY THE CODE FIRST. The draft relies on the current code (the slideshow
+ * field, the carousel layout, the calm design of 25 November 2026 and its anchor
+ * for the hero guide form). On the live database --apply therefore also needs
  * --code-deployed, to confirm that code is live (pushed to main and Ready).
  */
 import { asc, eq } from "drizzle-orm";
@@ -90,8 +90,11 @@ function differences(before: Record<string, unknown>, after: Record<string, unkn
   return keys.length ? ` (changes: ${keys.join(", ")})` : " (no change)";
 }
 
-/** The announcement bar's launch wording, replaced only while the owner has not changed it. */
-const LAUNCH_ANNOUNCEMENT = { text: "Next ACC cohort enrolling now · Limited seats", label: "Reserve yours" };
+/** Wordings this script has set before, replaced by the current one; anything the owner has written is kept. */
+const EARLIER_ANNOUNCEMENTS = [
+  { text: "Next ACC cohort enrolling now · Limited seats", label: "Reserve yours" },
+  { text: DEFAULT_SETTINGS.header.announcementText, label: "Reserve yours" },
+];
 
 type Fact = { kind: "programme" | "announcement"; id?: string; slug?: string; value?: Record<string, unknown>; duration?: string; note: string };
 
@@ -112,7 +115,7 @@ async function programmeFactsAndAnnouncement(): Promise<Fact[]> {
   const [header] = await db().select().from(s.siteSettings).where(eq(s.siteSettings.key, "header")).limit(1);
   const value = (header?.value ?? {}) as Record<string, unknown>;
   const link = (value.announcementLink ?? {}) as { label?: string; href?: string };
-  if (header && value.announcementText === LAUNCH_ANNOUNCEMENT.text && (link.label ?? "") === LAUNCH_ANNOUNCEMENT.label) {
+  if (header && EARLIER_ANNOUNCEMENTS.some((earlier) => value.announcementText === earlier.text && (link.label ?? "") === earlier.label)) {
     const href = link.href || DEFAULT_SETTINGS.header.announcementLink.href;
     facts.push({
       kind: "announcement",
@@ -202,7 +205,7 @@ async function main() {
   }
   if (process.env.BCA_LOCAL_MODE !== "1" && !codeDeployed) {
     console.log(
-      "\nNot applied. On the live site, deploy the 22 November 2026 code first (push to main and wait for Ready):" +
+      "\nNot applied. On the live site, deploy the current code first (push to main and wait for Ready):" +
         " the draft and the announcement need it. Then run again with --apply --code-deployed.",
     );
     process.exitCode = 1;

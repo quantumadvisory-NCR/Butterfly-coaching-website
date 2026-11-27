@@ -168,7 +168,7 @@ export function AdminShell({
   const brand = (
     <Link href="/admin/" className="flex items-center gap-3 rounded-lg px-1">
       <Image src="/images/brand/bca-mark-on-dark.svg" alt="" width={98} height={90} unoptimized className="h-9 w-auto" />
-      <span className="font-display text-[0.9375rem] font-bold leading-tight text-white">
+      <span className="font-sans text-[0.9375rem] font-bold leading-tight text-white">
         Butterfly Coaching
         <span className="block text-xs font-semibold text-white/60">Website admin</span>
       </span>
@@ -207,7 +207,7 @@ export function AdminShell({
                   <Dialog.Title>Admin menu</Dialog.Title>
                 </VisuallyHidden.Root>
                 <div className="flex items-center justify-between">
-                  <span className="px-3 font-display text-lg font-bold text-white">Menu</span>
+                  <span className="px-3 font-sans text-lg font-bold text-white">Menu</span>
                   <Dialog.Close asChild>
                     <button type="button" aria-label="Close menu" className="grid size-12 place-items-center rounded-full text-white hover:bg-white/10">
                       <XIcon weight="bold" className="size-6" />

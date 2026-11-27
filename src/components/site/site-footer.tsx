@@ -9,7 +9,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { BreakableEmail } from "@/components/blocks/contact";
 import { NewsletterForm } from "@/components/site/newsletter-form";
-import { ICF_BADGES } from "@/components/ui/effects";
 import type { NavNode, Navigation } from "@/lib/content/public";
 import { type SiteSettings, telHref, whatsappHref } from "@/lib/settings";
 import { isExternalHref } from "@/lib/utils";
@@ -57,7 +56,7 @@ function Column({ title, items }: { title: string; items: NavNode[] }) {
   );
 }
 
-/** The footer from the November 2026 design: deep ink, lilac text, the ICF badges in white circles. */
+/** The footer from the November 2026 design: deep ink with light gray text. */
 export function SiteFooter({
   settings,
   nav,
@@ -75,10 +74,10 @@ export function SiteFooter({
   return (
     <footer className="on-dark bg-ink-deep font-text text-lilac">
       {newsletter.enabled && (
-        <div className="border-b border-[#2e2840]">
+        <div className="border-b border-[#3a3a3a]">
           <div className="container-site grid items-center gap-6 py-10 max-md:py-8 md:py-12 lg:grid-cols-2 lg:gap-14">
             <div>
-              <h2 className="font-grotesk text-[clamp(1.375rem,1.2rem+0.8vw,1.75rem)] font-bold tracking-[-0.02em] !text-white">{newsletter.heading}</h2>
+              <h2 className="font-grotesk text-[clamp(1.375rem,1.2rem+0.8vw,1.75rem)] !text-white">{newsletter.heading}</h2>
               {newsletter.body && <p className="mt-2 max-w-md">{newsletter.body}</p>}
             </div>
             <NewsletterForm consentText={newsletter.consentText} idPrefix="footer" />
@@ -94,13 +93,6 @@ export function SiteFooter({
             <Image src={logo.src} alt={brand.siteName} width={logo.width} height={logo.height} unoptimized={logo.src.endsWith(".svg")} className="h-11 w-auto" />
           </Link>
           {footer.tagline && <p className="mt-5 text-[0.9375rem] leading-relaxed">{footer.tagline}</p>}
-          <span role="img" aria-label="ICF accredited at Level 1, 2 and 3" className="mt-5 flex gap-2.5">
-            {ICF_BADGES.map((badge) => (
-              <span key={badge.src} className="fx-medal grid size-14 place-items-center rounded-full bg-white">
-                <Image src={badge.src} alt="" width={48} height={48} sizes="48px" className="fx-medal-img size-12 object-contain" />
-              </span>
-            ))}
-          </span>
           {socials.length > 0 && (
             <ul className="mt-5 flex flex-wrap gap-2">
               {socials.map(({ key, label, Icon }) => (
@@ -162,7 +154,7 @@ export function SiteFooter({
         </div>
       </div>
 
-      <div className="border-t border-[#2e2840]">
+      <div className="border-t border-[#3a3a3a]">
         {/* The floating WhatsApp and "Need help?" buttons step aside when this line comes into view
             (data-footer-end), so the footer ends without empty space kept free for them. */}
         <div

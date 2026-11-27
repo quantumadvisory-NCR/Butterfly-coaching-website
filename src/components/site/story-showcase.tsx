@@ -23,7 +23,7 @@ function Portrait({ story, size }: { story: Story; size: "sm" | "lg" }) {
   const box = size === "lg" ? "size-16 sm:size-[4.5rem]" : "size-11";
   if (!story.photo) {
     return (
-      <span aria-hidden className={cn("grid shrink-0 place-items-center rounded-full bg-accent font-display font-bold text-navy", box, size === "lg" ? "text-xl" : "text-base")}>
+      <span aria-hidden className={cn("grid shrink-0 place-items-center rounded-full bg-accent font-sans font-bold text-navy", box, size === "lg" ? "text-xl" : "text-base")}>
         {story.name.charAt(0)}
       </span>
     );
@@ -43,7 +43,7 @@ function FeaturedStory({ story }: { story: Story }) {
   return (
     <figure className="flex flex-1 flex-col">
       <QuotesIcon aria-hidden weight="fill" className="size-11 text-accent" />
-      <blockquote className={cn("mt-5 font-display font-semibold leading-snug tracking-tight text-white", long ? "text-[clamp(1.125rem,1rem+0.6vw,1.375rem)]" : "text-[clamp(1.3125rem,1.05rem+1.1vw,1.875rem)]")}>
+      <blockquote className={cn("mt-5 font-sans font-medium leading-snug text-white", long ? "text-[clamp(1.125rem,1rem+0.6vw,1.375rem)]" : "text-[clamp(1.3125rem,1.05rem+1.1vw,1.875rem)]")}>
         <p>“{lead}”</p>
       </blockquote>
       {hasMore && (

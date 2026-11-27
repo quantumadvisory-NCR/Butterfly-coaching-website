@@ -18,13 +18,13 @@ export function Accordion({ items, numbered = false }: { items: AccordionItem[];
         <Primitive.Item
           key={item.id}
           value={item.id}
-          className="group/item reveal relative overflow-hidden rounded-[1.375rem] border border-lilac-line bg-surface transition-[border-color,box-shadow] duration-300 hover:border-lav-200 data-[state=open]:border-lav data-[state=open]:shadow-[0_18px_40px_-30px_rgb(70_45_160/0.6)]"
+          className="group/item reveal relative overflow-hidden rounded-[1.375rem] border border-lilac-line bg-surface transition-[border-color,box-shadow] duration-300 hover:border-lav-200 data-[state=open]:border-lav data-[state=open]:shadow-[0_18px_40px_-30px_rgb(43_43_43/0.6)]"
         >
           <Primitive.Header asChild>
             <h3 className="m-0 font-sans">
               <Primitive.Trigger className="group flex min-h-16 w-full items-center gap-4 px-5 py-4 text-left text-[1.0625rem] font-semibold leading-snug text-navy sm:px-6">
                 {numbered && (
-                  <span aria-hidden className="hidden w-7 shrink-0 font-display text-sm font-bold tabular-nums text-muted group-data-[state=open]:text-accent-strong sm:block">
+                  <span aria-hidden className="hidden w-7 shrink-0 font-sans text-sm font-bold tabular-nums text-muted group-data-[state=open]:text-accent-strong sm:block">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                 )}

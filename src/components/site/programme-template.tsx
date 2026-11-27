@@ -16,7 +16,7 @@ import { siteUrl } from "@/lib/env";
 import { absoluteUrl } from "@/lib/seo";
 import { resolveHref } from "@/lib/settings";
 import { cn, formatDate, stripHtml } from "@/lib/utils";
-import { HeaderFlourish, Twinkle } from "@/components/ui/effects";
+import { HeaderFlourish } from "@/components/ui/effects";
 import { Emphasis } from "@/components/ui/emphasis";
 
 function CheckList({ items, columns = false }: { items: string[]; columns?: boolean }) {
@@ -41,7 +41,7 @@ function Journey({ modules }: { modules: ProgrammeView["modules"] }) {
       <div className="container-site grid gap-9 lg:grid-cols-12 lg:gap-12">
         <div className="lg:col-span-4">
           <h2 className="text-h2">
-            <Emphasis text="The journey, step by step" auto />
+            <Emphasis text="The journey, step by step" />
           </h2>
           <p className="mt-4 text-lead">Education, practice, mentoring and evaluation, in the order you will experience them.</p>
         </div>
@@ -51,7 +51,7 @@ function Journey({ modules }: { modules: ProgrammeView["modules"] }) {
               {i < modules.length - 1 && <span aria-hidden className="absolute left-6 top-12 h-[calc(100%-3rem)] w-px bg-line" />}
               <span
                 className={cn(
-                  "relative z-[1] grid size-12 shrink-0 place-items-center rounded-full font-display text-lg font-bold",
+                  "relative z-[1] grid size-12 shrink-0 place-items-center rounded-full font-sans text-lg font-bold",
                   i === modules.length - 1 ? "bg-accent text-navy" : "bg-navy text-white",
                 )}
               >
@@ -78,7 +78,7 @@ function Outcomes({ outcomes }: { outcomes: string[] }) {
     <section className="section-space bg-page">
       <div className="container-site">
         <h2 className="text-h2">
-          <Emphasis text="What you will build" auto />
+          <Emphasis text="What you will build" />
         </h2>
         <div className="reveal mt-8 rounded-card bg-surface p-6 md:p-9">
           <CheckList items={outcomes} columns />
@@ -128,8 +128,7 @@ export async function ProgrammeTemplate({
             <div className="hero-enter max-w-2xl">
               <p className="eyebrow mb-3">{[p.levelLabel, p.credential && `${p.credential} pathway`].filter(Boolean).join(" · ")}</p>
               <h1 className="relative text-h1">
-                <Twinkle className="absolute -top-4 right-0 size-5 fill-accent max-sm:hidden" />
-                <Emphasis text={p.name} auto now />
+                <Emphasis text={p.name} now />
               </h1>
               {p.tagline && <p className="mt-4 max-w-xl text-lead">{p.tagline}</p>}
               <div className="mt-7 flex flex-col gap-3 min-[26rem]:flex-row min-[26rem]:flex-wrap">
@@ -151,7 +150,7 @@ export async function ProgrammeTemplate({
                   <MediaImage media={hero} fill preload sizes="(min-width: 64rem) 44vw, 100vw" />
                 </div>
                 {badge && (
-                  <div className="fx-bob fx-medal absolute -bottom-6 left-5 size-24 rounded-full bg-surface p-1.5 shadow-[0_0_0_4px_var(--color-accent),0_18px_30px_-12px_rgb(28_22_49/0.55)] md:size-28 lg:-left-6">
+                  <div className="fx-medal absolute -bottom-6 left-5 size-24 rounded-full bg-surface p-1.5 shadow-[0_0_0_4px_var(--color-accent),0_18px_30px_-12px_rgb(30_30_30/0.55)] md:size-28 lg:-left-6">
                     <div className="relative size-full">
                       <MediaImage media={badge} fill sizes="112px" className="!object-contain" />
                     </div>
@@ -182,7 +181,7 @@ export async function ProgrammeTemplate({
         <div className="container-site grid gap-10 lg:grid-cols-12 lg:gap-14">
           <div className="reveal lg:col-span-7">
             <h2 className="text-h2">
-              <Emphasis text="About this pathway" auto />
+              <Emphasis text="About this pathway" />
             </h2>
             <RichText html={p.descriptionHtml} className="prose-lg mt-5" />
             {p.accreditationNote && <p className="mt-6 rounded-field bg-tint px-4 py-3 text-[0.9375rem] text-navy">{p.accreditationNote}</p>}
@@ -207,7 +206,7 @@ export async function ProgrammeTemplate({
             {p.audience.length > 0 && (
               <div className="reveal">
                 <h2 className="text-h2">
-                  <Emphasis text="Who this is for" auto />
+                  <Emphasis text="Who this is for" />
                 </h2>
                 <div className="mt-6">
                   <CheckList items={p.audience} />
@@ -217,7 +216,7 @@ export async function ProgrammeTemplate({
             {p.eligibility.length > 0 && (
               <div className="reveal">
                 <h2 className="text-h2">
-                  <Emphasis text="Before you join" auto />
+                  <Emphasis text="Before you join" />
                 </h2>
                 <div className="mt-6">
                   <CheckList items={p.eligibility} />
@@ -247,12 +246,12 @@ export async function ProgrammeTemplate({
             {cohorts.length > 0 && (
               <div>
                 <h2 className="text-h2">
-                  <Emphasis text="Upcoming cohorts" auto />
+                  <Emphasis text="Upcoming cohorts" />
                 </h2>
                 <ul className="mt-6 grid gap-3">
                   {cohorts.map((cohort) => (
                     <li key={cohort.id} className="rounded-card border border-line p-5">
-                      <p className="font-display text-lg font-bold text-navy">
+                      <p className="font-sans text-lg font-bold text-navy">
                         {cohort.label || "Cohort"}: starts {formatDate(cohort.startDate)}
                       </p>
                       {cohort.endDate && <p className="text-sm text-muted">Ends {formatDate(cohort.endDate)}</p>}
@@ -269,7 +268,7 @@ export async function ProgrammeTemplate({
             {p.feeText && (
               <div>
                 <h2 className="text-h2">
-                  <Emphasis text="Fees" auto />
+                  <Emphasis text="Fees" />
                 </h2>
                 <p className="mt-6 font-display text-3xl font-bold tracking-tight text-navy">{p.feeText}</p>
                 {p.feeNote && <p className="mt-3 max-w-prose">{p.feeNote}</p>}
@@ -284,7 +283,7 @@ export async function ProgrammeTemplate({
         <section className="section-space border-t border-line bg-page">
           <div className="container-site">
             <h2 className="text-h2">
-              <Emphasis text="Who you will learn with" auto />
+              <Emphasis text="Who you will learn with" />
             </h2>
             <ul className="mt-9 grid gap-x-6 gap-y-9 sm:grid-cols-2 lg:grid-cols-4">
               {faculty.map((person) => {
@@ -311,7 +310,7 @@ export async function ProgrammeTemplate({
         <section className="section-space bg-page">
           <div className="container-site">
             <h2 className="text-h2">
-              <Emphasis text={`What ${p.credential ?? "programme"} learners say`} auto />
+              <Emphasis text={`What ${p.credential ?? "programme"} learners say`} />
             </h2>
             <div className="mt-9">
               <ProgrammeStories items={stories} credential={p.credential} ctx={blockCtx} />
@@ -327,7 +326,7 @@ export async function ProgrammeTemplate({
           <div className="container-site grid gap-9 lg:grid-cols-12 lg:gap-12">
             <div className="lg:col-span-4">
               <h2 className="text-h2">
-                <Emphasis text={`Questions about ${p.credential ?? "this programme"}`} auto />
+                <Emphasis text={`Questions about ${p.credential ?? "this programme"}`} />
               </h2>
             </div>
             <div className="lg:col-span-8">
@@ -343,7 +342,7 @@ export async function ProgrammeTemplate({
         <div className="container-site grid gap-10 lg:grid-cols-12 lg:gap-14">
           <div className="lg:col-span-5">
             <h2 className="text-h2">
-              <Emphasis text={`Talk to us about ${p.credential ? `the ${p.credential} pathway` : p.name}`} auto />
+              <Emphasis text={`Talk to us about ${p.credential ? `the ${p.credential} pathway` : p.name}`} />
             </h2>
             <p className="mt-4 text-lead">
               Tell us where you are in your coaching journey. We will help you work out whether this is the right next step, and share current dates and fees.

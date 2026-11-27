@@ -204,13 +204,61 @@ test.describe("homepage design (November 2026)", () => {
   test("shows the design's sections, with the effects read as plain words", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto("/");
-    // Highlights, hand-drawn underlines and circles never change what a screen reader hears.
+    // Headings read as plain words, in one colour.
     await expect(page.getByRole("heading", { name: "Why learners choose BCA" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Choose your path" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "A global learning community" })).toBeVisible();
+    // "A rare distinction": one statement, without the staircase of badges (they show in the hero and the fees table).
     const spotlight = page.locator("#accreditation");
-    for (const caption of ["Level 1 · ACC", "Level 2 · PCC", "Level 3 · MCC"]) await expect(spotlight.getByText(caption)).toBeVisible();
+    await expect(spotlight.getByRole("heading", { level: 2 })).toHaveText("One of about 46 academies worldwide accredited by ICF at all three levels, and one of only 4 in India.");
+    await expect(spotlight.locator("img")).toHaveCount(0);
     await expect(page.getByRole("list", { name: "Countries our learners join from" }).getByRole("listitem")).toHaveCount(7);
+  });
+
+  test("is calm, as the owner's brief of 25 November 2026 asks: two typefaces, nothing looping, no purple", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto("/");
+    await page.waitForTimeout(1500);
+    const report = await page.evaluate(() => {
+      const families = new Set<string>();
+      const purple: string[] = [];
+      const toHsl = (css: string) => {
+        const m = css.match(/rgba?\(([\d.]+),\s*([\d.]+),\s*([\d.]+)(?:,\s*([\d.]+))?/);
+        if (!m || (m[4] !== undefined && Number(m[4]) < 0.05)) return null;
+        const [r, g, b] = [m[1], m[2], m[3]].map((v) => Number(v) / 255) as [number, number, number];
+        const max = Math.max(r, g, b);
+        const min = Math.min(r, g, b);
+        const l = (max + min) / 2;
+        const d = max - min;
+        if (d === 0) return { h: 0, s: 0, l };
+        const s = d / (1 - Math.abs(2 * l - 1));
+        const h = max === r ? ((g - b) / d) % 6 : max === g ? (b - r) / d + 2 : (r - g) / d + 4;
+        return { h: (h * 60 + 360) % 360, s, l };
+      };
+      for (const el of document.querySelectorAll<HTMLElement>("body *")) {
+        const style = getComputedStyle(el);
+        families.add(style.fontFamily.split(",")[0]!.replace(/["']/g, "").trim());
+        for (const prop of ["color", "backgroundColor", "borderTopColor"] as const) {
+          const hsl = toHsl(style[prop]);
+          // Violet and lavender hues with real saturation (the ink #16131D is near-black, so it is let through).
+          if (hsl && hsl.h >= 235 && hsl.h <= 300 && hsl.s > 0.3 && hsl.l > 0.12) purple.push(`${el.tagName.toLowerCase()}.${el.className}`.slice(0, 80) + ` ${prop} ${style[prop]}`);
+        }
+      }
+      const looping = document
+        .getAnimations()
+        .filter((a) => a.effect?.getTiming().iterations === Infinity)
+        .map((a) => ((a.effect as KeyframeEffect).target as Element | null)?.className ?? "")
+        .filter((cls) => !/fx-live|bca-globe__live/.test(String(cls)));
+      return { families: [...families], purple: purple.slice(0, 10), looping };
+    });
+    expect(report.families.filter((f) => !/Playfair|Jakarta|Georgia|ui-sans-serif|system-ui/.test(f)), "only two typefaces").toEqual([]);
+    expect(report.families.some((f) => /Playfair/.test(f))).toBe(true);
+    expect(report.families.some((f) => /Jakarta/.test(f))).toBe(true);
+    expect(report.purple, "no purple or lavender left").toEqual([]);
+    expect(report.looping, "nothing loops except the live dots").toEqual([]);
+    // The hero headline is one colour, with no sparkles, flying butterflies or handwritten notes on the page.
+    await expect(page.locator(".fx-flyer, .fx-twinkle, .fx-note")).toHaveCount(0);
   });
 
   test("the programmes and fees table comes from the programme records", async ({ page }) => {
@@ -226,7 +274,7 @@ test.describe("homepage design (November 2026)", () => {
     await expect(table.getByRole("row", { name: /Format/ })).toContainText("100% online · English");
     await expect(table.getByRole("row", { name: /Tentative duration/ })).toContainText("42 to 46 weeks");
     await expect(page.locator("#programmes")).not.toContainText("instalments");
-    await table.getByRole("link", { name: "Enroll: Level 2: PCC Coach Programme" }).click();
+    await table.getByRole("link", { name: "Reserve my seat: Level 2: PCC Coach Programme" }).click();
     await expect(page).toHaveURL(/\/level-2-pcc-coach-program\/#enquire$/);
   });
 
