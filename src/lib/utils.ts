@@ -104,6 +104,23 @@ export function isExternalHref(href: string) {
   return /^https?:\/\//i.test(href);
 }
 
+/**
+ * A link that downloads a file instead of opening it. Browsers honour the
+ * `download` attribute only for files on this site; files in the media
+ * library live on Supabase Storage, which sends them as a download when the
+ * address asks for it with `?download=<file name>`. Pair it with
+ * `download={filename}` on the link.
+ */
+export function downloadHref(url: string, filename: string): string {
+  if (!/^https:\/\/[a-z0-9-]+\.supabase\.co\//i.test(url)) return url;
+  return `${url}${url.includes("?") ? "&" : "?"}download=${encodeURIComponent(filename)}`;
+}
+
+/** The name a downloaded programme brochure gets on the visitor's device, e.g. "BCA-level-1-acc-brochure.pdf". */
+export function brochureFile(programmeSlug: string): string {
+  return `BCA-${programmeSlug}-brochure.pdf`;
+}
+
 export function youtubeId(url: string): string | null {
   const match = url.match(/(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/))([\w-]{11})/);
   return match?.[1] ?? null;

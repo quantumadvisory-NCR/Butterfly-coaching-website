@@ -7,7 +7,8 @@ import { hashPassword, verifyPassword } from "@/lib/auth/password";
 import { sanitisePlainText, sanitiseRichText } from "@/lib/sanitise";
 import { firstParam, pageCount, pageNumber } from "@/lib/search-params";
 import { DEFAULT_SETTINGS, DEFAULT_THEME, openMasterClasses, parseSettingsGroup, resolveHref, telHref, whatsappHref } from "@/lib/settings";
-import { formatHours, isReservedPath, normalisePath, readingMinutes, slugify, truncate, youtubeId } from "@/lib/utils";
+import { brochureFile, downloadHref, formatHours, isReservedPath, normalisePath, readingMinutes, slugify, truncate, youtubeId } from "@/lib/utils";
+import { isPlayableVideo, videoFileUrl } from "@/lib/video";
 import { enquirySchema, newsletterSchema } from "@/lib/validation/forms";
 
 describe("paths and slugs", () => {
@@ -256,5 +257,28 @@ describe("page addresses and paging", () => {
     expect(pageCount(10, 9, 1)).toBe(1);
     expect(pageCount(11, 9, 1)).toBe(2);
     expect(pageCount(0, 9, 1)).toBe(1);
+  });
+});
+
+describe("brochure downloads and story videos", () => {
+  it("makes brochure links download, including files in the media library", () => {
+    expect(brochureFile("level-1-acc")).toBe("BCA-level-1-acc-brochure.pdf");
+    // A file on this site downloads through the link's download attribute, so the address stays as it is.
+    expect(downloadHref("/media/brochures/l1.pdf", "BCA-level-1-acc-brochure.pdf")).toBe("/media/brochures/l1.pdf");
+    // Supabase Storage sends a file as a download when the address asks for it.
+    expect(downloadHref("https://abc123.supabase.co/storage/v1/object/public/media/l1.pdf", "BCA-level-1-acc-brochure.pdf")).toBe(
+      "https://abc123.supabase.co/storage/v1/object/public/media/l1.pdf?download=BCA-level-1-acc-brochure.pdf",
+    );
+    expect(downloadHref("https://abc123.supabase.co/x.pdf?v=2", "a b.pdf")).toBe("https://abc123.supabase.co/x.pdf?v=2&download=a%20b.pdf");
+  });
+
+  it("plays YouTube links and video files on this site or in the media library, nothing else", () => {
+    expect(isPlayableVideo("https://www.youtube.com/watch?v=dQw4w9WgXcQ")).toBe(true);
+    expect(isPlayableVideo("https://youtu.be/dQw4w9WgXcQ")).toBe(true);
+    expect(isPlayableVideo("/videos/story.mp4")).toBe(true);
+    expect(videoFileUrl("https://abc123.supabase.co/storage/v1/object/public/media/story.mp4")).toBeTruthy();
+    for (const bad of [null, "", "https://example.com/story.mp4", "//evil.test/x.mp4", "/videos/notes.pdf", "javascript:alert(1)"]) {
+      expect(isPlayableVideo(bad), String(bad)).toBe(false);
+    }
   });
 });

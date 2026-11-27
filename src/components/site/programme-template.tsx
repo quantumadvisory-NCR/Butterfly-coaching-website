@@ -15,7 +15,7 @@ import { type ProgrammeView, getFaculty, getFaqs, getProgrammes, getTestimonials
 import { siteUrl } from "@/lib/env";
 import { absoluteUrl } from "@/lib/seo";
 import { resolveHref } from "@/lib/settings";
-import { cn, formatDate, stripHtml } from "@/lib/utils";
+import { brochureFile, cn, downloadHref, formatDate, stripHtml } from "@/lib/utils";
 import { HeaderFlourish } from "@/components/ui/effects";
 import { Emphasis } from "@/components/ui/emphasis";
 
@@ -134,7 +134,7 @@ export async function ProgrammeTemplate({
               <div className="mt-7 flex flex-col gap-3 min-[26rem]:flex-row min-[26rem]:flex-wrap">
                 <ButtonLink href={bookingHref}>Book a discovery call</ButtonLink>
                 {brochure ? (
-                  <ButtonLink href={brochure.url} variant="secondary" track="download" trackLabel={`Brochure: ${p.name}`} download icon={<DownloadSimpleIcon aria-hidden weight="bold" className="size-4" />}>
+                  <ButtonLink href={downloadHref(brochure.url, brochureFile(p.slug))} variant="secondary" track="download" trackLabel={`Brochure: ${p.name}`} download={brochureFile(p.slug)} icon={<DownloadSimpleIcon aria-hidden weight="bold" className="size-4" />}>
                     Download brochure
                   </ButtonLink>
                 ) : (

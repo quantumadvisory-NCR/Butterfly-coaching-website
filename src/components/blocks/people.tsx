@@ -2,6 +2,7 @@ import { LinkedinLogoIcon, QuotesIcon } from "@phosphor-icons/react/dist/ssr";
 import Link from "next/link";
 import { StoryCarousel } from "@/components/site/story-carousel";
 import { type Story, StoryShowcase } from "@/components/site/story-showcase";
+import { StoryVideo } from "@/components/site/story-video";
 import { ButtonLink } from "@/components/ui/button-link";
 import { Arrow } from "@/components/ui/effects";
 import { Emphasis, plainText } from "@/components/ui/emphasis";
@@ -9,6 +10,7 @@ import { MediaImage } from "@/components/ui/media-image";
 import { Section, SectionHeading } from "@/components/ui/section";
 import { type FacultyView, type TestimonialView, getFaculty, getTestimonials } from "@/lib/content/public";
 import { cn } from "@/lib/utils";
+import { isPlayableVideo } from "@/lib/video";
 import { type BlockContext, type BlockProps, pickMedia, usableLink } from "./types";
 
 /** "Dr. Supriya Dhongde" becomes "SD". */
@@ -355,12 +357,16 @@ export function TestimonialGrid({ items, ctx }: { items: TestimonialView[]; ctx:
     <div className="gap-5 md:columns-2 md:gap-6 lg:columns-3">
       {items.map((t) => (
         <figure key={t.id} className="reveal lift-card group mb-5 break-inside-avoid p-6 md:mb-6 md:p-7">
-          <span
-            aria-hidden
-            className="grid size-11 place-items-center rounded-full bg-accent-soft text-navy transition-transform duration-300 group-hover:-rotate-12 group-hover:scale-110"
-          >
-            <QuotesIcon weight="fill" className="size-5" />
-          </span>
+          {isPlayableVideo(t.videoUrl) ? (
+            <StoryVideo url={t.videoUrl!} title={`${t.name}'s story`} />
+          ) : (
+            <span
+              aria-hidden
+              className="grid size-11 place-items-center rounded-full bg-accent-soft text-navy transition-transform duration-300 group-hover:-rotate-12 group-hover:scale-110"
+            >
+              <QuotesIcon weight="fill" className="size-5" />
+            </span>
+          )}
           <blockquote className="mt-4 leading-relaxed text-ink">
             <p>“{t.quote}”</p>
           </blockquote>
@@ -513,6 +519,29 @@ function StoryCarouselSection({ items, data, ctx }: { items: TestimonialView[]; 
             const dark = i % 2 === 0;
             const quote = t.excerpt || t.quote;
             const role = storyRole(t);
+            // A story with a video link (Admin > Testimonials > Video link: YouTube or an MP4 file) is a video card,
+            // as in the owner's design of 27 November 2026.
+            if (isPlayableVideo(t.videoUrl)) {
+              return (
+                <figure
+                  key={t.id}
+                  className="on-dark relative m-0 flex w-full flex-col gap-5 overflow-hidden rounded-[1.75rem] border border-ink-deep bg-ink-deep p-[clamp(1.25rem,2.2vw,1.75rem)] text-[#f2f2f2]"
+                >
+                  <StoryVideo url={t.videoUrl!} title={`${t.name}'s story`} />
+                  <blockquote className="m-0 line-clamp-3 font-text text-base font-medium leading-[1.45] text-white">
+                    <p>&ldquo;{quote}&rdquo;</p>
+                  </blockquote>
+                  <figcaption className="mt-auto flex items-center gap-3.5">
+                    <StoryAvatar t={t} dark ctx={ctx} />
+                    <span className="flex flex-col gap-0.5">
+                      <span className="text-xs font-semibold uppercase tracking-[0.12em] text-accent">Video story</span>
+                      <strong className="text-base text-white">{t.name}</strong>
+                      {role && <span className="text-sm text-lilac">{role}</span>}
+                    </span>
+                  </figcaption>
+                </figure>
+              );
+            }
             return (
               <figure
                 key={t.id}

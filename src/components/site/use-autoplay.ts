@@ -1,6 +1,6 @@
 "use client";
 
-import { type FocusEvent, type PointerEvent, useEffect, useRef, useState } from "react";
+import { type FocusEvent, type PointerEvent, useCallback, useEffect, useRef, useState } from "react";
 
 /**
  * The play/pause rules shared by the homepage's moving pieces (the hero
@@ -48,6 +48,7 @@ export function useAutoplay<T extends HTMLElement>({ initiallyOnScreen }: { init
   }, [initiallyOnScreen]);
 
   const playing = choice ?? !reduced;
+  const pause = useCallback(() => setChoice(false), []);
 
   return {
     reduced,
@@ -55,6 +56,8 @@ export function useAutoplay<T extends HTMLElement>({ initiallyOnScreen }: { init
     /** Not pointed at, on screen and the tab visible. */
     active: !hovered && onScreen,
     togglePlaying: () => setChoice(!playing),
+    /** Stops it until the visitor presses play again (e.g. when a video inside it starts). */
+    pause,
     rootProps: {
       ref: root,
       onPointerEnter: (e: PointerEvent) => e.pointerType === "mouse" && setHovered(true),

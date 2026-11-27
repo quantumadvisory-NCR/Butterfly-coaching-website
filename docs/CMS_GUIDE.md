@@ -147,7 +147,7 @@ Important: **anything left empty is not shown.** If you have not confirmed a fig
 - **Hours and format**: education, mentor coaching and experience hours; duration; format; languages.
 - **Fees and dates**: the fee as you want it displayed, and cohort dates. Past cohorts stop showing automatically.
 - **Accreditation**: the ICF badge appears only when the status is **Accredited (verified)**.
-- **Images and brochure**: upload a PDF brochure and a download button appears on the programme page.
+- **Images and brochure**: upload a PDF brochure and a download button appears on the programme page, and a **Brochure (PDF)** link under the level's button in the homepage fees table. Either one saves the PDF straight to the visitor's device (named like `BCA-level-1-acc-brochure.pdf`) instead of opening it.
 - **Curriculum, faculty and FAQs**: the step-by-step journey, who teaches, and questions specific to this programme.
 - **Show on the homepage**: whether its card appears in "Explore programmes".
 
@@ -170,6 +170,7 @@ Want to design the page yourself instead? Create a page at the same address unde
 - Set **Approval** to **Approved** to show one.
 - **Feature on the homepage** puts it in the homepage's "Student stories".
 - **Short extract** is optional: one or two sentences copied exactly from the testimonial. The system will not accept an extract that changes the person's words.
+- **Video link** is optional: a YouTube link (e.g. `https://www.youtube.com/watch?v=...`) or a video file on the site (e.g. `/videos/name.mp4`). The story then shows in **Student stories** as a dark video card: the video's picture with a yellow play button, a short quote, and "Video story" with the name. It plays only when a visitor presses play, and the moving stories stop while it plays. (Video files are too large to upload through the admin; put them on YouTube, or send them to the developer to add under `public/videos/`.)
 - Use the **Internal note** to record who gave consent and when.
 
 Only publish genuine testimonials, with the person's agreement. Never edit their wording.

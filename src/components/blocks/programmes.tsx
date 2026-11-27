@@ -8,7 +8,7 @@ import { Emphasis, plainText } from "@/components/ui/emphasis";
 import { MediaImage } from "@/components/ui/media-image";
 import { Section, SectionHeading } from "@/components/ui/section";
 import { type ProgrammeView, getProgrammes } from "@/lib/content/public";
-import { cn, formatDate, formatHours } from "@/lib/utils";
+import { brochureFile, cn, downloadHref, formatDate, formatHours } from "@/lib/utils";
 import { DESIGN_H2 } from "./content";
 import { type BlockContext, type BlockProps, pickMedia, usableLink } from "./types";
 
@@ -306,6 +306,7 @@ async function FeesTable({ data, ctx }: BlockProps<"comparison_table">) {
   const button = data.buttonLabel.trim();
   const badge = (p: ProgrammeView) => (p.accreditationStatus === "accredited" ? pickMedia(ctx, p.badgeId) : null);
   // The button, with the programme's brochure under it once one is uploaded (Admin > Programmes > Images and brochure).
+  // A click downloads the PDF straight to the visitor's device.
   const reserve = (p: ProgrammeView) => {
     if (!button) return null;
     const brochure = pickMedia(ctx, p.brochureId);
@@ -317,8 +318,8 @@ async function FeesTable({ data, ctx }: BlockProps<"comparison_table">) {
         </ButtonLink>
         {brochure && (
           <a
-            href={brochure.url}
-            download
+            href={downloadHref(brochure.url, brochureFile(p.slug))}
+            download={brochureFile(p.slug)}
             data-track="download"
             data-track-label={`Brochure: ${p.name}`}
             aria-label={`Download the ${p.credential ?? p.name} brochure (PDF)`}

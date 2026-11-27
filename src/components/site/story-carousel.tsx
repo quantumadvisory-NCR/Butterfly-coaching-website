@@ -2,6 +2,7 @@
 
 import { CaretLeftIcon, CaretRightIcon, PauseIcon, PlayIcon } from "@phosphor-icons/react";
 import { Children, type ReactNode, useEffect, useRef, useState } from "react";
+import { STORY_PLAY_EVENT } from "@/lib/video";
 import { useAutoplay } from "./use-autoplay";
 
 /** How fast the row glides, in pixels a second. */
@@ -34,7 +35,7 @@ const wrap = (value: number, set: number) => ((value % set) + set) % set;
 export function StoryCarousel({ children, heading, footer, label }: { children: ReactNode; heading: ReactNode; footer?: ReactNode; label: string }) {
   const cards = Children.toArray(children);
   const track = useRef<HTMLUListElement>(null);
-  const { reduced, playing, active, togglePlaying, rootProps } = useAutoplay<HTMLDivElement>({ initiallyOnScreen: false });
+  const { reduced, playing, active, togglePlaying, pause, rootProps } = useAutoplay<HTMLDivElement>({ initiallyOnScreen: false });
   // Whether the cards are wider than the space for them, so the row has somewhere to go. Measured once on screen;
   // the server assumes it for two or more cards (true on every phone, and on desktops from three cards).
   const [loops, setLoops] = useState(cards.length > 1);
@@ -128,6 +129,27 @@ export function StoryCarousel({ children, heading, footer, label }: { children: 
     // paint and measure only read refs, so the loop needs restarting only when `running` changes.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [running]);
+
+  // The looping copies of the cards stay out of the keyboard order, including a video player that appears in one
+  // once it is pressed. (They are not inert: a visitor may press play on whichever copy is on screen.)
+  useEffect(() => {
+    const el = track.current;
+    if (!el || !loops) return;
+    const unfocusable = () =>
+      el.querySelectorAll(":scope > li[data-copy] :is(a, button, video, iframe, input, select, textarea, [tabindex])").forEach((node) => node.setAttribute("tabindex", "-1"));
+    unfocusable();
+    const observer = new MutationObserver(unfocusable);
+    observer.observe(el, { childList: true, subtree: true });
+    return () => observer.disconnect();
+  }, [loops]);
+
+  // A video story starting inside the row stops the glide, so the video stays where the visitor is watching it.
+  useEffect(() => {
+    const view = track.current?.parentElement;
+    if (!view) return;
+    view.addEventListener(STORY_PLAY_EVENT, pause);
+    return () => view.removeEventListener(STORY_PLAY_EVENT, pause);
+  }, [pause]);
 
   // Sideways trackpad swipes (and shift + wheel) move the row too. Taking them here also stops the browser
   // reading the swipe as "go back a page". Up-and-down scrolling passes through to the page untouched.
@@ -250,10 +272,11 @@ export function StoryCarousel({ children, heading, footer, label }: { children: 
               {card}
             </li>
           ))}
-          {/* The same cards again, so the loop has no seam: hidden from assistive technology and the keyboard. */}
+          {/* The same cards again, so the loop has no seam: hidden from assistive technology and out of the keyboard
+              order (see the effect above), but a mouse or finger can still press a video's play button on them. */}
           {loops &&
             cards.map((card, i) => (
-              <li key={`again-${i}`} aria-hidden inert className="flex w-[min(28rem,84vw)] shrink-0">
+              <li key={`again-${i}`} aria-hidden data-copy className="flex w-[min(28rem,84vw)] shrink-0">
                 {card}
               </li>
             ))}

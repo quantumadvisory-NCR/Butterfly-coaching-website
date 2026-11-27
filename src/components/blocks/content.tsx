@@ -1,5 +1,5 @@
-import { CheckIcon } from "@phosphor-icons/react/dist/ssr";
-import type { ReactNode } from "react";
+import { CaretRightIcon, CheckIcon } from "@phosphor-icons/react/dist/ssr";
+import type { CSSProperties, ReactNode } from "react";
 import { CountUp } from "@/components/ui/count-up";
 import { Butterfly, Flyer } from "@/components/ui/effects";
 import { Breadcrumbs } from "@/components/site/breadcrumbs";
@@ -361,6 +361,13 @@ export function StatsBlock({ data }: BlockProps<"stats">) {
   );
 }
 
+/** The ICF credential each level leads to, spelled out under its badge in the spotlight. */
+const CREDENTIAL_NAMES: Record<string, string> = {
+  ACC: "Associate Certified Coach",
+  PCC: "Professional Certified Coach",
+  MCC: "Master Certified Coach",
+};
+
 /** "ICF Level 1 accredited coaching education" becomes "Level 1"; other names are shown as they are. */
 function shortLabel(name: string) {
   return name.match(/\bLevel\s*\d\b/i)?.[0] ?? name;
@@ -399,16 +406,50 @@ function AccreditationSpotlight({ data, ctx }: BlockProps<"trust_strip">) {
           {data.intro && <p className="m-0 text-sm text-lilac-soft">{data.intro}</p>}
         </div>
         {logos.length > 0 && (
-          <ul aria-label="ICF accreditation" className="reveal m-0 flex list-none flex-wrap gap-x-5 gap-y-4 p-0 max-sm:gap-x-3">
-            {logos.map((logo, i) => (
-              <li key={`${logo.name}-${i}`} className="flex flex-col items-center gap-2.5">
-                <span className="fx-medal grid size-[6.5rem] place-items-center rounded-full bg-white shadow-[0_0_0_4px_var(--color-accent),0_18px_30px_-14px_rgb(0_0_0/0.6)] max-sm:size-[5.25rem]">
-                  <MediaImage media={logo.media} alt={logo.name} sizes="86px" className="fx-medal-img !size-[5.375rem] object-contain max-sm:!size-[4.25rem]" />
-                </span>
-                <span className="text-center text-[0.8125rem] font-semibold text-white">{logo.caption || shortLabel(logo.name)}</span>
+          // The badges as a ladder (27 November 2026): one panel, a gold line joining the levels in order,
+          // and under each badge its level, credential and the ICF credential's full name. As the band
+          // comes into view the line draws in and the badges rise one after another (once); a badge lifts
+          // and turns on hover. Styles: .bca-ladder in effects.css.
+          <div className="bca-ladder min-w-0 max-w-[38rem] flex-[1_1_30rem] rounded-[1.75rem] border border-plum-line bg-plum-card px-6 pb-6 pt-5 max-sm:px-4">
+            <p className="m-0 mb-5 flex items-center gap-2.5 text-[0.75rem] font-semibold uppercase tracking-[0.14em] text-lilac">
+              <span aria-hidden className="flex gap-1">
+                {logos.map((logo, i) => (
+                  <span key={`${logo.name}-dot-${i}`} className="size-1.5 rounded-full bg-accent" />
+                ))}
+              </span>
+              Accredited at every level
+            </p>
+            <ol aria-label="ICF accreditation" className="relative m-0 grid list-none gap-2 p-0" style={{ gridTemplateColumns: `repeat(${logos.length}, minmax(0, 1fr))` }}>
+              {/* The line between the first and last badge centres, with a chevron between each pair. */}
+              <li aria-hidden className="bca-ladder__track pointer-events-none absolute top-[3rem] h-0.5 max-sm:top-[2.375rem]" style={{ left: `${50 / logos.length}%`, right: `${50 / logos.length}%` }}>
+                {logos.slice(1).map((logo, i) => (
+                  <CaretRightIcon
+                    key={`${logo.name}-step-${i}`}
+                    weight="bold"
+                    className="absolute top-1/2 size-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-plum-card p-0.5 text-accent"
+                    style={{ left: `${((i + 0.5) / (logos.length - 1)) * 100}%` }}
+                  />
+                ))}
               </li>
-            ))}
-          </ul>
+              {logos.map((logo, i) => {
+                const [level, credential] = (logo.caption || shortLabel(logo.name)).split(/\s*·\s*/);
+                return (
+                  <li key={`${logo.name}-${i}`} className="bca-ladder__step group relative flex flex-col items-center gap-3 text-center" style={{ "--step": i } as CSSProperties}>
+                    <span className="fx-medal relative grid size-24 place-items-center rounded-full bg-white shadow-[0_0_0_4px_var(--color-accent),0_0_0_10px_rgb(245_186_0/0.12),0_18px_30px_-14px_rgb(0_0_0/0.7)] transition-transform duration-300 group-hover:-translate-y-1 max-sm:size-[4.75rem]">
+                      <MediaImage media={logo.media} alt={logo.name} sizes="80px" className="fx-medal-img !size-20 object-contain max-sm:!size-16" />
+                    </span>
+                    <span className="flex flex-col items-center gap-0.5">
+                      <span className="text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-lilac-soft">{level}</span>
+                      {credential && <span className="font-grotesk text-[1.375rem] leading-none text-white">{credential}</span>}
+                      {credential && CREDENTIAL_NAMES[credential] && (
+                        <span className="mt-1 text-[0.75rem] leading-snug text-lilac max-sm:hidden">{CREDENTIAL_NAMES[credential]}</span>
+                      )}
+                    </span>
+                  </li>
+                );
+              })}
+            </ol>
+          </div>
         )}
       </div>
     </section>

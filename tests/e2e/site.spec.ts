@@ -213,7 +213,9 @@ test.describe("homepage design (November 2026)", () => {
     await expect(spotlight.getByRole("heading", { level: 2 })).toHaveText("One of about 46 academies worldwide accredited by ICF at all three levels, and one of only 4 in India.");
     // The three ICF badges beside it, in one row (back on 27 November 2026).
     await expect(spotlight.locator("img")).toHaveCount(3);
-    for (const caption of ["Level 1 · ACC", "Level 2 · PCC", "Level 3 · MCC"]) await expect(spotlight.getByText(caption)).toBeVisible();
+    // As a ladder: each level with its credential spelled out (27 November 2026).
+    for (const name of ["Associate Certified Coach", "Professional Certified Coach", "Master Certified Coach"]) await expect(spotlight.getByText(name)).toBeVisible();
+    await expect(spotlight.getByText("Accredited at every level")).toBeVisible();
     await expect(page.getByRole("list", { name: "Countries our learners join from" }).getByRole("listitem")).toHaveCount(7);
   });
 

@@ -158,7 +158,12 @@ const testimonialFields = [
     rows: 3,
   },
   { type: "image", name: "photoId", label: "Photograph" },
-  { type: "url", name: "videoUrl", label: "Video link" },
+  {
+    type: "url",
+    name: "videoUrl",
+    label: "Video link",
+    help: "Optional. A YouTube link (e.g. https://www.youtube.com/watch?v=...) or an MP4 file on this site (e.g. /videos/name.mp4). The story then shows as a video card in Student stories, with a play button; it never plays on its own.",
+  },
   { type: "reference", name: "programmeId", label: "Related programme", to: "programme" },
   {
     type: "select",
