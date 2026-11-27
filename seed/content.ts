@@ -623,8 +623,9 @@ export const HOME_HERO = {
   heading: "Learning that stays.",
   headingAccent: "Coaching that transforms.",
   subheading: "==Rooted in India. Recognised worldwide.== ICF coach training built on practice, review and founder mentoring.",
-  primaryCta: RESERVE,
-  ctaNote: "takes 2 minutes",
+  // The owner's wording (27 November 2026): the hero's main button introduces the academy, with no handwritten note.
+  primaryCta: link("Know more about us", "/about-us/"),
+  ctaNote: "",
   secondaryCta: link("Just browsing? See programmes and fees", "#programmes"),
   guideForm: true,
   guideLabel: "++Free++ programme guide: fees, dates and session times",

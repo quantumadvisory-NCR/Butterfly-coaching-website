@@ -184,15 +184,14 @@ function HomeHero({ data, ctx }: BlockProps<"hero">) {
               )}
             </div>
 
-            {/* The badges under the photograph, all the same size, slightly overlapping. */}
+            {/* The badges under the photograph: all the same size, side by side in one still row (the owner's
+                request of 27 November 2026; they used to overlap and bob). They pop in once with the rest of the hero. */}
             {badges.length > 0 && (
-              <div className="absolute -bottom-[3.25rem] left-1/2 z-[3] flex -translate-x-1/2 items-end">
+              <div data-badges className="absolute -bottom-[3.25rem] left-1/2 z-[3] flex -translate-x-1/2 items-center gap-2.5 max-sm:gap-1.5">
                 {badges.map((badge, i) => (
-                  <span key={`${badge.name}-${i}`} className={cn("fx-pop block", i > 0 && "-ml-2.5")} style={delay(1 + i * 0.15)}>
-                    <span className="fx-bob block" style={delay(0.2 + i * 0.9)}>
-                      <span className="flex size-[6.5rem] items-center justify-center rounded-full bg-white shadow-[0_0_0_4px_var(--color-accent),0_18px_30px_-12px_rgb(28_22_49/0.55)] max-sm:size-[5.25rem]">
-                        <MediaImage media={badge.media} alt={badge.name} sizes="86px" className="!size-[5.375rem] object-contain max-sm:!size-[4.25rem]" />
-                      </span>
+                  <span key={`${badge.name}-${i}`} className="fx-pop block shrink-0" style={delay(1 + i * 0.15)}>
+                    <span className="flex size-[6.5rem] items-center justify-center rounded-full bg-white shadow-[0_0_0_4px_var(--color-accent),0_18px_30px_-12px_rgb(28_22_49/0.55)] max-sm:size-[5.25rem]">
+                      <MediaImage media={badge.media} alt={badge.name} sizes="86px" className="!size-[5.375rem] object-contain max-sm:!size-[4.25rem]" />
                     </span>
                   </span>
                 ))}

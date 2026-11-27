@@ -262,13 +262,20 @@ test.describe("homepage design (November 2026)", () => {
     await expect(page.locator(".bca-live-pill")).toBeVisible();
   });
 
-  test("the three badges under the hero photograph are the same size", async ({ page }) => {
-    await page.setViewportSize({ width: 1280, height: 900 });
-    await page.goto("/");
-    const badges = page.locator("section").first().locator(".fx-pop > .fx-bob > span");
-    await expect(badges).toHaveCount(3);
-    const sizes = await badges.evaluateAll((els) => els.map((el) => Math.round(el.getBoundingClientRect().width)));
-    expect(new Set(sizes).size).toBe(1);
+  test("the three badges under the hero photograph are the same size, still, in one row", async ({ page }) => {
+    for (const viewport of [{ width: 1280, height: 900 }, { width: 390, height: 844 }]) {
+      await page.setViewportSize(viewport);
+      await page.goto("/");
+      const row = page.locator("section").first().locator("[data-badges]");
+      const badges = row.locator(":scope > .fx-pop > span");
+      await expect(badges).toHaveCount(3);
+      // Nothing in the row bobs (the owner asked for them static, 27 November 2026).
+      await expect(row.locator(".fx-bob")).toHaveCount(0);
+      const boxes = await badges.evaluateAll((els) => els.map((el) => el.getBoundingClientRect()).map((r) => ({ left: r.left, right: r.right, top: Math.round(r.top), width: Math.round(r.width) })));
+      expect(new Set(boxes.map((b) => b.width)).size, `${viewport.width}: same size`).toBe(1);
+      expect(new Set(boxes.map((b) => b.top)).size, `${viewport.width}: one row`).toBe(1);
+      for (let i = 1; i < boxes.length; i++) expect(boxes[i]!.left, `${viewport.width}: badge ${i + 1} does not overlap`).toBeGreaterThanOrEqual(boxes[i - 1]!.right);
+    }
   });
 
   test("student stories move along as a carousel with arrows and a pause button", async ({ page }) => {

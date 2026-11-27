@@ -81,7 +81,9 @@ describe("seed content", () => {
     expect(hero.data.heading).toBe("Learning that stays.");
     expect(hero.data.headingAccent).toBe("Coaching that transforms.");
     expect(plainText(String(hero.data.subheading))).toBe("Rooted in India. Recognised worldwide. ICF coach training built on practice, review and founder mentoring.");
-    expect(hero.data.primaryCta).toEqual({ label: "Reserve my seat", href: "/level-1-acc-coach-program/#enquire" });
+    // The owner's change of 27 November 2026: the main button introduces the academy, with no handwritten note.
+    expect(hero.data.primaryCta).toEqual({ label: "Know more about us", href: "/about-us/" });
+    expect(hero.data.ctaNote).toBe("");
     expect(hero.data.secondaryCta).toEqual({ label: "Just browsing? See programmes and fees", href: "#programmes" });
     expect(hero.data.guideForm).toBe(true);
   });
